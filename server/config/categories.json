@@ -1,0 +1,136 @@
+{
+  "categories": [
+    {
+      "name": "אסייתי",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/asianFusion.png"
+    },
+    {
+      "name": "בשרים",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/meatGrill.png"
+    },
+    {
+      "name": "פיצה",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/pizza.png"
+    },
+    {
+      "name": "המבורגר",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/burgers.png"
+    },
+    {
+      "name": "סושי",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/japaneseSushi.png"
+    },
+    {
+      "name": "סלטים",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/salads.png"
+    },
+    {
+      "name": "בית קפה",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/coffeeHouse.png"
+    },
+    {
+      "name": "אוכל ביתי",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/homeMade.png"
+    },
+    {
+      "name": "פסטה",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/pasta.png"
+    },
+    {
+      "name": "דגים",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/fish.png"
+    },
+    {
+      "name": "חומוס",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/humus.png"
+    },
+    {
+      "name": "גלידריה",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/gelato.png"
+    },
+    {
+      "name": "כריכים",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/sandwichesWraps.png"
+    },
+    {
+      "name": "קניות לבית",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/convenienceStore.png"
+    },
+    {
+      "name": "קונדטוריה",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/patisserie.png"
+    },
+    {
+      "name": "מיצים/שייקים",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/SmoothiesAndShakes.png"
+    },
+    {
+      "name": "מקסיקני",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/mexican.png"
+    },
+    {
+      "name": "הודי",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/indian.png"
+    },
+    {
+      "name": "פלאפל",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/falafel.png"
+    },
+    {
+      "name": "פירות ים",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/seafood.png"
+    },
+    {
+      "name": "פוקי",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/poke.png"
+    },
+    {
+      "name": "מרקים",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/soup.png"
+    },
+    {
+      "name": "מאפים",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/bakery.png"
+    },
+    {
+      "name": "בר",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/bar.png"
+    },
+    {
+      "name": "בשלנים ביתיים",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/homecooked.png"
+    },
+    {
+      "name": "דגים טריים",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/freshfish.png"
+    },
+    {
+      "name": "חנות אלכוהול",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/alcoholic.png"
+    },
+    {
+      "name": "חנות גבינות",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/cheeseshop.png"
+    },
+    {
+      "name": "פירות וירקות",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/fruitsAndVeg.png"
+    },
+    {
+      "name": "מגשי אירוח",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/fruitplatters.png"
+    },
+    {
+      "name": "מעדניות",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/delicatessen.png"
+    },
+    {
+      "name": "מתוקים",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/sweetsAndTreats.png"
+    },
+    {
+      "name": "קצביה",
+      "imageSrc": "https://cdn.10bis.co.il/restaurant-cuisine-category-icon-image/butcher.png"
+    }
+  ]
+}
