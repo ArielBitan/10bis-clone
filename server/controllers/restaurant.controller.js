@@ -1,3 +1,4 @@
+const MenuItem = require("../models/menu-item.model");
 const restaurantService = require("../services/restaurant.service");
 
 exports.createRestaurant = async (req, res) => {
@@ -20,11 +21,25 @@ exports.getAllRestaurants = async (req, res) => {
 
 exports.getRestaurantById = async (req, res) => {
   try {
+    // Get restaurant by ID
     const restaurant = await restaurantService.getRestaurantById(req.params.id);
+
+    // If the restaurant is not found, return 404
     if (!restaurant) {
       return res.status(404).json({ message: "Restaurant not found" });
     }
-    res.status(200).json(restaurant);
+
+    // Get the menu items for the restaurant
+    const menuItems = await MenuItem.find({ restaurant_id: req.params.id });
+
+    // Combine the restaurant details with the menu items
+    const restaurantDetails = {
+      ...restaurant.toObject(), // Convert restaurant document to plain object
+      menuItems: menuItems, // Add menuItems to the response
+    };
+
+    // Send the combined response
+    res.status(200).json(restaurantDetails);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

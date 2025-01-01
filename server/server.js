@@ -18,4 +18,4 @@ connectToDatabase()
     console.error("Failed to start server:", error);
   });
 
-automateSearch();
+// automateSearch();

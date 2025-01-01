@@ -1,3 +1,7 @@
+const mongoose = require("mongoose");
+const Restaurant = require("../models/restaurant.model");
+const Location = require("../models/location.model");
+const MenuItem = require("../models/menu-item.model");
 const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 
@@ -5,7 +9,7 @@ const url = "https://www.10bis.co.il/next/restaurants/search/";
 
 async function automateSearch() {
   const browser = await puppeteer.launch({
-    headless: false, // Set headless to false to see what's happening
+    headless: true, // Set headless to false to see what's happening
   });
 
   const page = await browser.newPage();
@@ -35,20 +39,13 @@ async function automateSearch() {
     }
   });
 
-  // Step 6: Press the Down Arrow twice to navigate the list (optional if needed)
-  await page.keyboard.press("ArrowDown"); // First down arrow
-  await page.keyboard.press("ArrowDown"); // Second down arrow
-
-  // Step 7: Press Enter to confirm the selection
+  // Step 6: Press Enter to confirm the selection
   await page.keyboard.press("Enter");
 
-  // Step 8: Wait for the new page to load
+  // Step 7: Wait for the new page to load
   await page.waitForNavigation({ waitUntil: "domcontentloaded" });
 
   await page.setViewport({ width: 1920, height: 1080 });
-
-  // Step 9: You can now check if the page has loaded and verify if everything works.
-  console.log("Page has loaded after address selection.");
 
   // Step 10: Get the page content (HTML)
   const pageContent = await page.content();
@@ -78,7 +75,6 @@ async function automateSearch() {
   }
 
   // Step 12: Visit each restaurant page to extract more details
-  const restaurantDetails = [];
   for (const restaurant of restaurantLinks) {
     try {
       const restaurantPage = await browser.newPage({ headless: false });
@@ -200,6 +196,11 @@ async function automateSearch() {
         .text()
         .trim();
 
+      details.phone = modal$$(".RestaurantDetailsLine-eboJdu.rAFIf")
+        .eq(1) // Index 1 to get the second element (0-based index)
+        .text()
+        .trim();
+
       details.description = modal$$(".SectionContent-dCztPD.dDCEVL p")
         .map((i, el) => modal$$(el).text().trim()) // Map through all paragraphs inside description.
         .get()
@@ -212,10 +213,46 @@ async function automateSearch() {
         }))
         .get();
 
-      console.log(JSON.stringify(details, null, 2)); // Pretty print with indentation
+      // Create the location object from coordinates and address
+      const location = {
+        type: "Point",
+        coordinates: [0, 0],
+        address: details.address,
+      };
 
-      // Push the details to the array
-      restaurantDetails.push(details);
+      const newRestaurant = {
+        name: details.name,
+        description: details.description,
+        cuisine_types: details.cuisineTypes,
+        image: details.image,
+        background_image: details.backgroundImage,
+        address: details.address,
+        location: location, // Location will be saved as a subdocument
+        min_order: details.minOrder,
+        delivery_fee: details.deliveryFee,
+        delivery_time: details.deliveryTime,
+        phone: details.phone || " ", // Add phone number if available
+        is_kosher: false, // Set kosher value if available
+        weekly_hours: details.weekly_hours,
+      };
+
+      const savedRestaurant = await Restaurant.create(newRestaurant);
+
+      // Now save the menu items
+      for (const category of details.menuItems) {
+        for (const dish of category.dishes) {
+          const newMenuItem = {
+            restaurant_id: savedRestaurant._id,
+            name: dish.name,
+            description: dish.description,
+            image: dish.image,
+            price: parseFloat(dish.price.replace(/[^\d.-]/g, "")),
+            category: category.category,
+          };
+
+          await MenuItem.create(newMenuItem);
+        }
+      }
 
       // Close the restaurant page
       await restaurantPage.close();
@@ -226,9 +263,8 @@ async function automateSearch() {
 
   // Close the main browser
   await browser.close();
-
-  return restaurantDetails; // Return the extracted data
 }
+
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }

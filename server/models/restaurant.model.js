@@ -8,7 +8,7 @@ const restaurantSchema = new mongoose.Schema(
     cuisine_types: [{ type: String }],
     image: { type: String },
     background_image: { type: String },
-    address: { type: String, required: true },
+    address: { type: String },
     location: { type: locationSchema },
     min_order: { type: String },
     delivery_fee: { type: String },
@@ -16,12 +16,6 @@ const restaurantSchema = new mongoose.Schema(
     phone: {
       type: String,
       required: true,
-      validate: {
-        validator: function (v) {
-          return /\d{10,}/.test(v.replace(/\D/g, ""));
-        },
-        message: (props) => `${props.value} is not a valid phone number!`,
-      },
     },
     is_kosher: { type: Boolean, default: false },
     weekly_hours: [
