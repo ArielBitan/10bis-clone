@@ -9,7 +9,11 @@ const menuItemSchema = new mongoose.Schema(
     },
     name: { type: String, required: true },
     description: { type: String, required: true },
-    price: { type: Number, required: true },
+    price: {
+      type: Number,
+      required: true,
+      min: [0, "Price must be a positive number"],
+    },
     available: { type: Boolean, required: true },
     category: { type: String },
   },
@@ -18,6 +22,9 @@ const menuItemSchema = new mongoose.Schema(
     versionKey: false,
   }
 );
+
+menuItemSchema.index({ restaurant_id: 1 });
+menuItemSchema.index({ name: 1 });
 
 const MenuItem = mongoose.model("MenuItem", menuItemSchema);
 module.exports = MenuItem;

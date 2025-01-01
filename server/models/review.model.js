@@ -21,5 +21,8 @@ const reviewSchema = new mongoose.Schema(
   }
 );
 
+reviewSchema.index({ user_id: 1 });
+reviewSchema.index({ restaurant_id: 1 });
+
 const Review = mongoose.model("Review", reviewSchema);
 module.exports = Review;

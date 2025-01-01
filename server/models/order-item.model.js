@@ -12,13 +12,24 @@ const orderItemSchema = new mongoose.Schema(
       ref: "MenuItem",
       required: true,
     },
-    quantity: { type: Number, required: true },
-    price: { type: Number, required: true },
+    quantity: {
+      type: Number,
+      required: true,
+      min: [1, "Quantity must be at least 1"],
+    },
+    price: {
+      type: Number,
+      required: true,
+      min: [0, "Price must be a positive number"],
+    },
   },
   {
     versionKey: false,
   }
 );
+
+orderItemSchema.index({ order_id: 1 });
+orderItemSchema.index({ menu_item_id: 1 });
 
 const OrderItem = mongoose.model("OrderItem", orderItemSchema);
 module.exports = OrderItem;
