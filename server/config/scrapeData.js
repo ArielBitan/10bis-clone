@@ -58,11 +58,24 @@ async function automateSearch() {
 
   const restaurantLinks = [];
 
-  // Example: Extract all restaurant links and details from the restaurant cards
-  $(".RestaurantLink-dEnonl").each((index, element) => {
+  for (const element of $(".RestaurantLink-dEnonl")) {
     const link = `https://www.10bis.co.il` + $(element).attr("href");
-    restaurantLinks.push({ link });
-  });
+
+    // Step 12: Extract background image of a div
+    const backgroundImage = await page.evaluate(() => {
+      const div = document.querySelector(".Root-jGilGP"); // Select the div with the class
+      const background = div
+        ? window.getComputedStyle(div).backgroundImage
+        : null;
+      // Use regex to extract the URL from the backgroundImage string
+      const match = background
+        ? background.match(/url\(["']?(.*?)["']?\)/)
+        : null;
+      return match ? match[1] : null; // Return the URL if found
+    });
+
+    restaurantLinks.push({ link, backgroundImage });
+  }
 
   // Step 12: Visit each restaurant page to extract more details
   const restaurantDetails = [];
@@ -88,71 +101,41 @@ async function automateSearch() {
       // Extract additional details
       const details = {
         name: $$(".RestaurantName-kBvLtc").text().trim(),
-        deliveryFee: $$(
+
+        // Extract delivery fee
+        deliveryFee: $(
           ".Root-grcBJY .Text-nYRmS.DiscountFeeText-bCLXPd.eIARSp.drRMks"
         )
           .text()
           .match(/\d+/g)
           ?.join(""),
+
+        // Extract delivery time range (first element)
         deliveryTime: $$(".Root-grcBJY .Text-nYRmS.eIARSp")
+          .first() // Get the first element for the delivery time
           .text()
           .match(/\d+/g)
           ?.join(""),
+
+        // Extract minimum order (last element)
         minOrder: $$(".Root-grcBJY .Text-nYRmS.eIARSp")
-          .last() // Get the last element, assuming it's the minimum order
+          .last() // Get the last element for the minimum order
           .text()
           .match(/\d+/g)
           ?.join(""),
+
+        // Extract cuisine types
         cuisineTypes: $$("div.CuisineTypes-zsyvG.gHhRwG")
           .text()
           .trim()
           .split(",")
           .map((type) => type.trim()),
-        menuItems: [],
+
+        menuItems: [], // Assuming you will populate this later
+
+        // Get the background image URL
+        backgroundImage: restaurant.backgroundImage,
       };
-
-      const modalSelector = ".ModalRoot-cSLLri";
-
-      // Check if the modal exists
-      const modalExists = await restaurantPage.$(modalSelector);
-
-      if (modalExists) {
-        console.log("Modal exists. Pressing Escape...");
-        // Simulate pressing the Escape key
-        await page.keyboard.press("Escape");
-      } else {
-        console.log("Modal does not exist.");
-      }
-
-      await restaurantPage.evaluate(() => {
-        const aboutRestaurantLink = Array.from(
-          document.querySelectorAll("a.A-fxuoFu.hfVkml.LinkText-trQLy.jnmbpl")
-        ).find((el) => el.textContent.trim() === "אודות המסעדה");
-
-        if (aboutRestaurantLink) {
-          aboutRestaurantLink.click();
-        }
-      });
-
-      await sleep(5000);
-      details.image = $$(".Img-kxQvMA").attr("src"); // This works as expected.
-
-      details.address = $$(".RestaurantDetailsLine-eboJdu.rAFIf")
-        .first() // Ensures we only get the first address line.
-        .text()
-        .trim();
-
-      details.description = $$(".SectionContent-dCztPD p")
-        .map((i, el) => $$(el).text().trim()) // Map through all paragraphs inside description.
-        .get()
-        .join(" "); // Combine into a single string.
-
-      details.weekly_hours = $$(".DayWrapper-jERQww")
-        .map((i, el) => ({
-          day: $$(el).find(".Day-dnMran").text().trim(), // Scrape day names.
-          time_ranges: $$(el).find(".TimeRanges-kNerZm").text().trim(), // Scrape time ranges.
-        }))
-        .get();
 
       $$("section div").each((i, item) => {
         const category = $$(item).find(".CategoryName-fDhjRP").text().trim();
@@ -180,6 +163,55 @@ async function automateSearch() {
         }
       });
 
+      const modalSelector = ".ModalRoot-cSLLri";
+
+      // Check if the modal exists
+      const modalExists = await restaurantPage.$(modalSelector);
+
+      if (modalExists) {
+        console.log("Modal exists. Pressing Escape...");
+        // Simulate pressing the Escape key
+        await page.keyboard.press("Escape");
+      } else {
+        console.log("Modal does not exist.");
+      }
+
+      await restaurantPage.evaluate(() => {
+        const aboutRestaurantLink = Array.from(
+          document.querySelectorAll("a.A-fxuoFu.hfVkml.LinkText-trQLy.jnmbpl")
+        ).find((el) => el.textContent.trim() === "אודות המסעדה");
+
+        if (aboutRestaurantLink) {
+          aboutRestaurantLink.click();
+        }
+      });
+
+      await sleep(5000);
+
+      const modalContent = await restaurantPage.content();
+      const modal$$ = cheerio.load(modalContent);
+
+      details.image = modal$$(
+        ".Img-kxQvMA.hfwzY.RestaurantImage-kWsMJV.MtlUq"
+      ).attr("src"); // This works as expected.
+
+      details.address = modal$$(".RestaurantDetailsLine-eboJdu.rAFIf")
+        .first() // Ensures we only get the first address line.
+        .text()
+        .trim();
+
+      details.description = modal$$(".SectionContent-dCztPD.dDCEVL p")
+        .map((i, el) => modal$$(el).text().trim()) // Map through all paragraphs inside description.
+        .get()
+        .join(" "); // Combine into a single string.
+
+      details.weekly_hours = modal$$(".DayWrapper-jERQww")
+        .map((i, el) => ({
+          day: modal$$(el).find(".Day-dnMran").text().trim(), // Scrape day names.
+          time_ranges: modal$$(el).find(".TimeRanges-kNerZm").text().trim(), // Scrape time ranges.
+        }))
+        .get();
+
       console.log(JSON.stringify(details, null, 2)); // Pretty print with indentation
 
       // Push the details to the array
@@ -201,17 +233,4 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-const waitForElementToLoad = (selector, retries = 5, delay = 1000) => {
-  return new Promise((resolve, reject) => {
-    const checkElement = (attempts) => {
-      const element = $$(selector);
-      if (!element.hasClass("Skeleton-loUWeW") || attempts >= retries) {
-        resolve();
-      } else {
-        setTimeout(() => checkElement(attempts + 1), delay);
-      }
-    };
-    checkElement(0);
-  });
-};
 module.exports = { automateSearch };

@@ -4,12 +4,15 @@ const locationSchema = require("./location.model");
 const restaurantSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    description: { type: String, required: true },
+    description: { type: String },
     cuisine_types: [{ type: String }],
     image: { type: String },
     background_image: { type: String },
     address: { type: String, required: true },
-    location: { type: locationSchema, required: true },
+    location: { type: locationSchema },
+    min_order: { type: String },
+    delivery_fee: { type: String },
+    delivery_time: { type: String },
     phone: {
       type: String,
       required: true,
@@ -20,7 +23,7 @@ const restaurantSchema = new mongoose.Schema(
         message: (props) => `${props.value} is not a valid phone number!`,
       },
     },
-    is_kosher: { type: Boolean, required: true },
+    is_kosher: { type: Boolean, default: false },
     weekly_hours: [
       {
         day: { type: String, required: true },
