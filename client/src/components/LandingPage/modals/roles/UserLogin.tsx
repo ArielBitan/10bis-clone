@@ -1,8 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 
 const UserLogin = ({ toggleRole }: { toggleRole: () => void }) => {
+  const [showPassword, setShowPassword] = useState(true);
+
   return (
     <div className="flex flex-col gap-4">
       <div className="w-full p-2 text-3xl text-center text-white ">
@@ -16,13 +20,21 @@ const UserLogin = ({ toggleRole }: { toggleRole: () => void }) => {
             className="col-span-3 rtl:w-[80%] text-right bg-slate-100"
           />
         </div>
-        <div className="grid items-center gap-4">
+        <div className="relative grid items-center gap-4">
           <Input
             id="password"
+            type={showPassword ? "password" : "text"}
             placeholder="*סיסמה"
-            className="col-span-3 rtl:w-[80%] text-right bg-slate-100"
+            className="col-span-3 rtl:w-[80%] text-right bg-slate-100 pr-10"
           />
-        </div>
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute text-gray-500 transform -translate-y-1/2 right-3 top-1/2"
+          >
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
+        </div>{" "}
       </div>
       <DialogFooter>
         <div className="w-full mx-auto">

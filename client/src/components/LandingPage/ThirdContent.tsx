@@ -1,5 +1,5 @@
-import { Button } from "../ui/button";
 import Details from "./Details";
+import LogInModal from "./modals/LoginModal";
 
 const ThirdContent = () => {
   const data = [
@@ -133,9 +133,7 @@ const ThirdContent = () => {
         </div>
       </div>
       <div className="flex justify-center">
-        <Button className="w-[70%] max-w-[700px] text-3xl my-10 p-7 md:text-3xl lg:text-4xl">
-          לפרטים נוספים
-        </Button>
+        <LogInModal rolee="signup" />
       </div>
     </div>
   );

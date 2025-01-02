@@ -5,6 +5,7 @@ import Fourth from "@/components/LandingPage/Fourth";
 import LogInModal from "@/components/LandingPage/modals/LoginModal.tsx";
 // import AnimatedCard from "./LogInAnim";
 
+
 const LandingPage = () => {
   return (
     <div className="overflow-x-hidden">
@@ -25,9 +26,7 @@ const LandingPage = () => {
           </div>
 
           <div className="absolute transform z-30 -translate-x-10 -translate-y-10 top-20 left-[10%]">
-            <LogInModal />
-            {/* <AnimatedCard /> */}
-            {/* </div> */}
+            <LogInModal rolee="login"/>
           </div>
 
           <div className="relative z-10 flex items-center justify-center min-h-screen">

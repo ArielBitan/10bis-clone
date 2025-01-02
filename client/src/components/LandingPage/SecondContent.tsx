@@ -1,4 +1,4 @@
-import { Button } from "../ui/button";
+import LogInModal from "./modals/LoginModal";
 
 const SecondContent = () => {
   return (
@@ -44,9 +44,7 @@ const SecondContent = () => {
             אז בקליק אחד תוכלו לראות את כל המסעדות הקרובות אליכם מתוך 5,000
             המסעדות שעובדות אתנו, ליהנות ממליון מבצעים ולשלם באופן מאובטח ופשוט.
           </p>
-          <Button className="w-[95%] max-w-[700px] text-3xl my-10 p-7 md:text-3xl lg:text-4xl">
-            להרשמה מהירה
-          </Button>
+          <LogInModal rolee="signup" />
         </div>
 
         <div className="flex items-center justify-center flex-1 w-full xl:w-2/5">

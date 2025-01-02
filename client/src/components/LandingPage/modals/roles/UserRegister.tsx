@@ -3,12 +3,16 @@ import { DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 
+import { Eye, EyeOff } from "lucide-react";
+
 interface UserRegisterProps {
   toggleRole: () => void;
 }
 
 const UserRegister = ({ toggleRole }: UserRegisterProps) => {
   const [formType, setFormType] = useState<"user" | "business">("user");
+
+  const [showPassword, setShowPassword] = useState(true);
 
   return (
     <div className="flex flex-col gap-4 overflow-y-auto max-h-[80vh]">
@@ -17,7 +21,6 @@ const UserRegister = ({ toggleRole }: UserRegisterProps) => {
       </div>
 
       <div className="grid gap-4 bg-white w-full p-[50px] text-black">
-        {/* שדות כלליים */}
         <div className="grid items-center gap-4">
           <Input
             id="email"
@@ -46,8 +49,21 @@ const UserRegister = ({ toggleRole }: UserRegisterProps) => {
             className="col-span-3 rtl:w-[80%] text-right bg-slate-100"
           />
         </div>
-
-        {/* שדות נוספים לעסק */}
+        <div className="relative grid items-center gap-4">
+          <Input
+            id="password"
+            type={showPassword ? "password" : "text"}
+            placeholder="*סיסמה"
+            className="col-span-3 rtl:w-[80%] text-right bg-slate-100 pr-10"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute text-gray-500 transform -translate-y-1/2 right-3 top-1/2"
+          >
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
+        </div>{" "}
         {formType === "business" && (
           <>
             <div className="w-full p-2 text-2xl text-center text-orangePrimary">

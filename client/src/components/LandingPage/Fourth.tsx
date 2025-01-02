@@ -1,4 +1,4 @@
-import { Button } from "../ui/button";
+import LogInModal from "./modals/LoginModal";
 
 const Fourth = () => {
   return (
@@ -41,9 +41,7 @@ const Fourth = () => {
         </div>
       </div>
       <div className="flex justify-center">
-        <Button className="w-[95%] max-w-[700px] text-3xl my-10 p-7 md:text-3xl lg:text-4xl">
-          לפרטים נוספים{" "}
-        </Button>
+        <LogInModal rolee="signup" />
       </div>
     </div>
   );
