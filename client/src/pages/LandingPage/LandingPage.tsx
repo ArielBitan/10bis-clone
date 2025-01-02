@@ -3,6 +3,7 @@ import FirstContent from "../../components/LandingPage/FirstContent";
 import ThirdContent from "@/components/LandingPage/ThirdContent";
 import Fourth from "@/components/LandingPage/Fourth";
 import LogInModal from "@/components/LandingPage/modals/LoginModal.tsx";
+import Footer from "@/components/layout/footer";
 // import AnimatedCard from "./LogInAnim";
 
 
@@ -82,7 +83,7 @@ const LandingPage = () => {
         </div>
       </div>
       <Fourth />
-      <footer className="bg-footerBG h-[160px]"></footer>
+      <Footer />
     </div>
   );
 };

@@ -18,16 +18,28 @@ const SecondContent = () => {
             שלנו היא שיהיה לכם נעים בבטן ובכיס!
           </p>
           <div className="flex gap-6 mt-10">
-            <img
-              src="https://www.10bis.co.il/Areas/G12/Content/Images/Shared/AppStore.png"
-              alt=""
-              className="h-12"
-            />
-            <img
-              src="https://www.10bis.co.il/Areas/G12/Content/Images/Shared/GooglePlay.png"
-              alt=""
-              className="h-12"
-            />
+            <a
+              href="https://apps.apple.com/us/app/%D7%AA%D7%9F-%D7%91%D7%99%D7%A1/id434368191"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src="https://www.10bis.co.il/Areas/G12/Content/Images/Shared/AppStore.png"
+                alt="App Store"
+                className="h-12 cursor-pointer"
+              />
+            </a>
+            <a
+              href="https://play.google.com/store/apps/details?id=com.tenbis.tbapp&amp;hl=en&pli=1"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src="https://www.10bis.co.il/Areas/G12/Content/Images/Shared/GooglePlay.png"
+                alt="Google Play"
+                className="h-12 cursor-pointer"
+              />
+            </a>
           </div>
         </div>
       </div>
