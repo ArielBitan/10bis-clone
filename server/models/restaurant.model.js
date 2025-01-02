@@ -8,7 +8,6 @@ const restaurantSchema = new mongoose.Schema(
     cuisine_types: [{ type: String }],
     image: { type: String },
     background_image: { type: String },
-    address: { type: String },
     location: { type: locationSchema },
     min_order: { type: String },
     delivery_fee: { type: String },
