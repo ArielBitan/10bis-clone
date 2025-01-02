@@ -1,21 +1,19 @@
-const { User } = require("../models/user.model");
+const {
+  User,
+  Courier,
+  RestaurantOwner,
+  BusinessOwner,
+} = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 
 const userService = {
   login: async (email, password) => {
-    // Implement login logic here
     const user = await User.findOne({ email });
     if (!user || !user.comparePassword(password)) {
       throw new Error("Invalid email or password");
     }
-
-    // Generate a JWT token
     const token = jwt.sign(
-      {
-        email,
-        _id: user._id,
-        name: user.full_name,
-      },
+      { email, _id: user._id, name: user.full_name },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
@@ -26,14 +24,17 @@ const userService = {
     return { token, userWithoutPassword };
   },
 
+  getAllUsers: async () => {
+    const users = await User.find().select("-password");
+    return users;
+  },
+
   register: async (userData) => {
-    // Implement registration logic here
     const newUser = await User.create(userData);
     return newUser;
   },
 
   getProfile: async (userId) => {
-    // Implement get profile logic here
     const user = await User.findById(userId).select("-password");
     if (!user) {
       throw new Error("User not found");
@@ -42,8 +43,6 @@ const userService = {
   },
 
   updateProfile: async (userId, updatedData) => {
-    // Implement update profile logic here
-    console.log(updatedData);
     const updatedUser = await User.findByIdAndUpdate(userId, updatedData, {
       new: true,
     });
@@ -51,6 +50,24 @@ const userService = {
       throw new Error("User not found");
     }
     return updatedUser;
+  },
+
+  // Create Courier user
+  createCourier: async (userData) => {
+    const newCourier = await Courier.create(userData);
+    return newCourier;
+  },
+
+  // Create Restaurant Owner user
+  createRestaurantOwner: async (userData) => {
+    const newRestaurantOwner = await RestaurantOwner.create(userData);
+    return newRestaurantOwner;
+  },
+
+  // Create Business Owner user
+  createBusinessOwner: async (userData) => {
+    const newBusinessOwner = await BusinessOwner.create(userData);
+    return newBusinessOwner;
   },
 };
 

@@ -29,6 +29,15 @@ exports.register = async (req, res) => {
   }
 };
 
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await userService.getAllUsers();
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
 exports.getProfile = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -45,6 +54,71 @@ exports.updateProfile = async (req, res) => {
     const updatedData = req.body;
     const updatedUser = await userService.updateProfile(userId, updatedData);
     res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+// Create Courier user
+exports.createCourier = async (req, res) => {
+  try {
+    const {
+      email,
+      password,
+      first_name,
+      last_name,
+      phone,
+      current_location,
+      active_orders,
+    } = req.body;
+    const newCourier = await userService.createCourier({
+      email,
+      password,
+      first_name,
+      last_name,
+      phone,
+      current_location,
+      active_orders,
+    });
+    res.status(201).json(newCourier);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+// Create Restaurant Owner user
+exports.createRestaurantOwner = async (req, res) => {
+  try {
+    const { email, password, first_name, last_name, phone, owned_restaurants } =
+      req.body;
+    const newRestaurantOwner = await userService.createRestaurantOwner({
+      email,
+      password,
+      first_name,
+      last_name,
+      phone,
+      owned_restaurants,
+    });
+    res.status(201).json(newRestaurantOwner);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+// Create Business Owner user
+exports.createBusinessOwner = async (req, res) => {
+  try {
+    const { email, password, first_name, last_name, phone, owned_companies } =
+      req.body;
+    const newBusinessOwner = await userService.createBusinessOwner({
+      email,
+      password,
+      first_name,
+      last_name,
+      phone,
+      owned_companies,
+    });
+    res.status(201).json(newBusinessOwner);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

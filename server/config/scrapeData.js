@@ -7,7 +7,7 @@ const cheerio = require("cheerio");
 
 const url = "https://www.10bis.co.il/next/restaurants/search/";
 
-async function automateSearch() {
+async function scrapeData() {
   const browser = await puppeteer.launch({
     headless: true, // Set headless to false to see what's happening
   });
@@ -99,13 +99,11 @@ async function automateSearch() {
         name: $$(".RestaurantName-kBvLtc").text().trim(),
 
         // Extract delivery fee
-        deliveryFee: $(
-          ".Root-grcBJY .Text-nYRmS.DiscountFeeText-bCLXPd.eIARSp.drRMks"
-        )
+        deliveryFee: $(`[data-test-id="delivery-fee"]`)
+          .first()
           .text()
           .match(/\d+/g)
           ?.join(""),
-
         // Extract delivery time range (first element)
         deliveryTime: $$(".Root-grcBJY .Text-nYRmS.eIARSp")
           .first() // Get the first element for the delivery time
@@ -133,8 +131,22 @@ async function automateSearch() {
         backgroundImage: restaurant.backgroundImage,
       };
 
-      $$("section div").each((i, item) => {
-        const category = $$(item).find(".CategoryName-fDhjRP").text().trim();
+      const existingRestaurant = await Restaurant.findOne({
+        name: details.name,
+      });
+
+      if (existingRestaurant) {
+        console.log(
+          `A restaurant with the name "${details.name}" already exists.`
+        );
+        continue;
+      }
+
+      $$('[data-test-id="restaurantBodyDishList"] section').each((i, item) => {
+        const category = $$(item)
+          .find(".CategoryName-fDhjRP.StyledCategoryName-itXoUn.cVUVYo.exAMne")
+          .text()
+          .trim();
         const dishes = [];
 
         $$(item)
@@ -220,6 +232,7 @@ async function automateSearch() {
         address: details.address,
       };
 
+      // Save the restaurant to the database
       const newRestaurant = {
         name: details.name,
         description: details.description,
@@ -238,6 +251,8 @@ async function automateSearch() {
 
       const savedRestaurant = await Restaurant.create(newRestaurant);
 
+      console.log("Restaurant saved successfully:");
+
       // Now save the menu items
       for (const category of details.menuItems) {
         for (const dish of category.dishes) {
@@ -253,6 +268,7 @@ async function automateSearch() {
           await MenuItem.create(newMenuItem);
         }
       }
+      console.log("Menu items saved successfully:");
 
       // Close the restaurant page
       await restaurantPage.close();
@@ -269,4 +285,4 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-module.exports = { automateSearch };
+module.exports = { scrapeData };

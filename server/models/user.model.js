@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const locationSchema = require("./location.model");
 
 const baseUserSchema = new mongoose.Schema(
   {
@@ -51,7 +52,8 @@ baseUserSchema.virtual("full_name").get(function () {
 const User = mongoose.model("User", baseUserSchema);
 
 const courierSchema = new mongoose.Schema({
-  current_location: { type: String, required: true },
+  current_location: { type: locationSchema },
+  isDelivering: { type: Boolean, default: false },
   active_orders: [{ type: mongoose.Schema.Types.ObjectId, ref: "Order" }],
 });
 

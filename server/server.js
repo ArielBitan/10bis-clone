@@ -1,6 +1,6 @@
 const http = require("http");
 const app = require("./app");
-const { automateSearch } = require("./config/scrapeData");
+const { scrapeData } = require("./config/scrapeData");
 
 const connectToDatabase = require("./config/database");
 
@@ -18,4 +18,4 @@ connectToDatabase()
     console.error("Failed to start server:", error);
   });
 
-// automateSearch();
+// scrapeData();
