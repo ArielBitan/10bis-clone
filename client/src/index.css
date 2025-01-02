@@ -3,6 +3,12 @@
 @tailwind utilities;
 @layer base {
   :root {
+    --text-white: rgb(255, 255, 255);
+    --background-orange: rgb(255, 128, 0);
+    --text-black-secondary: rgb(10, 56, 71);
+    --dark-blue-primary: rgb(0, 0, 128);
+    --search-button-grey: rgb(215, 215, 215);
+
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -27,9 +33,15 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.5rem
+    --radius: 0.5rem;
   }
   .dark {
+    --text-white: rgb(255, 255, 255);
+    --background-orange: rgb(255, 128, 0);
+    --text-black-secondary: rgb(10, 56, 71);
+    --search-button-grey: rgb(215, 215, 215);
+    --dark-blue-primary: rgb(0, 0, 128);
+
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
     --card: 0 0% 3.9%;
@@ -53,7 +65,7 @@
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%
+    --chart-5: 340 75% 55%;
   }
 }
 @layer base {
@@ -61,6 +73,29 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    margin: 0;
+    padding: 0;
+    font-family: 'Heebo', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    color: var(--text-black-secondary);
+    background-color: var(--background);
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  body.dark {
+    background-color: var(--secondary);
+    color: var(--secondary-foreground);
+  }
+
+  @media (max-width: 768px) {
+    body {
+      font-size: 14px;
+    }
   }
 }
