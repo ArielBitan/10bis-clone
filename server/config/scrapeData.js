@@ -55,23 +55,30 @@ async function scrapeData() {
 
   const restaurantLinks = [];
 
-  for (const element of $(".RestaurantLink-dEnonl")) {
-    const link = `https://www.10bis.co.il` + $(element).attr("href");
-
-    // Step 12: Extract background image of a div
-    const backgroundImage = await page.evaluate(() => {
-      const div = document.querySelector(".Root-jGilGP"); // Select the div with the class
-      const background = div
-        ? window.getComputedStyle(div).backgroundImage
+  const backgroundImages = await page.evaluate(() => {
+    const elements = document.querySelectorAll(".Root-jGilGP"); // Select all divs with the class
+    const backgrounds = [];
+    elements.forEach((el) => {
+      const background = el
+        ? window.getComputedStyle(el).getPropertyValue("background-image")
         : null;
       // Use regex to extract the URL from the backgroundImage string
       const match = background
         ? background.match(/url\(["']?(.*?)["']?\)/)
         : null;
-      return match ? match[1] : null; // Return the URL if found
+      if (match) {
+        backgrounds.push(match[1]); // Push the URL if found
+      }
     });
+    return backgrounds;
+  });
 
-    restaurantLinks.push({ link, backgroundImage });
+  let count = 0;
+  for (const element of $(".RestaurantLink-dEnonl")) {
+    const link = `https://www.10bis.co.il` + $(element).attr("href");
+
+    restaurantLinks.push({ link, backgroundImage: backgroundImages[count] });
+    count++;
   }
 
   // Step 12: Visit each restaurant page to extract more details
@@ -94,7 +101,7 @@ async function scrapeData() {
       // Step 14: Use Cheerio to parse the restaurant page content
       const $$ = cheerio.load(restaurantPageContent);
 
-      const deliveryTime = await page.evaluate(() => {
+      const deliveryTime = await restaurantPage.evaluate(() => {
         const elements = document.querySelectorAll(
           ".Root-grcBJY .Text-nYRmS.eIARSp"
         );
