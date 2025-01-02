@@ -94,9 +94,16 @@ async function scrapeData() {
       // Step 14: Use Cheerio to parse the restaurant page content
       const $$ = cheerio.load(restaurantPageContent);
 
+      const deliveryTime = await page.evaluate(() => {
+        const elements = document.querySelectorAll(
+          ".Root-grcBJY .Text-nYRmS.eIARSp"
+        );
+        return elements[1] ? elements[1].textContent.trim() : null; // Access the second element's text
+      });
+
       // Extract additional details
       const details = {
-        name: $$(".RestaurantName-kBvLtc").text().trim(),
+        name: $$(".RestaurantName-kBvLtc").first().text().trim(),
 
         // Extract delivery fee
         deliveryFee: $(`[data-test-id="delivery-fee"]`)
@@ -105,11 +112,7 @@ async function scrapeData() {
           .match(/\d+/g)
           ?.join(""),
         // Extract delivery time range (first element)
-        deliveryTime: $$(".Root-grcBJY .Text-nYRmS.eIARSp")
-          .first() // Get the first element for the delivery time
-          .text()
-          .match(/\d+/g)
-          ?.join(""),
+        deliveryTime,
 
         // Extract minimum order (last element)
         minOrder: $$(".Root-grcBJY .Text-nYRmS.eIARSp")
