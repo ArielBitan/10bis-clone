@@ -1,4 +1,5 @@
 import { useState } from "react";
+// fsdvvs
 
 const AnimatedCard = () => {
   const [isOpen, setIsOpen] = useState(false);
