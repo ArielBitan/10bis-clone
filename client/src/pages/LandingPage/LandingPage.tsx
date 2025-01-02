@@ -2,8 +2,8 @@ import SecondContent from "@/components/LandingPage/SecondContent";
 import FirstContent from "../../components/LandingPage/FirstContent";
 import ThirdContent from "@/components/LandingPage/ThirdContent";
 import Fourth from "@/components/LandingPage/Fourth";
-// import LogInModal from "@/components/LandingPage/modals/LoginModal.tsx";
-import AnimatedCard from "./LogInAnim";
+import LogInModal from "@/components/LandingPage/modals/LoginModal.tsx";
+// import AnimatedCard from "./LogInAnim";
 
 const LandingPage = () => {
   return (
@@ -25,8 +25,8 @@ const LandingPage = () => {
           </div>
 
           <div className="absolute transform z-30 -translate-x-10 -translate-y-10 top-20 left-[10%]">
-            {/* <LogInModal /> */}
-            <AnimatedCard />
+            <LogInModal />
+            {/* <AnimatedCard /> */}
             {/* </div> */}
           </div>
 
