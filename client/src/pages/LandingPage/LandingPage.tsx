@@ -24,7 +24,7 @@ const LandingPage = () => {
             />
           </div>
 
-          <div className="absolute transform -translate-x-10 -translate-y-10 top-20 left-[10%]">
+          <div className="absolute transform z-30 -translate-x-10 -translate-y-10 top-20 left-[10%]">
             {/* <LogInModal /> */}
             <AnimatedCard />
             {/* </div> */}
