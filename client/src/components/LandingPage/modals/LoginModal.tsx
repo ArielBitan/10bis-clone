@@ -18,7 +18,7 @@ const LogInModal = ({ rolee }: LogInModalProps) => {
   return (
     <Dialog>
       <DialogTrigger>
-        {role === "signup" ? (
+        {rolee === "signup" ? (
           <Button className="w-[100%] max-w-[700px] text-3xl my-10 p-7 md:text-3xl lg:text-4xl">
             לפרטים נוספים
           </Button>
