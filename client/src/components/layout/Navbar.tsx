@@ -34,7 +34,7 @@ const Navbar = () => {
           </div>
         </div>
       </nav>
-      <div className="px-24 shadow-lg mb-4">
+      <div className="px-24 shadow-lg mb-4 bg-white">
         <div className="gap-6 flex px-10 items-center">
           <button className="border border-gray-300 my-2 px-3 h-8 hover:border-gray-500">
             <div className="flex items-center gap-1">

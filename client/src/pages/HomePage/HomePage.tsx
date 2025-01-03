@@ -1,16 +1,18 @@
 import HeroSection from "@/components/HomePage/HeroSection";
-import RestaurantCarousel from "@/components/HomePage/RestaurantCarousel";
+import AllRestaurants from "@/components/HomePage/AllRestaurants";
 import Navbar from "@/components/layout/Navbar";
+import CategoriesSection from "@/components/HomePage/CategoriesSection";
 
 const HomePage = () => {
   return (
-    <>
+    <div className="bg-gray-100">
       <Navbar />
-      <div>
+      <div className="grid mx-60 gap-4  ">
         <HeroSection />
-        <RestaurantCarousel />
+        <CategoriesSection />
+        <AllRestaurants />
       </div>
-    </>
+    </div>
   );
 };
 
