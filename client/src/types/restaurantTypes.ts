@@ -27,3 +27,8 @@ export interface IRestaurant {
   createdAt?: string;
   updatedAt?: string;
 }
+
+export interface IRestaurantForm {
+  name: string;
+  phone: string;
+}

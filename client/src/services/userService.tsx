@@ -1,5 +1,6 @@
 import api from "@/lib/api";
 import {
+  IRestaurantOwner,
   IUser,
   //   ICourier,
   //   IRestaurantOwner,
@@ -41,22 +42,6 @@ export const updateUserProfile = async (
   }
 };
 
-// Function to create a new courier user
-export const createCourier = async (
-  courierData: Omit<ICourier, "_id" | "createdAt" | "updatedAt">
-): Promise<ICourier> => {
-  try {
-    const { data } = await api.post<ICourier>(
-      "/users/register/courier",
-      courierData
-    );
-    return data;
-  } catch (error) {
-    console.error("Error creating courier:", error);
-    throw error;
-  }
-};
-
 // Function to create a new restaurant owner user
 export const createRestaurantOwner = async (
   restaurantOwnerData: Omit<IRestaurantOwner, "_id" | "createdAt" | "updatedAt">
@@ -69,22 +54,6 @@ export const createRestaurantOwner = async (
     return data;
   } catch (error) {
     console.error("Error creating restaurant owner:", error);
-    throw error;
-  }
-};
-
-// Function to create a new business owner user
-export const createBusinessOwner = async (
-  businessOwnerData: Omit<IBusinessOwner, "_id" | "createdAt" | "updatedAt">
-): Promise<IBusinessOwner> => {
-  try {
-    const { data } = await api.post<IBusinessOwner>(
-      "/users/register/business-owner",
-      businessOwnerData
-    );
-    return data;
-  } catch (error) {
-    console.error("Error creating business owner:", error);
     throw error;
   }
 };

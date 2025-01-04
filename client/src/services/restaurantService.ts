@@ -1,5 +1,5 @@
 import api from "@/lib/api";
-import { IRestaurant } from "@/types/restaurantTypes";
+import { IRestaurant, IRestaurantForm } from "@/types/restaurantTypes";
 
 // Function to fetch all restaurants
 export const fetchAllRestaurants = async (): Promise<IRestaurant[]> => {
@@ -27,7 +27,7 @@ export const fetchRestaurantById = async (
 
 // Function to create a new restaurant
 export const createRestaurant = async (
-  restaurantData: Omit<IRestaurant, "_id" | "createdAt" | "updatedAt">
+  restaurantData: IRestaurantForm
 ): Promise<IRestaurant> => {
   try {
     const { data } = await api.post<IRestaurant>(

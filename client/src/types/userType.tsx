@@ -1,3 +1,5 @@
+import { IRestaurantForm } from "./restaurantTypes";
+
 export interface IUser {
   _id?: string;
   email: string;
@@ -5,7 +7,12 @@ export interface IUser {
   last_name: string;
   phone: string;
   password: string;
-  role?: "courier" | "restaurant_owner" | "business_owner";
+  role?: "courier" | "restaurant_owner" | "user";
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface IRestaurantOwnerForm extends IUser {
+  restaurantId: string; 
+  role: "restaurant_owner";
 }
