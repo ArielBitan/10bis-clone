@@ -93,7 +93,7 @@ const UserLogin = ({ toggleRole }: { toggleRole: () => void }) => {
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               className="absolute text-gray-500 transform -translate-y-1/2 right-3 top-1/2"
-              style={{ right: '12px' }}
+              style={{ right: "12px" }}
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>

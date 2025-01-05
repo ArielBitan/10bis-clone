@@ -5,6 +5,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { registerUser } from "@/services/userService";
 import BusinessRegister from "./ResturantOwner";
+import { AxiosError } from "axios";
 
 interface UserRegisterProps {
   toggleRole: () => void;
@@ -14,7 +15,7 @@ const UserRegister = ({ toggleRole }: UserRegisterProps) => {
   const [formType, setFormType] = useState<"user" | "business">("user");
   const [showPassword, setShowPassword] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
+  const [sucsessMessage, setSucsessMessage] = useState<string | null>(null);
   const [userFields, setUserFields] = useState({
     email: "",
     first_name: "",
@@ -76,15 +77,20 @@ const UserRegister = ({ toggleRole }: UserRegisterProps) => {
 
     try {
       await registerUser(userFields);
-      alert("User registered successfully!");
       clearFields();
-      setErrorMessage(null); // לאפס את השגיאה אחרי רישום מוצלח
+      setSucsessMessage(null);
+      setErrorMessage(null);
+      setSucsessMessage("המשתמש נרשם בהצלחה");
+      setTimeout(() => {
+        toggleRole();
+      }, 1500);
     } catch (error) {
       if (
+        error instanceof AxiosError &&
         error.response &&
         error.response.data.message.includes("duplicate key error")
       ) {
-        setErrorMessage('כתובת הדוא"ל כבר רשומה במערכת');
+        setErrorMessage('כתובת הדוא"ל או מספר הטלפון רשומים במערכת');
       } else {
         setErrorMessage("שגיאה בהרשמה, אנא נסה שוב מאוחר יותר");
       }
@@ -181,17 +187,22 @@ const UserRegister = ({ toggleRole }: UserRegisterProps) => {
                   <div className="text-xs text-red-500">{errors.password}</div>
                 )}
               </div>
-            <Button
-              type="submit"
-              className="w-[80%] mx-auto text-xl"
-              onClick={handleUserSubmit}
-            >
-              המשך
-            </Button>
+              <div className="text-xs text-red-500">{errorMessage}</div>
+              <div className="text-lg text-center text-orangePrimary">
+                {sucsessMessage}
+              </div>
+
+              <Button
+                type="submit"
+                className="w-[80%] mx-auto text-xl"
+                onClick={handleUserSubmit}
+              >
+                המשך
+              </Button>
             </div>
           </>
         ) : (
-          <BusinessRegister />
+          <BusinessRegister toggleRole={toggleRole} />
         )}
       </div>
 

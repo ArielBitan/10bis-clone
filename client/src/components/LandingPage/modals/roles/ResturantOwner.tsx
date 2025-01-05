@@ -2,11 +2,18 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
-import { createRestaurant } from "@/services/restaurantService";
+import {
+  createRestaurant,
+  deleteRestaurant,
+} from "@/services/restaurantService";
 import { createRestaurantOwner } from "@/services/userService";
-import { log } from "console";
+import { AxiosError } from "axios";
 
-const RestaurantRegister = () => {
+interface RestaurantRegisterProps {
+  toggleRole: () => void;
+}
+
+const RestaurantRegister = ({ toggleRole }: RestaurantRegisterProps) => {
   const [userFields, setUserFields] = useState({
     email: "",
     first_name: "",
@@ -32,6 +39,7 @@ const RestaurantRegister = () => {
 
   const [showPassword, setShowPassword] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [sucsessMessage, setSucsessMessage] = useState<string | null>(null);
 
   const clearFields = () => {
     setUserFields({
@@ -94,27 +102,34 @@ const RestaurantRegister = () => {
         name: restaurantFields.restaurantName,
         phone: restaurantFields.restaurantPhone,
       };
-      console.log(restaurantFieldss);
 
-      // צור את המסעדה וקבל את האובייקט המוחזר
       const createdRestaurant = await createRestaurant(restaurantFieldss);
 
-      // הוסף את ה-ID של המסעדה לאובייקט של היוסר
-      const userWithRestaurantId = {
-        ...userFields,
-        restaurantId: createdRestaurant._id,
-        role: "restaurant_owner",
-      };
-      log(userWithRestaurantId);
+      try {
+        const userWithRestaurantId = {
+          ...userFields,
+          restaurantId: createdRestaurant._id,
+          role: "restaurant_owner",
+        };
+        setSucsessMessage(null);
 
-      // צור את היוסר
-      await createRestaurantOwner(userWithRestaurantId);
+        await createRestaurantOwner(userWithRestaurantId);
 
-      alert("המשתמש והמסעדה נרשמו בהצלחה!");
-      clearFields();
-      setErrorMessage(null);
+        clearFields();
+        setSucsessMessage("המשתמש והמסעדה נוצרו בהצלחה");
+        setErrorMessage(null);
+        setTimeout(() => {
+          toggleRole();
+        }, 1500);
+      } catch (userCreationError) {
+        await deleteRestaurant(createdRestaurant._id);
+        console.error("שגיאה ביצירת המשתמש, המסעדה נמחקה", userCreationError);
+        setErrorMessage("המשתמש קיים במערכת");
+        clearFields();
+      }
     } catch (error) {
       if (
+        error instanceof AxiosError &&
         error.response &&
         error.response.data.message.includes("duplicate key error")
       ) {
@@ -122,6 +137,7 @@ const RestaurantRegister = () => {
       } else {
         setErrorMessage("שגיאה בהרשמה, אנא נסה שוב מאוחר יותר");
       }
+      clearFields();
     }
   };
 
@@ -260,10 +276,13 @@ const RestaurantRegister = () => {
             )}
           </div>
         </div>
+        <div className="text-lg text-center text-orangePrimary">
+          {sucsessMessage}
+        </div>
       </div>
 
-      <Button onClick={handleSubmit} className="mx-auto">
-        רשום את המסעדה
+      <Button onClick={handleSubmit} className="w-[80%] mx-auto text-xl ">
+        המשך
       </Button>
 
       {errorMessage && (
