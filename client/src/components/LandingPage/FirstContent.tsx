@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import PlacesAutocomplete from "./PlacesAutocomplete";
 
 const FirstContent = () => {
   const [selectedOption, setSelectedOption] = useState<"delivery" | "pickup">(
@@ -43,16 +44,7 @@ const FirstContent = () => {
         </div>
 
         <div className="relative flex justify-center w-full mb-6">
-          <input
-            type="text"
-            placeholder="מה מיקומך?"
-            className="h-12 px-12 py-2 text-blackSecondary w-full max-w-[90%] border-none"
-          />
-          <img
-            src="https://www.10bis.co.il/Areas/G12/Content/Images/HomePage/geo_grey.png"
-            alt="geo icon"
-            className="absolute w-6 h-8 transform -translate-y-1/2 right-10 top-1/2"
-          />
+          <PlacesAutocomplete />
         </div>
 
         <div className="flex justify-center">
