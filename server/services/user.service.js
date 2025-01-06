@@ -13,7 +13,12 @@ const userService = {
       throw new Error("Invalid email or password");
     }
     const token = jwt.sign(
-      { email, _id: user._id, name: user.full_name },
+      {
+        email,
+        _id: user._id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+      },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
