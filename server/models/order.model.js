@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const MenuItem = require("./menu-item.model");
 
 const orderSchema = new mongoose.Schema(
   {
@@ -13,35 +14,43 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
     courier_id: { type: mongoose.Schema.Types.ObjectId, ref: "Courier" },
-    order_items: [{ type: mongoose.Schema.Types.ObjectId, ref: "OrderItem" }],
+    order_items: [{ type: mongoose.Schema.Types.ObjectId, ref: "MenuItem" }],
     status: { type: String, required: true },
     delivered_at: { type: Date },
     special_instructions: [{ type: String }],
     payment_details: { type: Object, required: true },
+    total_amount: { type: Number },
   },
   {
     timestamps: { createdAt: true, updatedAt: false },
     versionKey: false,
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
   }
 );
 
-// Virtual for total order amount
-orderSchema.virtual("total_amount").get(async function () {
-  const OrderItem = mongoose.model("OrderItem");
-
-  // Retrieve the associated order items
-  const items = await OrderItem.find({ _id: { $in: this.order_items } });
-
-  // Calculate the total amount by summing up the price * quantity of each item
-  const total = items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-
-  return total;
+// Calculate total amount before saving
+orderSchema.pre("save", async function (next) {
+  if (this.order_items && this.order_items.length > 0) {
+    const items = await MenuItem.find({ _id: { $in: this.order_items } });
+    this.total_amount = items.reduce((sum, item) => sum + item.price, 0);
+  }
+  next();
 });
+
+// Method to get total amount for existing orders
+orderSchema.methods.calculateTotalAmount = async function () {
+  const items = await MenuItem.find({ _id: { $in: this.order_items } });
+  this.total_amount = items.reduce((sum, item) => sum + item.price, 0);
+  return this.total_amount;
+};
+
+// Static method to get order with total amount
+orderSchema.statics.findByIdWithTotal = async function (id) {
+  const order = await this.findById(id);
+  if (order) {
+    await order.calculateTotalAmount();
+  }
+  return order;
+};
 
 const Order = mongoose.model("Order", orderSchema);
 module.exports = Order;
