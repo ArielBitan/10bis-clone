@@ -6,7 +6,7 @@ const PlacesAutocomplete = () => {
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_API,
+    googleMapsApiKey: import.meta.env.VITE_MAPS_API_KEY,
     libraries: ["places"],
     language: "iw",
     region: "il",

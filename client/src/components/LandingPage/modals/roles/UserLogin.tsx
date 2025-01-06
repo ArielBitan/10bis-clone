@@ -5,9 +5,11 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { loginUser } from "@/services/userService";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "@/components/context/userContext";
 
 const UserLogin = ({ toggleRole }: { toggleRole: () => void }) => {
   const navigate = useNavigate();
+  const { user, setUser } = useUser();
   const [showPassword, setShowPassword] = useState(true);
   const [fields, setFields] = useState({
     email: "",
@@ -40,7 +42,9 @@ const UserLogin = ({ toggleRole }: { toggleRole: () => void }) => {
     if (newErrors.email || newErrors.password) return;
 
     try {
-      await loginUser(fields.email, fields.password);
+      const userData = await loginUser(fields.email, fields.password);
+      setUser(userData.user);
+      console.log(user);
       clearFields();
       navigate("/home");
     } catch (error: unknown) {

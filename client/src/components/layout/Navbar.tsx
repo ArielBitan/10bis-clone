@@ -3,6 +3,7 @@ import { MdPlace } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
 import { FiSearch } from "react-icons/fi";
 import { Input } from "../ui/input";
+import UserMenu from "./UserMenu";
 
 const Navbar = () => {
   return (
@@ -20,13 +21,8 @@ const Navbar = () => {
               alt="website-img"
             />
           </Link>
-          <div className="flex gap-4">
-            <Link
-              to="/login"
-              className="text-lg text-white px-4 py-2 rounded-lg transition-transform duration-300 hover:scale-110"
-            >
-              כניסה
-            </Link>
+          <div className="flex gap-4 items-center">
+            <UserMenu />
             <img
               className="w-6"
               src="https://cdn.10bis.co.il/10bis-spa-static-prod/assets/he-cdb854.svg"
