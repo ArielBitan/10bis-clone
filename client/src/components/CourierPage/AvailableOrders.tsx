@@ -8,14 +8,14 @@ const AvailableOrders = () => {
     queryKey: ["openOrders"],
     queryFn: () => fetchOrdersByStatus("Open"),
   });
-  console.log(data);
+
   if (isLoading) return <div>טוען ...</div>;
   if (isError) return <div>שגיאה בטעינה </div>;
 
   return (
     <div>
       {data ? (
-        data.map((order) => <OrderCard order={order} />)
+        data.map((order) => <OrderCard key={order._id} order={order} />)
       ) : (
         <div className="p-4 flex flex-col items-center justify-center h-[80vh] text-center space-y-4">
           <Package className="h-16 w-16 text-gray-400" />

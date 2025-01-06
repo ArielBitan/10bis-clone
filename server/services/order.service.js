@@ -16,8 +16,8 @@ exports.getOrdersByStatus = async (status) => {
     const orders = await Order.find({
       status: { $regex: new RegExp(`^${status}$`, "i") },
     })
-      .populate("user_id", "name phone")
-      .populate("restaurant_id", "name address phone")
+      .populate("user_id")
+      .populate("restaurant_id")
       .populate("order_items");
     return orders;
   } catch (error) {

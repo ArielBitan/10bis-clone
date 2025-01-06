@@ -1,3 +1,4 @@
+import { useUser } from "@/components/context/userContext";
 import api from "@/lib/api";
 import { IOrder } from "@/types/orderTypes";
 
@@ -8,6 +9,29 @@ export const fetchAllOrders = async (): Promise<IOrder[]> => {
     return data;
   } catch (error) {
     console.error("Error fetching orders:", error);
+    throw error;
+  }
+};
+
+export const acceptOrder = async (orderId: string) => {
+  const { user } = useUser();
+  try {
+    const { data } = await api.put(`/orders/${orderId}`, {
+      courierId: user?._id,
+    });
+    return data;
+  } catch (error) {
+    console.error("Error accepting order:", error);
+    throw error;
+  }
+};
+
+export const fetchCourierActiveOrder = async () => {
+  try {
+    const { data } = await api.get("/orders/:courierId");
+    return data;
+  } catch (error) {
+    console.error("Error getting orders:", error);
     throw error;
   }
 };

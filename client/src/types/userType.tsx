@@ -1,3 +1,5 @@
+import { Location } from "./restaurantTypes";
+
 export interface IUser {
   _id?: string;
   email: string;
@@ -7,6 +9,7 @@ export interface IUser {
   password: string;
   role?: "courier" | "restaurant_owner";
   createdAt?: string;
+  location: Location;
   updatedAt?: string;
 }
 
