@@ -11,7 +11,6 @@ const AvailableOrders = () => {
   console.log(data);
   if (isLoading) return <div>טוען ...</div>;
   if (isError) return <div>שגיאה בטעינה </div>;
-  if (!data) return <div>No data available</div>;
 
   return (
     <div>
