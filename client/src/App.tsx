@@ -17,7 +17,6 @@ const App: React.FC = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/restaurant/:id" element={<DetailPage />} />
-        <Route path="/courier-page" element={<CourierPage />} />
         <Route path="/courier" element={<CourierPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
