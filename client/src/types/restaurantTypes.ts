@@ -41,7 +41,7 @@ export interface IMenuItem {
   createdAt?: string;
   updatedAt?: string;
 }
-}
+
 
 export interface IRestaurantForm {
   name: string;
