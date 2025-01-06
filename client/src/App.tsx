@@ -3,6 +3,7 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import NotFound from "./pages/NotFound";
 import LandingPage from "./pages/LandingPage/LandingPage";
 import HomePage from "./pages/HomePage/HomePage";
+import DetailPage from "./pages/DetailPage/DetailPage";
 import EditRestaurant from "./pages/EditRestaurant/EditRestaurant";
 import CourierPage from "./pages/CourierPage/CourierPage";
 
@@ -15,6 +16,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<HomePage />} />
+        <Route path="/restaurant/:id" element={<DetailPage />} />
         <Route path="/courier-page" element={<CourierPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

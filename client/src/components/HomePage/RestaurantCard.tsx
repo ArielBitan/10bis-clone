@@ -1,13 +1,23 @@
 import { IRestaurant } from "@/types/restaurantTypes";
 import { FaStar } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
 interface RestaurantCardProps {
   item: IRestaurant;
 }
 
 const RestaurantCard: React.FC<RestaurantCardProps> = ({ item }) => {
+  const navigate = useNavigate();
+  const navigateToDetails = (id: string) => {
+    navigate(`/restaurant/${id}`);
+  };
   return (
-    <div className=" max-w-[325px] mb-2 border shadow-lg">
+    <div
+      onClick={() => {
+        navigateToDetails(item._id);
+      }}
+      className=" max-w-[325px] mb-2 border shadow-lg"
+    >
       <img
         src={item.background_image}
         alt="background_image"
