@@ -51,15 +51,19 @@ const ActiveOrder: React.FC<IActiveOrderProps> = ({ activeOrder }) => {
                 <div className="flex items-center gap-2">
                   <MapPin className="h-5 w-5 text-gray-500" />
                   <div>
-                    <p className="font-medium">{activeOrder.restaurant_id}</p>
+                    <p className="font-medium">
+                      {activeOrder.restaurant_id._id}
+                    </p>
                     <p className="text-sm text-gray-500">
-                      {activeOrder.restaurant_id}
+                      {activeOrder.restaurant_id._id}
                     </p>
                   </div>
                 </div>
                 <button className="flex items-center gap-2 text-blue-500">
                   <Phone className="h-4 w-4" />
-                  <span className="text-sm">{activeOrder.restaurant_id}</span>
+                  <span className="text-sm">
+                    {activeOrder.restaurant_id._id}
+                  </span>
                 </button>
               </div>
 

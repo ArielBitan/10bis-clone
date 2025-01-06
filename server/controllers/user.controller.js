@@ -5,6 +5,7 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const { token, user } = await userService.login(email, password);
+    console.log(user);
     res
       .cookie("jwt", token, {
         httpOnly: false,
@@ -13,7 +14,7 @@ exports.login = async (req, res) => {
         maxAge: 3600000,
       })
       .status(200)
-      .json({ user });
+      .json(user);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

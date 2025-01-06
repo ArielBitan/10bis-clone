@@ -15,7 +15,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<HomePage />} />
-        <Route path="/courier-page" element={<CourierPage />} />
+        <Route path="/courier" element={<CourierPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
 

@@ -1,3 +1,4 @@
+import { IRestaurant } from "./restaurantTypes";
 import { IUser } from "./userType";
 
 interface IMenuItem {
