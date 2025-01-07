@@ -7,7 +7,7 @@ import RestaurantOwnerDashboard from "@/components/HomePage/RestaurantOwnerDashb
 import { useEffect } from "react";
 
 const HomePage = () => {
-  const { user,fetchUser } = useUser();
+  const { user, fetchUser } = useUser();
   useEffect(() => {
     fetchUser();
   }, []);
@@ -19,7 +19,7 @@ const HomePage = () => {
     role === "restaurant_owner" ? (
       <div className="bg-gray-100">
         <Navbar />
-        {/* <RestaurantOwnerDashboard/> */}
+        {/* <RestaurantOwnerDashboard /> */}
         <div className="grid gap-4 mx-60 "></div>
       </div>
     ) : (
