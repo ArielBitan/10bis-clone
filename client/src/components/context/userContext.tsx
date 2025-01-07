@@ -7,12 +7,12 @@ import React, {
 } from "react";
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
-import { IUser } from "@/types/userType";
+import { IRestaurantOwnerForm, IUser } from "@/types/userType";
 
 interface UserContextType {
-  user: IUser | null;
+  user: IUser | IRestaurantOwnerForm | null;
   fetchUser: () => void;
-  setUser: (user: IUser | null) => void;
+  setUser: (user: IUser | IRestaurantOwnerForm | null) => void;
   logout: () => void;
 }
 
@@ -23,7 +23,7 @@ interface UserProviderProps {
 }
 
 export const UserProvider = ({ children }: UserProviderProps) => {
-  const [user, setUser] = useState<IUser | null>(null);
+  const [user, setUser] = useState<IUser | IRestaurantOwnerForm | null>(null);
 
   useEffect(() => {
     fetchUser();
@@ -33,7 +33,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     const token = Cookies.get("jwt");
     if (token) {
       try {
-        const decodedToken = jwtDecode<IUser>(token);
+        const decodedToken = jwtDecode<IUser | IRestaurantOwnerForm>(token);
         setUser(decodedToken);
       } catch (error) {
         console.error("Invalid token", error);

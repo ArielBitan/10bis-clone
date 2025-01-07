@@ -11,7 +11,7 @@ const HomePage = () => {
   return (
     <div className="bg-gray-100">
       <Navbar />
-      <div className="grid mx-60 gap-4  ">
+      <div className="grid gap-4 mx-60 ">
         <HeroSection />
         <CategoriesSection />
         <AllRestaurants />

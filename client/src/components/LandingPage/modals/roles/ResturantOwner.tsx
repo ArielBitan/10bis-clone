@@ -108,8 +108,7 @@ const RestaurantRegister = ({ toggleRole }: RestaurantRegisterProps) => {
       try {
         const userWithRestaurantId = {
           ...userFields,
-          restaurantId: createdRestaurant._id,
-          role: "restaurant_owner",
+          owned_restaurants: [createdRestaurant._id],
         };
         setSucsessMessage(null);
 
@@ -122,6 +121,7 @@ const RestaurantRegister = ({ toggleRole }: RestaurantRegisterProps) => {
           toggleRole();
         }, 1500);
       } catch (userCreationError) {
+        if (!createdRestaurant._id) return;
         await deleteRestaurant(createdRestaurant._id);
         console.error("שגיאה ביצירת המשתמש, המסעדה נמחקה", userCreationError);
         setErrorMessage("המשתמש קיים במערכת");

@@ -4,13 +4,11 @@ export interface WeeklyHour {
 }
 
 export interface Location {
-  type: "Point";
-  coordinates: [number, number];
   address?: string;
 }
 
 export interface IRestaurant {
-  _id: string;
+  _id?: string;
   name: string;
   description?: string;
   cuisine_types: string[];

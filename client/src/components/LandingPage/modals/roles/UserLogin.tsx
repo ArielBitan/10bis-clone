@@ -7,7 +7,12 @@ import { loginUser } from "@/services/userService";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@/components/context/userContext";
 
-const UserLogin = ({ toggleRole }: { toggleRole: () => void }) => {
+interface UserLoginProps {
+  toggleRole: () => void;
+  setDialogOpen: (value: boolean) => void;
+}
+
+const UserLogin: React.FC<UserLoginProps> = ({ toggleRole, setDialogOpen }) => {
   const navigate = useNavigate();
   const { user, setUser } = useUser();
   const [showPassword, setShowPassword] = useState(true);
@@ -46,7 +51,9 @@ const UserLogin = ({ toggleRole }: { toggleRole: () => void }) => {
       setUser(userData.user);
       console.log(user);
       clearFields();
-      navigate("/home");
+      setDialogOpen(false);
+      navigate("/home", { state: { refresh: true } });
+      window.location.reload();
     } catch (error: unknown) {
       if (error instanceof Error && error.message.includes("400")) {
         setErrors({

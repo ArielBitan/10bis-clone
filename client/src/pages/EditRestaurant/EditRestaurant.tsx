@@ -1,133 +1,366 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-
-interface Location {
-  city: string;
-  address: string;
-}
-
-interface WeeklyHours {
-  day: string;
-  time_ranges: string;
-}
-
-interface UserFormData {
-  name: string;
-  description?: string;
-  cuisine_types: string[];
-  image?: string;
-  background_image?: string;
-  location: Location;
-  min_order?: string;
-  delivery_fee?: string;
-  delivery_time?: string;
-  phone: string;
-  is_kosher: boolean;
-  weekly_hours: WeeklyHours[];
-}
+import { useUser } from "@/components/context/userContext";
+import { IRestaurant } from "@/types/restaurantTypes";
+import { categories } from "../../../data/categories.json";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import updateRestaurant from "@/pages/EditRestaurant/EditRestaurant";
 
 const EditRestaurant: React.FC = () => {
-  const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useUser();
+  console.log(user);
 
-  const [formData, setFormData] = useState<UserFormData>({
-    name: "",
-    description: "",
-    cuisine_types: [],
-    image: "",
-    background_image: "",
-    location: { city: "", address: "" },
-    min_order: "",
-    delivery_fee: "",
-    delivery_time: "",
-    phone: "",
-    is_kosher: false,
-    weekly_hours: [{ day: "", time_ranges: "" }],
+  let restaurant: IRestaurant | undefined;
+  if (
+    user &&
+    "owned_restaurants" in user &&
+    Array.isArray(user.owned_restaurants)
+  ) {
+    restaurant = user.owned_restaurants[0];
+  } else {
+    console.log("No restaurant ID found");
+  }
+  const closeModal = () => {
+    navigate(-1);
+  };
+  const [formData, setFormData] = useState<IRestaurant>({
+    name: restaurant?.name || "",
+    description: restaurant?.description || "",
+    cuisine_types: restaurant?.cuisine_types || [],
+    image: restaurant?.image || "",
+    background_image: restaurant?.background_image || "",
+    min_order: restaurant?.min_order || "",
+    delivery_fee: restaurant?.delivery_fee || "",
+    delivery_time: restaurant?.delivery_time || "",
+    phone: restaurant?.phone || "",
+    is_kosher: restaurant?.is_kosher ?? false,
+    location: restaurant?.location || { address: "" },
+    weekly_hours: restaurant?.weekly_hours || [{ day: "", time_ranges: "" }],
   });
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+  const toggleDropdown = () => {
+    setDropdownOpen((prev) => !prev);
   };
 
-  const handleWeeklyHoursChange = (index: number, field: string, value: string) => {
-    const updatedHours = [...formData.weekly_hours];
-    updatedHours[index][field as keyof WeeklyHours] = value;
-    setFormData((prev) => ({ ...prev, weekly_hours: updatedHours }));
+  const handleCheckboxChange = (category: string) => {
+    setFormData((prev) => {
+      const isSelected = prev.cuisine_types.includes(category);
+      const updatedCuisineTypes = isSelected
+        ? prev.cuisine_types.filter((type) => type !== category)
+        : [...prev.cuisine_types, category];
+
+      return {
+        ...prev,
+        cuisine_types: updatedCuisineTypes,
+      };
+    });
+  };
+
+  const handleWeeklyHoursChange = (
+    day: string,
+    type: string,
+    value: string
+  ) => {
+    setFormData((prev) => {
+      const updatedWeeklyHours = prev.weekly_hours?.map((entry) => {
+        if (entry.day === day) {
+          const updatedTimeRanges = entry.time_ranges
+            .split(", ")
+            .map((timeRange) => {
+              if (type === "open") {
+                return `${value} - ${timeRange.split(" - ")[1]}`;
+              }
+              if (type === "close") {
+                return `${timeRange.split(" - ")[0]} - ${value}`;
+              }
+              return timeRange;
+            });
+
+          return { ...entry, time_ranges: updatedTimeRanges.join(", ") };
+        }
+        return entry;
+      });
+
+      return { ...prev, weekly_hours: updatedWeeklyHours };
+    });
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value, type } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]:
+        type === "checkbox" && e.target instanceof HTMLInputElement
+          ? e.target.checked
+          : value,
+    }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form Data:", formData);
-    // Add save logic here
-  };
+    console.log(formData);
 
+    if (!restaurant || !restaurant._id) {
+      console.log("No restaurant ID found. Cannot submit form.");
+      return;
+    }
+
+    const validRestaurant = restaurant!; 
+
+    updateRestaurant(validRestaurant._id, formData)
+      .then(() => {
+        console.log("Restaurant updated successfully");
+        navigate("/");
+      })
+      .catch((err) => console.error("Error updating restaurant:", err));
+  };
   return (
     <div>
-      <h1 className="mb-4 text-2xl font-bold">Edit Restaurant</h1>
-      <div className="flex flex-col gap-4 overflow-y-auto max-h-[80vh]">
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Name"
-            required
-          />
-          <Textarea
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            placeholder="Description"
-          />
-          <Input
-            type="text"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            placeholder="Phone"
-            required
-          />
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              checked={formData.is_kosher}
-              onCheckedChange={(checked) =>
-                setFormData((prev) => ({ ...prev, is_kosher: Boolean(checked) }))
-              }
-            />
-            <label>Is Kosher</label>
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+        onClick={closeModal}
+      >
+        <div
+          className="w-[70%] h-[85%] sm:max-w-[700px] overflow-auto dialog-slide w-full p-10 text-3xl text-center text-white bg-orangePrimary relative rounded-md"
+          style={{
+            direction: "ltr",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div
+            onClick={closeModal}
+            className="absolute rounded-sm cursor-pointer left-4 top-4 opacity-70 hover:opacity-100 focus:outline-none"
+          >
+            ✖
           </div>
-          {/* Weekly Hours */}
-          {formData.weekly_hours.map((hour, index) => (
-            <div key={index} className="space-y-2">
+          <div className="w-full p-2 text-3xl text-center text-white ">
+            עריכת מסעדה
+          </div>{" "}
+          <div className="flex flex-col gap-4 ">
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-4 text-black"
+              style={{ direction: "rtl" }}
+            >
               <Input
                 type="text"
-                value={hour.day}
-                onChange={(e) => handleWeeklyHoursChange(index, "day", e.target.value)}
-                placeholder="Day"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="שם המסעדה"
                 required
+              />
+              <Textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                placeholder="תיאור המסעדה"
+              />
+
+              <div className="relative width-[80%]">
+                <div
+                  onClick={toggleDropdown}
+                  className="px-4 py-2 text-base bg-white rounded-md cursor-pointer hover:bg-slate-200"
+                >
+                  בחר קטגוריות
+                </div>
+
+                {dropdownOpen && (
+                  <div className="absolute z-10 w-56 mt-2 bg-white border border-gray-300 rounded-md shadow-lg">
+                    <ul className="p-2 overflow-y-auto max-h-48">
+                      {categories.map((category) => (
+                        <li
+                          key={category.id}
+                          className="flex items-center space-x-2"
+                        >
+                          <input
+                            type="checkbox"
+                            id={`category-${category.id}`}
+                            checked={formData.cuisine_types.includes(
+                              category.name
+                            )}
+                            onChange={() => handleCheckboxChange(category.name)}
+                            className="form-checkbox"
+                          />
+                          <label
+                            htmlFor={`category-${category.id}`}
+                            className="text-sm"
+                          >
+                            {category.name}
+                          </label>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+              <Drawer>
+                <DrawerTrigger asChild>
+                  <div className="px-4 py-2 text-lg bg-white rounded-md cursor-pointer hover:bg-slate-200">
+                    שעות פעילות
+                  </div>
+                </DrawerTrigger>
+                <DrawerContent>
+                  <div className="w-full max-w-sm mx-auto ">
+                    <DrawerHeader>
+                      <DrawerTitle>
+                        <h1 className="text-center">שעות פעילות</h1>
+                      </DrawerTitle>
+                      <DrawerDescription>
+                        <h2 className="text-center">
+                          הגדר שעות פתיחה וסגירה לכל יום בשבוע.
+                        </h2>
+                      </DrawerDescription>
+                    </DrawerHeader>
+                    <form className="p-4 pb-0 space-y-4 text-right">
+                      <ul className="space-y-3">
+                        {[
+                          "ראשון",
+                          "שני",
+                          "שלישי",
+                          "רביעי",
+                          "חמישי",
+                          "שישי",
+                          "שבת",
+                        ].map((day) => (
+                          <li key={day} className="flex flex-col space-y-2">
+                            <span className="font-medium">{day}</span>
+                            <div className="flex space-x-2">
+                              <input
+                                type="time"
+                                onChange={(e) =>
+                                  handleWeeklyHoursChange(
+                                    day,
+                                    "open",
+                                    e.target.value.replace(":", "")
+                                  )
+                                }
+                                className="w-1/2 px-3 py-2 border border-gray-300 rounded-md"
+                                placeholder="שעת פתיחה"
+                              />
+                              <input
+                                type="time"
+                                onChange={(e) =>
+                                  handleWeeklyHoursChange(
+                                    day,
+                                    "close",
+                                    e.target.value.replace(":", "")
+                                  )
+                                }
+                                className="w-1/2 px-3 py-2 border border-gray-300 rounded-md"
+                                placeholder="שעת סגירה"
+                              />
+                            </div>
+                          </li>
+                        ))}
+                      </ul>{" "}
+                    </form>
+                    <DrawerFooter className="mt-4">
+                      <Button type="submit">שמור</Button>
+                      <DrawerClose asChild>
+                        <Button variant="outline">סגור</Button>
+                      </DrawerClose>
+                    </DrawerFooter>
+                  </div>
+                </DrawerContent>
+              </Drawer>
+              <Input
+                type="text"
+                name="address"
+                value={formData?.location?.address}
+                onChange={handleChange}
+                placeholder="כתובת"
+                required
+              />
+
+              <Input
+                type="text"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="טלפון"
+                required
+              />
+
+              <Input
+                type="text"
+                name="image"
+                value={formData.image}
+                onChange={handleChange}
+                placeholder="כתובת תמונה"
               />
               <Input
                 type="text"
-                value={hour.time_ranges}
-                onChange={(e) => handleWeeklyHoursChange(index, "time_ranges", e.target.value)}
-                placeholder="Time Ranges"
-                required
+                name="background_image"
+                value={formData.background_image}
+                onChange={handleChange}
+                placeholder="כתובת תמונת רקע"
               />
-            </div>
-          ))}
-          <Button type="submit" className="w-full">
-            Save
-          </Button>
-        </form>
+              <Input
+                type="number"
+                name="min_order"
+                value={formData.min_order}
+                onChange={handleChange}
+                placeholder="מינימום להזמנה"
+              />
+              <Input
+                type="number"
+                name="delivery_fee"
+                value={formData.delivery_fee}
+                onChange={handleChange}
+                placeholder="עלות משלוח"
+              />
+              <Input
+                type="number"
+                name="delivery_time"
+                value={formData.delivery_time}
+                onChange={handleChange}
+                placeholder="זמן משלוח (דקות)"
+              />
+              <div className="flex flex-col space-y-2">
+                <select
+                  name="is_kosher"
+                  id="is_kosher"
+                  value={formData.is_kosher ? "kosher" : "non-kosher"}
+                  onChange={(e) => {
+                    const value = e.target.value === "kosher";
+                    setFormData((prev) => ({
+                      ...prev,
+                      is_kosher: value,
+                    }));
+                  }}
+                  className="text-base"
+                >
+                  <option value="kosher">כשר</option>
+                  <option value="non-kosher">לא כשר</option>
+                </select>
+              </div>
+              <Button type="submit" className="w-full">
+                המשך
+              </Button>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   );

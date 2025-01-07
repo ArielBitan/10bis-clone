@@ -6,19 +6,26 @@ import { Button } from "@/components/ui/button";
 
 interface LogInModalProps {
   rolee: "login" | "signup";
+  isHomePage?: boolean;
 }
 
-const LogInModal = ({ rolee }: LogInModalProps) => {
+const LogInModal = ({ rolee, isHomePage }: LogInModalProps) => {
   const [role, setRole] = useState<"login" | "signup">(rolee);
+  const [isDialogOpen, setDialogOpen] = useState(false);
 
   const toggleRole = () => {
     setRole((prevRole) => (prevRole === "login" ? "signup" : "login"));
   };
-
   return (
-    <Dialog>
-      <DialogTrigger asChild className="hover:cursor-pointer">
-        {rolee === "signup" ? (
+    <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
+      <DialogTrigger
+        asChild
+        className="hover:cursor-pointer"
+        onClick={() => setDialogOpen(true)}
+      >
+        {isHomePage ? (
+          <div>כניסה</div>
+        ) : rolee === "signup" ? (
           <Button className="w-[100%] max-w-[700px] text-3xl my-10 p-7 md:text-3xl lg:text-4xl">
             לפרטים נוספים
           </Button>
@@ -35,7 +42,7 @@ const LogInModal = ({ rolee }: LogInModalProps) => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[700px] dialog-slide w-full p-10 text-3xl text-center text-white bg-orangePrimary">
         {role === "login" ? (
-          <UserLogin toggleRole={toggleRole} />
+          <UserLogin toggleRole={toggleRole} setDialogOpen={setDialogOpen} />
         ) : (
           <UserRegister toggleRole={toggleRole} />
         )}
