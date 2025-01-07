@@ -11,13 +11,12 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
-      <Routes>
+      <Routes location={state?.backgroundLocation || location}>
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
 
-      {/* modal */}
       {state?.backgroundLocation && (
         <Routes>
           <Route path="/edit-restaurant" element={<EditRestaurant />} />

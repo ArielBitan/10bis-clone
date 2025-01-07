@@ -1,3 +1,5 @@
+import { IRestaurantForm } from "./restaurantTypes";
+
 export interface IUser {
   _id?: string;
   email: string;
@@ -11,6 +13,12 @@ export interface IUser {
 }
 
 export interface IRestaurantOwnerForm extends IUser {
-  restaurantId: string;
+  owned_restaurants: string|IRestaurantForm;
   role: "restaurant_owner";
 }
+
+export const isRestaurantOwner = (
+  user: IUser | IRestaurantOwnerForm
+): user is IRestaurantOwnerForm => {
+  return (user as IRestaurantOwnerForm).owned_restaurants !== undefined;
+};
