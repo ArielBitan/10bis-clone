@@ -25,7 +25,10 @@ const InfoRestaurant: React.FC<InfoRestaurantProps> = ({ item }) => {
         <div>
           <h2 className="font-bold mb-4">שעות פעילות</h2>
           {item.weekly_hours?.map((day) => (
-            <ul className="flex justify-between text-base font-bold mx-4 ">
+            <ul
+              key={item._id}
+              className="flex justify-between text-base font-bold mx-4 "
+            >
               <li className="list-none">
                 {day.time_ranges.split(",").reverse().join(" , ")}
               </li>

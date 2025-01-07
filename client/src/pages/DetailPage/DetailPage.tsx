@@ -1,11 +1,10 @@
+import { useState, useEffect } from "react";
 import InfoRestaurant from "@/components/DetailPage/InfoRestaurant";
-// import RestaurantCard from "@/components/HomePage/RestaurantCard";
 import MenuCard from "@/components/MenuCard/MenuCard";
 import Navbar from "@/components/layout/Navbar";
 import { Input } from "@/components/ui/input";
 import { fetchRestaurantById } from "@/services/restaurantService";
 import { useQuery } from "@tanstack/react-query";
-// import { log } from "console";
 import { FaStar } from "react-icons/fa6";
 import { FiSearch } from "react-icons/fi";
 import { useParams } from "react-router-dom";
@@ -17,17 +16,38 @@ const DetailPage = () => {
     queryKey: ["restaurant"],
     queryFn: () => fetchRestaurantById(id),
   });
-  console.log(data);
+
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
+  useEffect(() => {
+    if (data) {
+      const defaultCategory = "מנות פופולריות";
+      if (data.menuItems.some((item) => item.category === defaultCategory)) {
+        setSelectedCategory(defaultCategory);
+      }
+    }
+  }, [data]);
 
   if (isLoading) return <div>Loading ...</div>;
   if (isError) return <div>Error loading </div>;
   if (!data) return <div>No data available</div>;
 
+  const uniqueCategories = data.menuItems.reduce((categories, item) => {
+    if (item.category && !categories.includes(item.category)) {
+      categories.push(item.category);
+    }
+    return categories;
+  }, []);
+
+  const searchedMenuItems = data.menuItems.filter((item) =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
-    <div className=" relative">
+    <div className="relative">
       <Navbar />
-      {/* <div className="grid mx-60 gap-4  "></div> */}
-      <div className="relative ">
+      <div className="relative">
         <img
           src={data.background_image}
           alt="background_image"
@@ -47,8 +67,7 @@ const DetailPage = () => {
           />
         </div>
       </div>
-      <div className="px-4 ">
-        <div className="mb-2"></div>
+      <div className="px-4">
         <div className="flex gap-1 datas-center text-sm ">
           <div className="flex datas-center gap-1">
             <FaStar className="text-yellow-500 mb-1" />
@@ -72,21 +91,47 @@ const DetailPage = () => {
         )}
         <InfoRestaurant item={data} />
         <div className="flex items-center mt-4">
-          <div className="border  bg-gray-100 flex items-center gap-2 px-2 w-[95%] h-12  border-gray-300 hover:border-gray-500 rounded-3xl">
+          <div className="border bg-gray-100 flex items-center gap-2 px-2 w-[95%] h-12 border-gray-300 hover:border-gray-500 rounded-3xl">
             <FiSearch className="hover:cursor-pointer text-backgroundOrange " />
             <Input
               type="text"
               placeholder={`חיפוש ב${data.name}`}
-              className="border-none h-4 text-sm  bg-gray-100 "
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="border-none h-4 text-sm bg-gray-100"
             />
           </div>
         </div>
       </div>
-      <div className="w-full">categoties</div>
-      <div>
-        {data.menuItems.map((item) => (
-          <MenuCard key={item._id} item={item} />
+
+      <div className="flex gap-4 overflow-x-auto categories-scroll mt-4">
+        {uniqueCategories.map((category) => (
+          <div
+            key={category}
+            onClick={() => setSelectedCategory(category)}
+            className={`text-sm px-3 py-1 whitespace-nowrap cursor-pointer ${
+              selectedCategory === category
+                ? "border-b-2 border-backgroundOrange font-bold"
+                : ""
+            }`}
+          >
+            {category}
+          </div>
         ))}
+      </div>
+
+      <div>
+        {searchedMenuItems.length > 0 ? (
+          searchedMenuItems.map((item) => (
+            <MenuCard key={item._id} item={item} />
+          ))
+        ) : (
+          <div className="font-bold">
+            {searchQuery
+              ? `לא נמצאו תוצאות עבור "${searchQuery}"`
+              : "לא נמצאו תוצאות עבור"}
+          </div>
+        )}
       </div>
     </div>
   );
