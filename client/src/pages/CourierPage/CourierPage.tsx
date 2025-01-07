@@ -3,21 +3,23 @@ import ActiveOrder from "@/components/CourierPage/ActiveOrder";
 import AvailableOrders from "@/components/CourierPage/AvailableOrders";
 import { useEffect, useState } from "react";
 import { useUser } from "@/components/context/userContext";
+import { fetchUserProfile } from "@/services/userService";
 
 const CourierPage = () => {
-  const { user, fetchUser } = useUser();
+  const { user, setUser } = useUser();
   const [isDelivering, setIsDelivering] = useState<Boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      await fetchUser();
+      const updatedUser = await fetchUserProfile();
+      setUser(updatedUser);
       setIsDelivering(user?.isDelivering || false);
       setIsLoading(false);
     };
 
     fetchData();
-  }, [user?.isDelivering]);
+  }, []);
 
   if (isLoading) {
     return <div>Loading...</div>;

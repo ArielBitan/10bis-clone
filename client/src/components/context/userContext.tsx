@@ -29,6 +29,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     fetchUser();
   }, []);
 
+  console.log(user);
   const fetchUser = () => {
     const token = Cookies.get("jwt");
     if (token) {

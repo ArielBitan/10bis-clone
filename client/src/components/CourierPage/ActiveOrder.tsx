@@ -49,7 +49,9 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
       {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ["activeOrder"] });
-          setIsDelivering(false);
+          if (newStatus === "Delivered") {
+            setIsDelivering(false);
+          }
         },
         onError: (error) => {
           console.error("Failed to update order status:", error);

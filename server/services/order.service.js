@@ -98,9 +98,9 @@ exports.updateOrderStatus = async (id, status) => {
     if (!order) {
       throw new Error("Order not found");
     }
-
-    if (status === "Delivered" && order.courier_id) {
-      await User.findOneAndUpdate(
+    console.log(status);
+    if (status === "Delivered") {
+      await Courier.findOneAndUpdate(
         { _id: order.courier_id },
         { isDelivering: false }
       );
