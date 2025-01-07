@@ -2,118 +2,172 @@ import {
   AlertCircle,
   CheckCircle,
   MapPin,
-  Navigation,
-  Package,
   Phone,
+  Package,
   User,
 } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
 import { IOrder } from "@/types/orderTypes";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getAcceptedOrder, updateOrderStatus } from "@/services/orderService";
 
-interface IActiveOrderProps {
-  activeOrder?: IOrder;
-}
+const ActiveOrder = () => {
+  const queryClient = useQueryClient();
 
-const ActiveOrder: React.FC<IActiveOrderProps> = ({ activeOrder }) => {
+  const {
+    data: activeOrder,
+    isLoading,
+    isError,
+  } = useQuery<IOrder | null>({
+    queryKey: ["acceptedOrder"],
+    queryFn: () => getAcceptedOrder(),
+  });
+
+  const mutation = useMutation({
+    mutationFn: async ({
+      orderId,
+      status,
+    }: {
+      orderId: string;
+      status: string;
+    }) => {
+      return await updateOrderStatus(orderId, status);
+    },
+    onSuccess: () => {
+      // Invalidate and refetch queries after successful mutation
+      queryClient.invalidateQueries({ queryKey: ["activeOrder"] });
+    },
+  });
+
+  const handleOrderStatusChange = (newStatus: string) => {
+    if (!activeOrder) return;
+    mutation.mutate(
+      {
+        orderId: activeOrder._id,
+        status: newStatus,
+      },
+      {
+        onError: (error) => {
+          console.error("Failed to update order status:", error);
+        },
+      }
+    );
+  };
+
+  if (isLoading) return <div>Loading ...</div>;
+  if (isError) return <div>Error loading </div>;
+
+  if (!activeOrder) {
+    return (
+      <div className="p-4 flex flex-col items-center justify-center h-[80vh] text-center space-y-4">
+        <Package className="h-16 w-16 text-gray-400" />
+        <h2 className="text-xl font-medium">אין הזמנה נוכחית</h2>
+      </div>
+    );
+  }
+
   return (
     <div className="p-4 space-y-4">
-      {activeOrder ? (
-        <Card>
-          <CardContent className="pt-6">
-            <div className="space-y-6">
-              {/* Order Status */}
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold">
-                  הזמנה נוכחית #{activeOrder._id}
-                </h2>
-                <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
-                  {activeOrder.status === "pickup" ? "Pickup" : "Delivery"}
-                </span>
-              </div>
+      <Card>
+        <CardContent className="pt-6">
+          <div className="space-y-6">
+            {/* Order Status */}
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold">
+                הזמנה נוכחית #{activeOrder._id}
+              </h2>
+              <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
+                {activeOrder.status === "Accepted" ? "איסוף" : "משלוח"}
+              </span>
+            </div>
 
-              {/* Timeline */}
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex flex-col items-center">
-                  <Package className="h-6 w-6 text-green-500" />
-                  <span>פיק-אפ</span>
-                </div>
-                <div className="h-1 flex-1 bg-gray-200 mx-2">
-                  <div className="h-full bg-green-500 w-1/3"></div>
-                </div>
-                <div className="flex flex-col items-center">
-                  <Navigation className="h-6 w-6 text-gray-400" />
-                  <span>משלוח</span>
+            {/* Restaurant Details */}
+            <div className="space-y-2 p-4 bg-gray-50 rounded-lg">
+              <div className="flex items-center gap-2">
+                <MapPin className="h-5 w-5 text-gray-500" />
+                <div>
+                  <p className="font-medium">
+                    {activeOrder.restaurant_id.name}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {activeOrder.restaurant_id.location?.address}
+                  </p>
                 </div>
               </div>
-
-              {/* Restaurant Details */}
-              <div className="space-y-2 p-4 bg-gray-50 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-5 w-5 text-gray-500" />
-                  <div>
-                    <p className="font-medium">
-                      {activeOrder.restaurant_id._id}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {activeOrder.restaurant_id._id}
-                    </p>
-                  </div>
-                </div>
-                <button className="flex items-center gap-2 text-blue-500">
+              {activeOrder.restaurant_id.phone && (
+                <a
+                  href={`tel:${activeOrder.restaurant_id.phone}`}
+                  className="flex items-center gap-2 text-blue-500"
+                >
                   <Phone className="h-4 w-4" />
                   <span className="text-sm">
-                    {activeOrder.restaurant_id._id}
+                    {activeOrder.restaurant_id.phone}
                   </span>
-                </button>
-              </div>
+                </a>
+              )}
+            </div>
 
-              {/* Customer Details */}
-              <div className="space-y-2 p-4 bg-gray-50 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <User className="h-5 w-5 text-gray-500" />
-                  <div>
-                    <p className="font-medium">{activeOrder.user_id._id}</p>
-                    <p className="text-sm text-gray-500">
-                      {activeOrder.user_id.first_name}
-                    </p>
-                  </div>
+            {/* Customer Details */}
+            <div className="space-y-2 p-4 bg-gray-50 rounded-lg">
+              <div className="flex items-center gap-2">
+                <User className="h-5 w-5 text-gray-500" />
+                <div>
+                  <p className="font-medium">
+                    {activeOrder.user_id.first_name}{" "}
+                    {activeOrder.user_id.last_name}
+                  </p>
+                  <a
+                    href={`tel:${activeOrder.user_id.phone}`}
+                    className="text-sm text-blue-500"
+                  >
+                    {activeOrder.user_id.phone}
+                  </a>
                 </div>
-                <button className="flex items-center gap-2 text-blue-500">
-                  <Phone className="h-4 w-4" />
-                  <span className="text-sm">{activeOrder.user_id.phone}</span>
-                </button>
-              </div>
-
-              {/* Order Items */}
-              <div className="space-y-2">
-                <h3 className="font-medium">פריטי הזמנה:</h3>
-                <ul className="text-sm text-gray-600">
-                  {activeOrder.order_items.map((item, index) => (
-                    <li key={index} className="flex items-center gap-2">
-                      <Package className="h-4 w-4" />
-                      {item.name}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="space-y-2">
-                <button className="w-full py-3 bg-green-500 text-white rounded-lg flex items-center justify-center gap-2">
-                  <CheckCircle className="h-5 w-5" />
-                  {activeOrder.status === "pickup" ? "אשר איסוף" : "אשר משלוח"}
-                </button>
-                <button className="w-full py-3 border border-red-500 text-red-500 rounded-lg flex items-center justify-center gap-2">
-                  <AlertCircle className="h-5 w-5" />
-                  דיווח על תקלה
-                </button>
               </div>
             </div>
-          </CardContent>
-        </Card>
-      ) : (
-        <div>אין הזמנה נוכחית </div>
-      )}
+
+            {/* Order Items */}
+            <div className="space-y-2">
+              <h3 className="font-medium">פריטי הזמנה:</h3>
+              <ul className="text-sm text-gray-600">
+                {activeOrder.order_items.map((item) => (
+                  <li key={item._id} className="flex items-center gap-2">
+                    <Package className="h-4 w-4" />
+                    {item.name} - {item.price} ₪
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="space-y-2">
+              {activeOrder.status === "Accepted" ? (
+                <button
+                  onClick={() => handleOrderStatusChange("Picked Up")}
+                  disabled={mutation.isPending}
+                  className="w-full py-3 bg-green-500 text-white rounded-lg flex items-center justify-center gap-2 hover:bg-green-600 disabled:bg-gray-400"
+                >
+                  <CheckCircle className="h-5 w-5" />
+                  {mutation.isPending ? "מעדכן..." : "אשר איסוף"}
+                </button>
+              ) : (
+                <button
+                  onClick={() => handleOrderStatusChange("Delivered")}
+                  disabled={mutation.isPending}
+                  className="w-full py-3 bg-green-500 text-white rounded-lg flex items-center justify-center gap-2 hover:bg-green-600 disabled:bg-gray-400"
+                >
+                  <CheckCircle className="h-5 w-5" />
+                  {mutation.isPending ? "מעדכן..." : "אשר משלוח"}
+                </button>
+              )}
+              <button className="w-full py-3 border border-red-500 text-red-500 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-100">
+                <AlertCircle className="h-5 w-5" />
+                דיווח על תקלה
+              </button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

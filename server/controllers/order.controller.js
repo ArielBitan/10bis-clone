@@ -1,3 +1,4 @@
+const Order = require("../models/order.model");
 const orderService = require("../services/order.service");
 
 exports.createOrder = async (req, res) => {
@@ -30,6 +31,27 @@ exports.getOrderById = async (req, res) => {
   }
 };
 
+exports.acceptOrder = async (req, res) => {
+  try {
+    const { id: orderId } = req.params;
+    const courierId = req.user._id;
+    const order = await orderService.acceptOrder(orderId, courierId);
+    res.status(200).json(order);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+exports.getActiveOrder = async (req, res) => {
+  try {
+    const courierId = req.user._id;
+    const order = await orderService.getActiveOrder(courierId);
+    res.status(200).json(order);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
 exports.getOrdersByStatus = async (req, res) => {
   try {
     const { status } = req.params;
@@ -49,12 +71,12 @@ exports.getOrdersByUser = async (req, res) => {
   }
 };
 
-exports.updateOrder = async (req, res) => {
+exports.updateOrderStatus = async (req, res) => {
   try {
-    const updatedOrder = await orderService.updateOrder(
-      req.params.id,
-      req.body
-    );
+    const { id, status } = req.params;
+    console.log(status);
+
+    const updatedOrder = await orderService.updateOrderStatus(id, status);
     if (!updatedOrder) {
       return res.status(404).json({ message: "Order not found" });
     }

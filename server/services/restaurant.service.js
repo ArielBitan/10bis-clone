@@ -1,7 +1,6 @@
 const Restaurant = require("../models/restaurant.model");
 
 exports.createRestaurant = async (restaurantData) => {
-  console.log(restaurantData);
   return await Restaurant.create(restaurantData);
 };
 

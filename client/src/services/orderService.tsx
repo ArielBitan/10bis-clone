@@ -1,4 +1,3 @@
-import { useUser } from "@/components/context/userContext";
 import api from "@/lib/api";
 import { IOrder } from "@/types/orderTypes";
 
@@ -14,11 +13,19 @@ export const fetchAllOrders = async (): Promise<IOrder[]> => {
 };
 
 export const acceptOrder = async (orderId: string) => {
-  const { user } = useUser();
   try {
-    const { data } = await api.put(`/orders/${orderId}`, {
-      courierId: user?._id,
-    });
+    const { data } = await api.put(`/orders/${orderId}/accept`);
+    return data;
+  } catch (error) {
+    console.error("Error accepting order:", error);
+    throw error;
+  }
+};
+
+export const getAcceptedOrder = async () => {
+  try {
+    const { data } = await api.get(`/orders/courier/active`);
+    console.log(data);
     return data;
   } catch (error) {
     console.error("Error accepting order:", error);
@@ -83,12 +90,12 @@ export const createOrder = async (orderData: IOrder): Promise<IOrder> => {
 };
 
 // Function to update an existing order
-export const updateOrder = async (
+export const updateOrderStatus = async (
   orderId: string,
-  updatedData: Partial<IOrder>
+  status: string
 ): Promise<IOrder> => {
   try {
-    const { data } = await api.put<IOrder>(`/orders/${orderId}`, updatedData);
+    const { data } = await api.put<IOrder>(`/orders/${orderId}/${status}`);
     return data;
   } catch (error) {
     console.error(`Error updating order with ID ${orderId}:`, error);

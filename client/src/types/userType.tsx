@@ -11,6 +11,7 @@ export interface IUser {
   createdAt?: string;
   location: Location;
   updatedAt?: string;
+  isDelivering?: boolean;
 }
 
 export interface IRestaurantOwnerForm extends IUser {

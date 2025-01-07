@@ -54,7 +54,6 @@ const User = mongoose.model("User", baseUserSchema);
 const courierSchema = new mongoose.Schema({
   current_location: { type: locationSchema },
   isDelivering: { type: Boolean, default: false },
-  active_orders: [{ type: mongoose.Schema.Types.ObjectId, ref: "Order" }],
 });
 
 const restaurantOwnerSchema = new mongoose.Schema({

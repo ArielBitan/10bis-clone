@@ -4,12 +4,25 @@ import { useState } from "react";
 
 interface IOrderCardProps {
   order: IOrder;
+  onAcceptOrder: (order: IOrder) => void;
 }
 
-const OrderCard: React.FC<IOrderCardProps> = ({ order }) => {
+const OrderCard: React.FC<IOrderCardProps> = ({ order, onAcceptOrder }) => {
   const [showDetails, setShowDetails] = useState(false);
+  const [isAccepting, setIsAccepting] = useState(false);
   const restaurant = order.restaurant_id;
   const user = order.user_id;
+
+  const handleAcceptOrder = async () => {
+    setIsAccepting(true);
+    try {
+      await onAcceptOrder(order);
+    } catch (error) {
+      console.error("Error accepting order:", error);
+    } finally {
+      setIsAccepting(false);
+    }
+  };
 
   const toggleDetails = () => setShowDetails(!showDetails);
 
@@ -34,12 +47,14 @@ const OrderCard: React.FC<IOrderCardProps> = ({ order }) => {
       {/* Accept Order Button */}
       <div className="mb-4">
         <button
+          onClick={handleAcceptOrder}
+          disabled={isAccepting}
           className="w-full bg-green-500 hover:bg-green-600 disabled:bg-gray-400 
                      text-white py-3 px-4 rounded-lg text-base font-semibold 
                      transition-colors flex items-center justify-center gap-2"
         >
           <CheckCircle size={20} />
-          קבל הזמנה
+          {isAccepting ? "מקבל הזמנה..." : "קבל הזמנה"}
         </button>
       </div>
 

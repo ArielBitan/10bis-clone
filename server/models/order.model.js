@@ -15,7 +15,12 @@ const orderSchema = new mongoose.Schema(
     },
     courier_id: { type: mongoose.Schema.Types.ObjectId, ref: "Courier" },
     order_items: [{ type: mongoose.Schema.Types.ObjectId, ref: "MenuItem" }],
-    status: { type: String, required: true },
+    status: {
+      type: String,
+      enum: ["Pending", "Open", "Accepted", "Picked Up", "Delivered"],
+      required: true,
+      default: "Pending",
+    },
     delivered_at: { type: Date },
     special_instructions: [{ type: String }],
     payment_details: { type: Object, required: true },
@@ -26,6 +31,8 @@ const orderSchema = new mongoose.Schema(
     versionKey: false,
   }
 );
+
+orderSchema.index({ status: 1, courier_id: 1 });
 
 // Calculate total amount before saving
 orderSchema.pre("save", async function (next) {

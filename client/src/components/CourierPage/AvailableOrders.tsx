@@ -1,13 +1,30 @@
-import { fetchOrdersByStatus } from "@/services/orderService";
+import { acceptOrder, fetchOrdersByStatus } from "@/services/orderService";
 import { useQuery } from "@tanstack/react-query";
 import { Package } from "lucide-react";
 import OrderCard from "./OrderCard";
+import { IOrder } from "@/types/orderTypes";
+import { useUser } from "../context/userContext";
 
 const AvailableOrders = () => {
+  const { user } = useUser();
+
   const { data, isLoading, isError } = useQuery({
     queryKey: ["openOrders"],
     queryFn: () => fetchOrdersByStatus("Open"),
   });
+
+  const handleAcceptOrder = async (order: IOrder) => {
+    try {
+      if (!user || !user._id) {
+        console.error("User not found or invalid.");
+        return;
+      }
+      await acceptOrder(order._id);
+    } catch (error) {
+      console.error("Failed to accept order:", error);
+      throw error;
+    }
+  };
 
   if (isLoading) return <div>טוען ...</div>;
   if (isError) return <div>שגיאה בטעינה </div>;
@@ -15,7 +32,13 @@ const AvailableOrders = () => {
   return (
     <div>
       {data ? (
-        data.map((order) => <OrderCard key={order._id} order={order} />)
+        data.map((order) => (
+          <OrderCard
+            key={order._id}
+            order={order}
+            onAcceptOrder={handleAcceptOrder}
+          />
+        ))
       ) : (
         <div className="p-4 flex flex-col items-center justify-center h-[80vh] text-center space-y-4">
           <Package className="h-16 w-16 text-gray-400" />
