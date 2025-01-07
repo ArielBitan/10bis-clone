@@ -8,7 +8,7 @@ import UserMenu from "./UserMenu";
 const Navbar = () => {
   return (
     <>
-      <nav className="sticky top-0 z-50 bg-backgroundOrange text-foreground border-b border-border shadow-sm px-32">
+      <nav className="sticky top-0 z-50 bg-backgroundOrange text-foreground border-b border-border shadow-sm px-6 sm:px-6 md:px-6 lg:px-32">
         <div className="flex justify-between items-center py-3">
           {/* Logo */}
           <Link
@@ -16,7 +16,7 @@ const Navbar = () => {
             className="flex items-center justify-center space-x-1 transition-transform duration-300 hover:scale-110"
           >
             <img
-              className="w-28"
+              className="w-20 sm:w-20 md:w-20 lg:w-28"
               src="https://cdn.10bis.co.il/10bis-spa-static-prod/assets/white-logo-ec59fa.svg"
               alt="website-img"
             />
@@ -30,22 +30,23 @@ const Navbar = () => {
           </div>
         </div>
       </nav>
-      <div className="px-24 shadow-lg mb-4 bg-white">
-        <div className="gap-6 flex px-10 items-center">
-          <button className="border border-gray-300 my-2 px-3 h-8 hover:border-gray-500">
-            <div className="flex items-center gap-1">
-              <MdPlace />
-              <span className="font-bold overflow-hidden whitespace-nowrap text-ellipsis">
-                משלוח ל:
-              </span>
-              <div className="text-right truncate max-w-[150px] overflow-hidden whitespace-nowrap text-ellipsis">
-                החילזון 3 , רמת גן
-              </div>
-              <IoIosArrowDown />
+      <div className="px-6 sm:px-6 md:px-6 lg:px-24 shadow-lg bg-white">
+        <div className="gap-2 flex flex-wrap justify-between items-center sm:px-6 md:px-6 lg:px-10">
+          {/* Delivery button */}
+          <button className="border border-gray-300 my-2 px-3 h-8 hover:border-gray-500 flex items-center gap-1 sm:w-full md:w-full lg:w-auto">
+            <MdPlace />
+            <span className="font-bold overflow-hidden whitespace-nowrap text-ellipsis">
+              משלוח ל:
+            </span>
+            <div className="text-right truncate max-w-[150px] sm:max-w-[150px] md:max-w-[150px] lg:max-w-full overflow-hidden whitespace-nowrap text-ellipsis">
+              החילזון 3 , רמת גן
             </div>
+            <IoIosArrowDown />
           </button>
-          <div className="flex items-center">
-            <div className="border flex items-center gap-2 px-2 h-8  border-gray-300 hover:border-gray-500">
+
+          {/* Search Input */}
+          <div className="flex items-center w-full sm:w-full md:w-full lg:w-auto">
+            <div className="border flex items-center gap-2 px-2 h-8 border-gray-300 hover:border-gray-500 w-full">
               <FiSearch className="hover:cursor-pointer" />
               <Input
                 type="text"
@@ -54,9 +55,11 @@ const Navbar = () => {
               />
             </div>
           </div>
-          <div>
-            <button className="h-8 flex items-center border border-gray-300 hover:border-gray-500 px-2">
-              <div className="p-2"> הזמנה חוזרת</div>
+
+          {/* Reorder button */}
+          <div className="w-full sm:w-full md:w-full lg:w-auto my-4">
+            <button className="h-8 flex items-center border border-gray-300 hover:border-gray-500 px-2 w-full sm:w-full md:w-full lg:w-auto">
+              <div className="p-2 "> הזמנה חוזרת</div>
               <IoIosArrowDown />
             </button>
           </div>
