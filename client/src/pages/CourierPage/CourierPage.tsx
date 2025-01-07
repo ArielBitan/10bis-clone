@@ -6,7 +6,7 @@ import { useUser } from "@/components/context/userContext";
 import { fetchUserProfile } from "@/services/userService";
 
 const CourierPage = () => {
-  const { user, setUser } = useUser();
+  const { setUser } = useUser();
   const [isDelivering, setIsDelivering] = useState<Boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -14,7 +14,7 @@ const CourierPage = () => {
     const fetchData = async () => {
       const updatedUser = await fetchUserProfile();
       setUser(updatedUser);
-      setIsDelivering(user?.isDelivering || false);
+      setIsDelivering(updatedUser?.isDelivering || false);
       setIsLoading(false);
     };
 

@@ -10,6 +10,7 @@ import { Card, CardContent } from "../ui/card";
 import { IOrder } from "@/types/orderTypes";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getActiveOrder, updateOrderStatus } from "@/services/orderService";
+import { useState } from "react";
 
 interface ActiveOrderProps {
   setIsDelivering: React.Dispatch<React.SetStateAction<Boolean>>;
@@ -17,7 +18,7 @@ interface ActiveOrderProps {
 
 const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
   const queryClient = useQueryClient();
-
+  const [status, setStatus] = useState("");
   const {
     data: activeOrder,
     isLoading,
@@ -39,17 +40,18 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
     },
   });
 
-  const handleOrderStatusChange = (newStatus: string) => {
+  const handleOrderStatusChange = () => {
     if (!activeOrder) return;
     mutation.mutate(
       {
         orderId: activeOrder._id,
-        status: newStatus,
+        status,
       },
       {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ["activeOrder"] });
-          if (newStatus === "Delivered") {
+          console.log(status);
+          if (status === "Delivered") {
             setIsDelivering(false);
           }
         },
@@ -149,7 +151,10 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
             <div className="space-y-2">
               {activeOrder.status === "Accepted" ? (
                 <button
-                  onClick={() => handleOrderStatusChange("Picked Up")}
+                  onClick={() => {
+                    setStatus("Picked Up");
+                    handleOrderStatusChange();
+                  }}
                   disabled={mutation.isPending}
                   className="w-full py-3 bg-green-500 text-white rounded-lg flex items-center justify-center gap-2 hover:bg-green-600 disabled:bg-gray-400"
                 >
@@ -159,7 +164,8 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
               ) : (
                 <button
                   onClick={() => {
-                    handleOrderStatusChange("Delivered");
+                    setStatus("Delivered");
+                    handleOrderStatusChange();
                   }}
                   disabled={mutation.isPending}
                   className="w-full py-3 bg-green-500 text-white rounded-lg flex items-center justify-center gap-2 hover:bg-green-600 disabled:bg-gray-400"

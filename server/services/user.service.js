@@ -14,11 +14,6 @@ const userService = {
       throw new Error("Invalid email or password");
     }
 
-    // Check the user's role
-    if (user.role === "restaurant_owner") {
-      await user.populate("owned_restaurants");
-    }
-
     // Compare the password
     if (!user.comparePassword(password)) {
       throw new Error("Invalid email or password");
