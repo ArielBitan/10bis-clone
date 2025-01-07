@@ -5,9 +5,14 @@ import { useState } from "react";
 interface IOrderCardProps {
   order: IOrder;
   onAcceptOrder: (order: IOrder) => void;
+  setIsDelivering: React.Dispatch<React.SetStateAction<Boolean>>;
 }
 
-const OrderCard: React.FC<IOrderCardProps> = ({ order, onAcceptOrder }) => {
+const OrderCard: React.FC<IOrderCardProps> = ({
+  order,
+  onAcceptOrder,
+  setIsDelivering,
+}) => {
   const [showDetails, setShowDetails] = useState(false);
   const [isAccepting, setIsAccepting] = useState(false);
   const restaurant = order.restaurant_id;
@@ -16,6 +21,7 @@ const OrderCard: React.FC<IOrderCardProps> = ({ order, onAcceptOrder }) => {
   const handleAcceptOrder = async () => {
     setIsAccepting(true);
     try {
+      setIsDelivering(true);
       await onAcceptOrder(order);
     } catch (error) {
       console.error("Error accepting order:", error);
@@ -26,21 +32,21 @@ const OrderCard: React.FC<IOrderCardProps> = ({ order, onAcceptOrder }) => {
 
   const toggleDetails = () => setShowDetails(!showDetails);
 
-  const openInWaze = () => {
-    if (restaurant.location?.coordinates && user.location?.coordinates) {
-      const destination = `${user.location.coordinates[0]},${user.location.coordinates[1]}`;
-      window.open(
-        `https://www.waze.com/ul?ll=${destination}&navigate=yes`,
-        "_blank"
-      );
-    } else {
-      const destination = encodeURIComponent(user.location?.address || "");
-      window.open(
-        `https://www.waze.com/ul?q=${destination}&navigate=yes`,
-        "_blank"
-      );
-    }
-  };
+  // const openInWaze = () => {
+  //   if (restaurant.location?.coordinates && user.location?.coordinates) {
+  //     const destination = `${user.location.coordinates[0]},${user.location.coordinates[1]}`;
+  //     window.open(
+  //       `https://www.waze.com/ul?ll=${destination}&navigate=yes`,
+  //       "_blank"
+  //     );
+  //   } else {
+  //     const destination = encodeURIComponent(user.location?.address || "");
+  //     window.open(
+  //       `https://www.waze.com/ul?q=${destination}&navigate=yes`,
+  //       "_blank"
+  //     );
+  //   }
+  // };
 
   return (
     <div className="bg-white shadow-md rounded-lg m-2 p-4 max-w-sm mx-auto">
@@ -99,7 +105,7 @@ const OrderCard: React.FC<IOrderCardProps> = ({ order, onAcceptOrder }) => {
         )}
         <div className="flex gap-2">
           <button
-            onClick={openInWaze}
+            // onClick={openInWaze}
             className="flex items-center justify-center gap-2 flex-1 bg-green-500 hover:bg-blue-600 text-white py-2 px-4 rounded-full text-sm font-semibold transition-colors"
           >
             <Navigation size={16} />

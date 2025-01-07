@@ -74,7 +74,6 @@ exports.getOrdersByUser = async (req, res) => {
 exports.updateOrderStatus = async (req, res) => {
   try {
     const { id, status } = req.params;
-    console.log(status);
 
     const updatedOrder = await orderService.updateOrderStatus(id, status);
     if (!updatedOrder) {

@@ -32,6 +32,7 @@ const userService = {
         last_name: user.last_name,
         role: user.role,
         isDelivering: user.isDelivering,
+        owned_restaurants: user.owned_restaurants,
       },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }

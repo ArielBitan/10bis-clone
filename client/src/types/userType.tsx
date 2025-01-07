@@ -16,13 +16,13 @@ export interface IUser {
   isDelivering?: boolean;
 }
 
-export interface IRestaurantOwnerForm extends IUser {
-  owned_restaurants: string|IRestaurantForm;
+export interface IRestaurantOwner extends IUser {
+  owned_restaurants: [string];
   role: "restaurant_owner";
 }
 
 export const isRestaurantOwner = (
-  user: IUser | IRestaurantOwnerForm
-): user is IRestaurantOwnerForm => {
-  return (user as IRestaurantOwnerForm).owned_restaurants !== undefined;
+  user: IUser | IRestaurantOwner
+): user is IRestaurantOwner => {
+  return (user as IRestaurantOwner).owned_restaurants !== undefined;
 };

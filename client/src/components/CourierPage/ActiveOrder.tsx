@@ -9,9 +9,13 @@ import {
 import { Card, CardContent } from "../ui/card";
 import { IOrder } from "@/types/orderTypes";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getAcceptedOrder, updateOrderStatus } from "@/services/orderService";
+import { getActiveOrder, updateOrderStatus } from "@/services/orderService";
 
-const ActiveOrder = () => {
+interface ActiveOrderProps {
+  setIsDelivering: React.Dispatch<React.SetStateAction<Boolean>>;
+}
+
+const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
   const queryClient = useQueryClient();
 
   const {
@@ -19,8 +23,8 @@ const ActiveOrder = () => {
     isLoading,
     isError,
   } = useQuery<IOrder | null>({
-    queryKey: ["acceptedOrder"],
-    queryFn: () => getAcceptedOrder(),
+    queryKey: ["activeOrder"],
+    queryFn: () => getActiveOrder(),
   });
 
   const mutation = useMutation({
@@ -33,10 +37,6 @@ const ActiveOrder = () => {
     }) => {
       return await updateOrderStatus(orderId, status);
     },
-    onSuccess: () => {
-      // Invalidate and refetch queries after successful mutation
-      queryClient.invalidateQueries({ queryKey: ["activeOrder"] });
-    },
   });
 
   const handleOrderStatusChange = (newStatus: string) => {
@@ -47,6 +47,10 @@ const ActiveOrder = () => {
         status: newStatus,
       },
       {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["activeOrder"] });
+          setIsDelivering(false);
+        },
         onError: (error) => {
           console.error("Failed to update order status:", error);
         },
@@ -152,7 +156,9 @@ const ActiveOrder = () => {
                 </button>
               ) : (
                 <button
-                  onClick={() => handleOrderStatusChange("Delivered")}
+                  onClick={() => {
+                    handleOrderStatusChange("Delivered");
+                  }}
                   disabled={mutation.isPending}
                   className="w-full py-3 bg-green-500 text-white rounded-lg flex items-center justify-center gap-2 hover:bg-green-600 disabled:bg-gray-400"
                 >
