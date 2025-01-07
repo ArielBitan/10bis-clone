@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,39 +17,84 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import updateRestaurant from "@/pages/EditRestaurant/EditRestaurant";
+import { fetchRestaurantById } from "@/services/restaurantService";
 
 const EditRestaurant: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useUser();
   console.log(user);
 
-  let restaurant: IRestaurant | undefined;
-  if (
-    user &&
-    "owned_restaurants" in user &&
-    Array.isArray(user.owned_restaurants)
-  ) {
-    restaurant = user.owned_restaurants[0];
-  } else {
-    console.log("No restaurant ID found");
-  }
+  // סטייטים
+  const [restaurant, setRestaurant] = useState<IRestaurant | null>(null);
+  const [formData, setFormData] = useState<IRestaurant>({
+    name: "",
+    description: "",
+    cuisine_types: [],
+    image: "",
+    background_image: "",
+    min_order: "",
+    delivery_fee: "",
+    delivery_time: "",
+    phone: "",
+    is_kosher: false,
+    location: {
+      type: "Point",
+      coordinates: [0, 0],
+      address: "",
+    },
+    weekly_hours: [{ day: "", time_ranges: "" }],
+  });
+
+  // Fetch restaurant data when the component mounts
+  useEffect(() => {
+    const getRestaurant = async () => {
+      try {
+        const fetchedRestaurant = await fetchRestaurantById(
+          "6776fdb5d1030347fd0fabd7"
+        );
+        setRestaurant(fetchedRestaurant);
+        console.log(fetchedRestaurant);
+      } catch (error) {
+        console.error("Error fetching restaurant:", error);
+      }
+    };
+
+    getRestaurant();
+  }, []);
+
+  // Update formData once restaurant is fetched
+  useEffect(() => {
+    if (restaurant) {
+      setFormData({
+        name: restaurant.name || "",
+        description: restaurant.description || "",
+        cuisine_types: restaurant.cuisine_types || [],
+        image: restaurant.image || "",
+        background_image: restaurant.background_image || "",
+        min_order: restaurant.min_order || "",
+        delivery_fee: restaurant.delivery_fee || "",
+        delivery_time: restaurant.delivery_time || "",
+        phone: restaurant.phone || "",
+        is_kosher: restaurant.is_kosher ?? false,
+        location: restaurant.location || {
+          type: "Point",
+          coordinates: [0, 0],
+          address: "",
+        },
+        // כאן אתה מוסיף את השעות הקיימות
+        weekly_hours: restaurant.weekly_hours.map((entry) => ({
+          day: entry.day,
+          time_ranges: entry.time_ranges.split(", "), // המרת הערכים לפורמט נכון
+        })),
+      });
+    }
+  }, [restaurant]);
+
   const closeModal = () => {
     navigate(-1);
   };
-  const [formData, setFormData] = useState<IRestaurant>({
-    name: restaurant?.name || "",
-    description: restaurant?.description || "",
-    cuisine_types: restaurant?.cuisine_types || [],
-    image: restaurant?.image || "",
-    background_image: restaurant?.background_image || "",
-    min_order: restaurant?.min_order || "",
-    delivery_fee: restaurant?.delivery_fee || "",
-    delivery_time: restaurant?.delivery_time || "",
-    phone: restaurant?.phone || "",
-    is_kosher: restaurant?.is_kosher ?? false,
-    location: restaurant?.location || { address: "" },
-    weekly_hours: restaurant?.weekly_hours || [{ day: "", time_ranges: "" }],
-  });
+
+  console.log(formData);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggleDropdown = () => {
@@ -78,17 +123,24 @@ const EditRestaurant: React.FC = () => {
     setFormData((prev) => {
       const updatedWeeklyHours = prev.weekly_hours?.map((entry) => {
         if (entry.day === day) {
-          const updatedTimeRanges = entry.time_ranges
-            .split(", ")
-            .map((timeRange) => {
-              if (type === "open") {
-                return `${value} - ${timeRange.split(" - ")[1]}`;
-              }
-              if (type === "close") {
-                return `${timeRange.split(" - ")[0]} - ${value}`;
-              }
-              return timeRange;
-            });
+          const timeRanges = Array.isArray(entry.time_ranges)
+            ? entry.time_ranges
+            : entry.time_ranges
+            ? entry.time_ranges.split(", ")
+            : [];
+
+          const updatedTimeRanges = timeRanges.map((timeRange) => {
+            let [hour, minute] = timeRange.split(" - ");
+
+            if (type === "open" && value.length <= 2) {
+              hour = `${value.padStart(2, "0")}`;
+            }
+            if (type === "close" && value.length <= 2) {
+              minute = `${value.padStart(2, "0")}`;
+            }
+
+            return `${hour} - ${minute}`;
+          });
 
           return { ...entry, time_ranges: updatedTimeRanges.join(", ") };
         }
@@ -123,7 +175,7 @@ const EditRestaurant: React.FC = () => {
       return;
     }
 
-    const validRestaurant = restaurant!; 
+    const validRestaurant = restaurant!;
 
     updateRestaurant(validRestaurant._id, formData)
       .then(() => {
@@ -228,7 +280,7 @@ const EditRestaurant: React.FC = () => {
                       </DrawerTitle>
                       <DrawerDescription>
                         <h2 className="text-center">
-                          הגדר שעות פתיחה וסגירה לכל יום בשבוע.
+                          הגדר שעות פתיחה וסגירה לכל יום בשבוע
                         </h2>
                       </DrawerDescription>
                     </DrawerHeader>
@@ -246,8 +298,14 @@ const EditRestaurant: React.FC = () => {
                           <li key={day} className="flex flex-col space-y-2">
                             <span className="font-medium">{day}</span>
                             <div className="flex space-x-2">
+                              {/* שדה פתיחה */}
                               <input
                                 type="time"
+                                value={
+                                  formData.weekly_hours
+                                    ?.find((entry) => entry.day === day)
+                                    ?.time_ranges[0]?.split(" - ")[0] || ""
+                                }
                                 onChange={(e) =>
                                   handleWeeklyHoursChange(
                                     day,
@@ -258,8 +316,14 @@ const EditRestaurant: React.FC = () => {
                                 className="w-1/2 px-3 py-2 border border-gray-300 rounded-md"
                                 placeholder="שעת פתיחה"
                               />
+                              {/* שדה סגירה */}
                               <input
                                 type="time"
+                                value={
+                                  formData.weekly_hours
+                                    ?.find((entry) => entry.day === day)
+                                    ?.time_ranges[0]?.split(" - ")[1] || ""
+                                }
                                 onChange={(e) =>
                                   handleWeeklyHoursChange(
                                     day,
@@ -331,7 +395,7 @@ const EditRestaurant: React.FC = () => {
                 placeholder="עלות משלוח"
               />
               <Input
-                type="number"
+                type="text"
                 name="delivery_time"
                 value={formData.delivery_time}
                 onChange={handleChange}

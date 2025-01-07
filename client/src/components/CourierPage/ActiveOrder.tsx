@@ -9,18 +9,23 @@ import {
 import { Card, CardContent } from "../ui/card";
 import { IOrder } from "@/types/orderTypes";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getAcceptedOrder, updateOrderStatus } from "@/services/orderService";
+import { getActiveOrder, updateOrderStatus } from "@/services/orderService";
+import { useState } from "react";
 
-const ActiveOrder = () => {
+interface ActiveOrderProps {
+  setIsDelivering: React.Dispatch<React.SetStateAction<Boolean>>;
+}
+
+const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
   const queryClient = useQueryClient();
-
+  const [status, setStatus] = useState("");
   const {
     data: activeOrder,
     isLoading,
     isError,
   } = useQuery<IOrder | null>({
-    queryKey: ["acceptedOrder"],
-    queryFn: () => getAcceptedOrder(),
+    queryKey: ["activeOrder"],
+    queryFn: () => getActiveOrder(),
   });
 
   const mutation = useMutation({
@@ -33,20 +38,28 @@ const ActiveOrder = () => {
     }) => {
       return await updateOrderStatus(orderId, status);
     },
-    onSuccess: () => {
-      // Invalidate and refetch queries after successful mutation
-      queryClient.invalidateQueries({ queryKey: ["activeOrder"] });
-    },
   });
 
   const handleOrderStatusChange = (newStatus: string) => {
     if (!activeOrder) return;
+    setStatus(newStatus);
     mutation.mutate(
       {
         orderId: activeOrder._id,
-        status: newStatus,
+        status,
       },
       {
+        onSuccess: () => {
+          if (status === "Delivered") {
+            setIsDelivering(false);
+            mutation.isPending = true;
+            return;
+          }
+          setStatus("Pick Up");
+        },
+        onSettled: () => {
+          queryClient.refetchQueries({ queryKey: ["activeOrder"] });
+        },
         onError: (error) => {
           console.error("Failed to update order status:", error);
         },
@@ -56,16 +69,7 @@ const ActiveOrder = () => {
 
   if (isLoading) return <div>Loading ...</div>;
   if (isError) return <div>Error loading </div>;
-
-  if (!activeOrder) {
-    return (
-      <div className="p-4 flex flex-col items-center justify-center h-[80vh] text-center space-y-4">
-        <Package className="h-16 w-16 text-gray-400" />
-        <h2 className="text-xl font-medium">אין הזמנה נוכחית</h2>
-      </div>
-    );
-  }
-
+  if (!activeOrder) return <div>loading..</div>;
   return (
     <div className="p-4 space-y-4">
       <Card>

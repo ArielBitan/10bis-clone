@@ -14,11 +14,6 @@ const userService = {
       throw new Error("Invalid email or password");
     }
 
-    // Check the user's role
-    if (user.role === "restaurant_owner") {
-      await user.populate("owned_restaurants");
-    }
-
     // Compare the password
     if (!user.comparePassword(password)) {
       throw new Error("Invalid email or password");
@@ -32,6 +27,7 @@ const userService = {
         last_name: user.last_name,
         role: user.role,
         isDelivering: user.isDelivering,
+        owned_restaurants: user.owned_restaurants,
       },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }

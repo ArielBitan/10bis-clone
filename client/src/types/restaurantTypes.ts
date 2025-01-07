@@ -4,6 +4,8 @@ export interface WeeklyHour {
 }
 
 export interface Location {
+  type?: "Point";
+  coordinates?: [number, number];
   address?: string;
 }
 
@@ -24,7 +26,7 @@ export interface IRestaurant {
   avgRating?: number;
   createdAt?: string;
   updatedAt?: string;
-  menuItems:IMenuItem[];
+  menuItems?: IMenuItem[];
 }
 
 export interface IMenuItem {
@@ -39,7 +41,6 @@ export interface IMenuItem {
   createdAt?: string;
   updatedAt?: string;
 }
-
 
 export interface IRestaurantForm {
   name: string;

@@ -4,12 +4,17 @@ import { IoIosArrowDown } from "react-icons/io";
 import { FiSearch } from "react-icons/fi";
 import { Input } from "../ui/input";
 import UserMenu from "./UserMenu";
+import { useUser } from "../context/userContext";
 
 const Navbar = () => {
+  const { user } = useUser();
+  console.log(user);
+  const role = user?.role;
+
   return (
     <>
-      <nav className="sticky top-0 z-50 bg-backgroundOrange text-foreground border-b border-border shadow-sm px-6 sm:px-6 md:px-6 lg:px-32">
-        <div className="flex justify-between items-center py-3">
+      <nav className="sticky top-0 z-50 px-6 border-b shadow-sm bg-backgroundOrange text-foreground border-border sm:px-6 md:px-6 lg:px-32">
+        <div className="flex items-center justify-between py-3">
           {/* Logo */}
           <Link
             to="/"
@@ -21,7 +26,7 @@ const Navbar = () => {
               alt="website-img"
             />
           </Link>
-          <div className="flex gap-4 items-center">
+          <div className="flex items-center gap-4">
             <UserMenu />
             <img
               className="w-6"
@@ -30,41 +35,45 @@ const Navbar = () => {
           </div>
         </div>
       </nav>
-      <div className="px-6 sm:px-6 md:px-6 lg:px-24 shadow-lg bg-white">
-        <div className="gap-2 flex flex-wrap justify-between items-center sm:px-6 md:px-6 lg:px-10">
-          {/* Delivery button */}
-          <button className="border border-gray-300 my-2 px-3 h-8 hover:border-gray-500 flex items-center gap-1 sm:w-full md:w-full lg:w-auto">
-            <MdPlace />
-            <span className="font-bold overflow-hidden whitespace-nowrap text-ellipsis">
-              משלוח ל:
-            </span>
-            <div className="text-right truncate max-w-[150px] sm:max-w-[150px] md:max-w-[150px] lg:max-w-full overflow-hidden whitespace-nowrap text-ellipsis">
-              החילזון 3 , רמת גן
-            </div>
-            <IoIosArrowDown />
-          </button>
-
-          {/* Search Input */}
-          <div className="flex items-center w-full sm:w-full md:w-full lg:w-auto">
-            <div className="border flex items-center gap-2 px-2 h-8 border-gray-300 hover:border-gray-500 w-full">
-              <FiSearch className="hover:cursor-pointer" />
-              <Input
-                type="text"
-                placeholder="מנות, מסעדות או סוגי אוכל"
-                className="border-none h-4 text-sm "
-              />
-            </div>
-          </div>
-
-          {/* Reorder button */}
-          <div className="w-full sm:w-full md:w-full lg:w-auto my-4">
-            <button className="h-8 flex items-center border border-gray-300 hover:border-gray-500 px-2 w-full sm:w-full md:w-full lg:w-auto">
-              <div className="p-2 "> הזמנה חוזרת</div>
+      {role === "restaurant_owner" ? (
+        <div></div>
+      ) : (
+        <div className="px-6 bg-white shadow-lg sm:px-6 md:px-6 lg:px-24">
+          <div className="flex flex-wrap items-center justify-between gap-2 sm:px-6 md:px-6 lg:px-10">
+            {/* Delivery button */}
+            <button className="flex items-center h-8 gap-1 px-3 my-2 border border-gray-300 hover:border-gray-500 sm:w-full md:w-full lg:w-auto">
+              <MdPlace />
+              <span className="overflow-hidden font-bold whitespace-nowrap text-ellipsis">
+                משלוח ל:
+              </span>
+              <div className="text-right truncate max-w-[150px] sm:max-w-[150px] md:max-w-[150px] lg:max-w-full overflow-hidden whitespace-nowrap text-ellipsis">
+                החילזון 3 , רמת גן
+              </div>
               <IoIosArrowDown />
             </button>
+
+            {/* Search Input */}
+            <div className="flex items-center w-full sm:w-full md:w-full lg:w-auto">
+              <div className="flex items-center w-full h-8 gap-2 px-2 border border-gray-300 hover:border-gray-500">
+                <FiSearch className="hover:cursor-pointer" />
+                <Input
+                  type="text"
+                  placeholder="מנות, מסעדות או סוגי אוכל"
+                  className="h-4 text-sm border-none "
+                />
+              </div>
+            </div>
+
+            {/* Reorder button */}
+            <div className="w-full my-4 sm:w-full md:w-full lg:w-auto">
+              <button className="flex items-center w-full h-8 px-2 border border-gray-300 hover:border-gray-500 sm:w-full md:w-full lg:w-auto">
+                <div className="p-2 "> הזמנה חוזרת</div>
+                <IoIosArrowDown />
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 };

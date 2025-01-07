@@ -24,7 +24,7 @@ router.put(
   checkCourierActiveOrder,
   orderController.acceptOrder
 );
-router.put("/:id/:status", orderController.updateOrderStatus);
+router.put("/:id/status/:status", orderController.updateOrderStatus);
 router.delete("/:id", orderController.deleteOrder);
 
 module.exports = router;

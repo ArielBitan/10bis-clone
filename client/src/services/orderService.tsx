@@ -22,10 +22,9 @@ export const acceptOrder = async (orderId: string) => {
   }
 };
 
-export const getAcceptedOrder = async () => {
+export const getActiveOrder = async () => {
   try {
     const { data } = await api.get(`/orders/courier/active`);
-    console.log(data);
     return data;
   } catch (error) {
     console.error("Error accepting order:", error);
@@ -95,7 +94,10 @@ export const updateOrderStatus = async (
   status: string
 ): Promise<IOrder> => {
   try {
-    const { data } = await api.put<IOrder>(`/orders/${orderId}/${status}`);
+    const { data } = await api.put<IOrder>(
+      `/orders/${orderId}/status/${status}`
+    );
+    console.log(data);
     return data;
   } catch (error) {
     console.error(`Error updating order with ID ${orderId}:`, error);

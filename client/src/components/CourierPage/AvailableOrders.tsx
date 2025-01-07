@@ -1,14 +1,24 @@
 import { acceptOrder, fetchOrdersByStatus } from "@/services/orderService";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Package } from "lucide-react";
 import OrderCard from "./OrderCard";
 import { IOrder } from "@/types/orderTypes";
 import { useUser } from "../context/userContext";
 
-const AvailableOrders = () => {
-  const { user } = useUser();
+interface AvailableOrdersProps {
+  setIsDelivering: React.Dispatch<React.SetStateAction<Boolean>>;
+}
 
-  const { data, isLoading, isError } = useQuery({
+const AvailableOrders: React.FC<AvailableOrdersProps> = ({
+  setIsDelivering,
+}) => {
+  const { user } = useUser();
+  const queryClient = useQueryClient();
+  const {
+    data = [],
+    isLoading,
+    isError,
+  } = useQuery<IOrder[]>({
     queryKey: ["openOrders"],
     queryFn: () => fetchOrdersByStatus("Open"),
   });
@@ -20,6 +30,7 @@ const AvailableOrders = () => {
         return;
       }
       await acceptOrder(order._id);
+      queryClient.invalidateQueries({ queryKey: ["activeOrder"] });
     } catch (error) {
       console.error("Failed to accept order:", error);
       throw error;
@@ -31,11 +42,12 @@ const AvailableOrders = () => {
 
   return (
     <div>
-      {data ? (
+      {data.length > 0 ? (
         data.map((order) => (
           <OrderCard
             key={order._id}
             order={order}
+            setIsDelivering={setIsDelivering}
             onAcceptOrder={handleAcceptOrder}
           />
         ))

@@ -1,28 +1,44 @@
 import UserMenu from "@/components/layout/UserMenu";
 import ActiveOrder from "@/components/CourierPage/ActiveOrder";
 import AvailableOrders from "@/components/CourierPage/AvailableOrders";
+import { useEffect, useState } from "react";
 import { useUser } from "@/components/context/userContext";
-import { useEffect } from "react";
-import { acceptOrder, updateOrderStatus } from "@/services/orderService";
+import { fetchUserProfile } from "@/services/userService";
 
 const CourierPage = () => {
-  const { user, fetchUser } = useUser();
-  useEffect(() => {
-    fetchUser();
-  }, [acceptOrder, updateOrderStatus]);
+  const { setUser } = useUser();
+  const [isDelivering, setIsDelivering] = useState<Boolean>(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  console.log(user);
+  useEffect(() => {
+    const fetchData = async () => {
+      const updatedUser = await fetchUserProfile();
+      setUser(updatedUser);
+      setIsDelivering(updatedUser?.isDelivering || false);
+      setIsLoading(false);
+    };
+
+    fetchData();
+  }, []);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="max-w-md mx-auto h-screen bg-gray-50">
-      <div className="bg-orangePrimary p-4 shadow-sm sticky top-0 z-10 ">
-        <div className="flex justify-between items-center ">
-          <div className="flex items-center gap-2 ">
+      <div className="bg-orangePrimary p-4 shadow-sm sticky top-0 z-10">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-2">
             <UserMenu />
           </div>
         </div>
       </div>
-
-      {user?.isDelivering ? <ActiveOrder /> : <AvailableOrders />}
+      {isDelivering ? (
+        <ActiveOrder setIsDelivering={setIsDelivering} />
+      ) : (
+        <AvailableOrders setIsDelivering={setIsDelivering} />
+      )}
     </div>
   );
 };
