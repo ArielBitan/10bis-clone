@@ -94,6 +94,7 @@ export const updateOrderStatus = async (
   status: string
 ): Promise<IOrder> => {
   try {
+    console.log("status" + status);
     const { data } = await api.put<IOrder>(
       `/orders/${orderId}/status/${status}`
     );

@@ -42,17 +42,16 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
 
   const handleOrderStatusChange = (newStatus: string) => {
     if (!activeOrder) return;
-    setStatus(newStatus);
+
     mutation.mutate(
       {
         orderId: activeOrder._id,
-        status,
+        status: newStatus, // Use newStatus directly
       },
       {
         onSuccess: () => {
-          if (status === "Delivered") {
+          if (newStatus === "Delivered") {
             setIsDelivering(false);
-            mutation.isPending = true;
             return;
           }
           setStatus("Pick Up");
@@ -70,6 +69,7 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
   if (isLoading) return <div>Loading ...</div>;
   if (isError) return <div>Error loading </div>;
   if (!activeOrder) return <div>loading..</div>;
+
   return (
     <div className="p-4 space-y-4">
       <Card>

@@ -21,6 +21,7 @@ const AvailableOrders: React.FC<AvailableOrdersProps> = ({
   } = useQuery<IOrder[]>({
     queryKey: ["openOrders"],
     queryFn: () => fetchOrdersByStatus("Open"),
+    refetchInterval: 5000,
   });
 
   const handleAcceptOrder = async (order: IOrder) => {

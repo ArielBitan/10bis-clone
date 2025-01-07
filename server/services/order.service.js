@@ -79,6 +79,7 @@ exports.getOrdersByUser = async (userId) => {
 exports.updateOrderStatus = async (id, status) => {
   try {
     const validStatuses = ["Open", "Accepted", "Picked Up", "Delivered"];
+    console.log(status);
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new Error("Invalid order ID");
     }
