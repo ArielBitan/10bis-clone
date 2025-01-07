@@ -31,6 +31,7 @@ const userService = {
         first_name: user.first_name,
         last_name: user.last_name,
         role: user.role,
+        isDelivering: user.isDelivering,
       },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
@@ -38,7 +39,6 @@ const userService = {
 
     // Remove the password from the user object before sending it to the client
     const userWithoutPassword = user.toObject();
-    console.log(userWithoutPassword);
     delete userWithoutPassword.password;
 
     return { token, user: userWithoutPassword };
