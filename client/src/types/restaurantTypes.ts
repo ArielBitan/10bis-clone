@@ -32,7 +32,7 @@ export interface IMenuItem {
   name: string;
   available:boolean;
   category:string;
-  description:string;
+  description?:string;
   image: string;
   price: number;
   restaurant_id: string;

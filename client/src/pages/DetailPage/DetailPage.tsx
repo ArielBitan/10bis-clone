@@ -1,9 +1,11 @@
-import RestaurantCard from "@/components/HomePage/RestaurantCard";
+import InfoRestaurant from "@/components/DetailPage/InfoRestaurant";
+// import RestaurantCard from "@/components/HomePage/RestaurantCard";
 import MenuCard from "@/components/MenuCard/MenuCard";
 import Navbar from "@/components/layout/Navbar";
 import { Input } from "@/components/ui/input";
 import { fetchRestaurantById } from "@/services/restaurantService";
 import { useQuery } from "@tanstack/react-query";
+// import { log } from "console";
 import { FaStar } from "react-icons/fa6";
 import { FiSearch } from "react-icons/fi";
 import { useParams } from "react-router-dom";
@@ -65,8 +67,11 @@ const DetailPage = () => {
             <span>{`מינימום הזמנה  ₪${data.min_order || 0}`}</span>
           </div>
         </div>
-        <div className=" m-3 font-bold">{`*${data.description}`}</div>
-        <div className="flex items-center ">
+        {data.description && (
+          <div className=" m-3 font-bold">{`*${data.description}`}</div>
+        )}
+        <InfoRestaurant item={data} />
+        <div className="flex items-center mt-4">
           <div className="border  bg-gray-100 flex items-center gap-2 px-2 w-[95%] h-12  border-gray-300 hover:border-gray-500 rounded-3xl">
             <FiSearch className="hover:cursor-pointer text-backgroundOrange " />
             <Input
@@ -77,6 +82,7 @@ const DetailPage = () => {
           </div>
         </div>
       </div>
+      <div className="w-full">categoties</div>
       <div>
         {data.menuItems.map((item) => (
           <MenuCard key={item._id} item={item} />
