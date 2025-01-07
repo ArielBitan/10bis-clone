@@ -40,8 +40,9 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
     },
   });
 
-  const handleOrderStatusChange = () => {
+  const handleOrderStatusChange = (newStatus: string) => {
     if (!activeOrder) return;
+    setStatus(newStatus);
     mutation.mutate(
       {
         orderId: activeOrder._id,
@@ -49,11 +50,15 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
       },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ["activeOrder"] });
-          console.log(status);
           if (status === "Delivered") {
             setIsDelivering(false);
+            mutation.isPending = true;
+            return;
           }
+          setStatus("Pick Up");
+        },
+        onSettled: () => {
+          queryClient.refetchQueries({ queryKey: ["activeOrder"] });
         },
         onError: (error) => {
           console.error("Failed to update order status:", error);
@@ -64,16 +69,7 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
 
   if (isLoading) return <div>Loading ...</div>;
   if (isError) return <div>Error loading </div>;
-
-  if (!activeOrder) {
-    return (
-      <div className="p-4 flex flex-col items-center justify-center h-[80vh] text-center space-y-4">
-        <Package className="h-16 w-16 text-gray-400" />
-        <h2 className="text-xl font-medium">אין הזמנה נוכחית</h2>
-      </div>
-    );
-  }
-
+  if (!activeOrder) return <div>loading..</div>;
   return (
     <div className="p-4 space-y-4">
       <Card>
@@ -151,10 +147,7 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
             <div className="space-y-2">
               {activeOrder.status === "Accepted" ? (
                 <button
-                  onClick={() => {
-                    setStatus("Picked Up");
-                    handleOrderStatusChange();
-                  }}
+                  onClick={() => handleOrderStatusChange("Picked Up")}
                   disabled={mutation.isPending}
                   className="w-full py-3 bg-green-500 text-white rounded-lg flex items-center justify-center gap-2 hover:bg-green-600 disabled:bg-gray-400"
                 >
@@ -163,10 +156,7 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
                 </button>
               ) : (
                 <button
-                  onClick={() => {
-                    setStatus("Delivered");
-                    handleOrderStatusChange();
-                  }}
+                  onClick={() => handleOrderStatusChange("Delivered")}
                   disabled={mutation.isPending}
                   className="w-full py-3 bg-green-500 text-white rounded-lg flex items-center justify-center gap-2 hover:bg-green-600 disabled:bg-gray-400"
                 >

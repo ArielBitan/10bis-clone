@@ -1,5 +1,5 @@
 import { acceptOrder, fetchOrdersByStatus } from "@/services/orderService";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Package } from "lucide-react";
 import OrderCard from "./OrderCard";
 import { IOrder } from "@/types/orderTypes";
@@ -13,7 +13,7 @@ const AvailableOrders: React.FC<AvailableOrdersProps> = ({
   setIsDelivering,
 }) => {
   const { user } = useUser();
-
+  const queryClient = useQueryClient();
   const {
     data = [],
     isLoading,
@@ -30,6 +30,7 @@ const AvailableOrders: React.FC<AvailableOrdersProps> = ({
         return;
       }
       await acceptOrder(order._id);
+      queryClient.invalidateQueries({ queryKey: ["activeOrder"] });
     } catch (error) {
       console.error("Failed to accept order:", error);
       throw error;

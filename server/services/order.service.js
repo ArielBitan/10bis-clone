@@ -35,8 +35,8 @@ exports.getActiveOrder = async (courierId) => {
   try {
     const order = await Order.findOne({
       courier_id: courierId,
+      status: { $ne: "Delivered" },
     })
-      .sort({ createdAt: -1 })
       .populate("user_id")
       .populate("restaurant_id")
       .populate("order_items");
