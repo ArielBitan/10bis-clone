@@ -30,6 +30,16 @@ exports.getOrderById = async (req, res) => {
   }
 };
 
+exports.getOrdersByStatus = async (req, res) => {
+  try {
+    const { status } = req.params;
+    const orders = await orderService.getOrdersByStatus(status);
+    res.status(200).json(orders);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
 exports.getOrdersByUser = async (req, res) => {
   try {
     const orders = await orderService.getOrdersByUser(req.params.userId);

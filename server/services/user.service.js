@@ -9,24 +9,39 @@ const jwt = require("jsonwebtoken");
 const userService = {
   login: async (email, password) => {
     const user = await User.findOne({ email });
-    if (!user || !user.comparePassword(password)) {
+
+    if (!user) {
       throw new Error("Invalid email or password");
     }
+
+    // Check the user's role
+    if (user.role === "restaurant_owner") {
+      await user.populate("owned_restaurants");
+    }
+
+    // Compare the password
+    if (!user.comparePassword(password)) {
+      throw new Error("Invalid email or password");
+    }
+
     const token = jwt.sign(
       {
         email,
         _id: user._id,
         first_name: user.first_name,
         last_name: user.last_name,
+        role: user.role,
       },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
+    // Remove the password from the user object before sending it to the client
     const userWithoutPassword = user.toObject();
+    console.log(userWithoutPassword);
     delete userWithoutPassword.password;
 
-    return { token, userWithoutPassword };
+    return { token, user: userWithoutPassword };
   },
 
   getAllUsers: async () => {
@@ -36,6 +51,7 @@ const userService = {
 
   register: async (userData) => {
     const newUser = await User.create(userData);
+
     return newUser;
   },
 

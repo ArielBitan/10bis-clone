@@ -24,7 +24,22 @@ export interface IRestaurant {
   avgRating?: number;
   createdAt?: string;
   updatedAt?: string;
+  menuItems:IMenuItem[];
 }
+
+export interface IMenuItem {
+  _id: string;
+  name: string;
+  available:boolean;
+  category:string;
+  description:string;
+  image: string;
+  price: number;
+  restaurant_id: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 
 export interface IRestaurantForm {
   name: string;

@@ -8,8 +8,23 @@ exports.getAllOrders = async () => {
   return await Order.find()
     .populate("user_id", "name email")
     .populate("restaurant_id", "name address")
-    .populate("courier_id", "name phone")
     .populate("order_items");
+};
+
+exports.getOrdersByStatus = async (status) => {
+  try {
+    const orders = await Order.find({
+      status: { $regex: new RegExp(`^${status}$`, "i") },
+    })
+      .populate("user_id")
+      .populate("restaurant_id")
+      .populate("order_items");
+    return orders;
+  } catch (error) {
+    throw new Error(
+      `Error fetching orders with status ${status}: ${error.message}`
+    );
+  }
 };
 
 exports.getOrderById = async (id) => {
