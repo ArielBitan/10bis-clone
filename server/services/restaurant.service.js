@@ -1,7 +1,11 @@
 const Restaurant = require("../models/restaurant.model");
 
 exports.createRestaurant = async (restaurantData) => {
-  return await Restaurant.create(restaurantData);
+  try {
+    return await Restaurant.create(restaurantData);
+  } catch (error) {
+    throw new Error(`Error creating restaurant: ${error.message}`);
+  }
 };
 
 exports.getAllRestaurants = async () => {
@@ -12,10 +16,16 @@ exports.getRestaurantById = async (id) => {
   return await Restaurant.findById(id);
 };
 
-exports.updateRestaurant = async (id, restaurantData) => {
-  return await Restaurant.findByIdAndUpdate(id, restaurantData, {
-    new: true,
-  });
+exports.updateRestaurant = async (id, updateData) => {
+  try {
+    const restaurant = await Restaurant.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true,
+    });
+    return restaurant;
+  } catch (error) {
+    throw new Error(`Error updating restaurant: ${error.message}`);
+  }
 };
 
 exports.deleteRestaurant = async (id) => {
