@@ -1,16 +1,10 @@
-import {
-  AlertCircle,
-  CheckCircle,
-  MapPin,
-  Phone,
-  Package,
-  User,
-} from "lucide-react";
+import { AlertCircle, CheckCircle, MapPin, Package, User } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
 import { IOrder } from "@/types/orderTypes";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getActiveOrder, updateOrderStatus } from "@/services/orderService";
 import { useState } from "react";
+import NextLocationCard from "./NextLocationCard";
 
 interface ActiveOrderProps {
   setIsDelivering: React.Dispatch<React.SetStateAction<Boolean>>;
@@ -46,7 +40,7 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
     mutation.mutate(
       {
         orderId: activeOrder._id,
-        status: newStatus, // Use newStatus directly
+        status: newStatus,
       },
       {
         onSuccess: () => {
@@ -85,50 +79,22 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
               </span>
             </div>
 
-            {/* Restaurant Details */}
-            <div className="space-y-2 p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-center gap-2">
-                <MapPin className="h-5 w-5 text-gray-500" />
-                <div>
-                  <p className="font-medium">
-                    {activeOrder.restaurant_id.name}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {activeOrder.restaurant_id.location?.address}
-                  </p>
-                </div>
-              </div>
-              {activeOrder.restaurant_id.phone && (
-                <a
-                  href={`tel:${activeOrder.restaurant_id.phone}`}
-                  className="flex items-center gap-2 text-blue-500"
-                >
-                  <Phone className="h-4 w-4" />
-                  <span className="text-sm">
-                    {activeOrder.restaurant_id.phone}
-                  </span>
-                </a>
-              )}
-            </div>
-
-            {/* Customer Details */}
-            <div className="space-y-2 p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-center gap-2">
-                <User className="h-5 w-5 text-gray-500" />
-                <div>
-                  <p className="font-medium">
-                    {activeOrder.user_id.first_name}{" "}
-                    {activeOrder.user_id.last_name}
-                  </p>
-                  <a
-                    href={`tel:${activeOrder.user_id.phone}`}
-                    className="text-sm text-blue-500"
-                  >
-                    {activeOrder.user_id.phone}
-                  </a>
-                </div>
-              </div>
-            </div>
+            {/* Next Location  */}
+            {activeOrder.status === "Accepted" ? (
+              <NextLocationCard
+                name={activeOrder.restaurant_id.name}
+                address={activeOrder.restaurant_id.location?.address}
+                phone={activeOrder.restaurant_id.phone}
+                icon={MapPin}
+              />
+            ) : (
+              <NextLocationCard
+                name={`${activeOrder.user_id.first_name}  ${activeOrder.user_id.last_name}`}
+                address={activeOrder.user_id.location?.address}
+                phone={activeOrder.user_id.phone}
+                icon={User}
+              />
+            )}
 
             {/* Order Items */}
             <div className="space-y-2">

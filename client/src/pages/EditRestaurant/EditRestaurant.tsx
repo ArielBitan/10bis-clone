@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { useUser } from "@/components/context/userContext";
 import { IRestaurant } from "@/types/restaurantTypes";
 import { categories } from "../../../data/categories.json";
 import {
