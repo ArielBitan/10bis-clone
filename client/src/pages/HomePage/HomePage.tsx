@@ -3,7 +3,7 @@ import AllRestaurants from "@/components/HomePage/AllRestaurants";
 import Navbar from "@/components/layout/Navbar";
 import CategoriesSection from "@/components/HomePage/CategoriesSection";
 import { useUser } from "@/components/context/userContext";
-import RestaurantOwnerDashboard from "@/components/HomePage/RestaurantOwnerDashboard";
+import RestaurantOwnerDashboard from "@/components/restaurantowner/RestaurantOwnerDashboard";
 import { useEffect } from "react";
 
 const HomePage = () => {
@@ -19,7 +19,7 @@ const HomePage = () => {
     role === "restaurant_owner" ? (
       <div className="bg-gray-100">
         <Navbar />
-        {/* <RestaurantOwnerDashboard /> */}
+        <RestaurantOwnerDashboard />
         <div className="grid gap-4 mx-60 "></div>
       </div>
     ) : (
