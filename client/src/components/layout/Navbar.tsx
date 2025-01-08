@@ -34,30 +34,34 @@ const Navbar = () => {
               />
             </div>
           </div>
-          <div>
-            <div className="px-6 sm:px-6 md:px-6 lg:px-24">
-              <div className="flex justify-between gap-4 sm:px-6 md:px-6 lg:px-10">
-                <Link
-                  to="/home"
-                  className="px-4 py-2 text-lg font-semibold text-gray-700 transition-all duration-300 rounded-lg cursor-pointer hover:bg-gray-100"
-                >
-                  עמוד הבית
-                </Link>
-                <Link
-                  to="/menu-edit"
-                  className="px-4 py-2 text-lg font-semibold text-gray-700 transition-all duration-300 rounded-lg cursor-pointer hover:bg-gray-100"
-                >
-                  עריכת התפריט
-                </Link>
-                <Link
-                  to="/orders-management"
-                  className="px-4 py-2 text-lg font-semibold text-gray-700 transition-all duration-300 rounded-lg cursor-pointer hover:bg-gray-100"
-                >
-                  ניהול הזמנות
-                </Link>
+          {role !== "restaurant_owner" ? (
+            <div></div>
+          ) : (
+            <div>
+              <div className="px-6 sm:px-6 md:px-6 lg:px-24">
+                <div className="flex justify-between gap-4 sm:px-6 md:px-6 lg:px-10">
+                  <Link
+                    to="/home"
+                    className="px-4 py-2 text-lg font-semibold text-gray-700 transition-all duration-300 rounded-lg cursor-pointer hover:bg-gray-100"
+                  >
+                    עמוד הבית
+                  </Link>
+                  <Link
+                    to="/menu-edit"
+                    className="px-4 py-2 text-lg font-semibold text-gray-700 transition-all duration-300 rounded-lg cursor-pointer hover:bg-gray-100"
+                  >
+                    עריכת התפריט
+                  </Link>
+                  <Link
+                    to="/orders-management"
+                    className="px-4 py-2 text-lg font-semibold text-gray-700 transition-all duration-300 rounded-lg cursor-pointer hover:bg-gray-100"
+                  >
+                    ניהול הזמנות
+                  </Link>
+                </div>{" "}
               </div>{" "}
-            </div>{" "}
-          </div>
+            </div>
+          )}
         </div>
       </nav>
       {role === "restaurant_owner" ? (
