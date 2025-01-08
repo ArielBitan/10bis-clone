@@ -29,7 +29,8 @@ const UserMenu = () => {
             <div className="font-medium text-white">{`היי , ${user.first_name}`}</div>
           </div>
         ) : (
-          <div>
+          <div className="flex items-center gap-2">
+            <div className="font-medium text-white">{`היי , ${user.first_name}`}</div>
             <UserIcon width={40} height={40} fill="#000" />
           </div>
         )
