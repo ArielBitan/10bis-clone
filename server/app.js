@@ -8,7 +8,6 @@ const orderRoutes = require("./routes/order.route");
 const reviewRoutes = require("./routes/review.route");
 const restaurantRoutes = require("./routes/restaurant.route");
 const userRoutes = require("./routes/user.route");
-
 const app = express();
 
 // Middleware

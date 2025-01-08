@@ -23,13 +23,14 @@ const uploadImageToCloudinary = async (file) => {
 exports.createRestaurant = async (req, res) => {
   try {
     // Input validation
-    if (!req.files || req.files.length < 2) {
+    if (!req.files || !req.files.background_image || !req.files.image) {
       return res.status(400).json({
         message: "Both background image and restaurant image are required",
       });
     }
 
-    const [background_image, image] = req.files;
+    const background_image = req.files.background_image[0];
+    const image = req.files.image[0];
 
     // Validate file types
     const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
@@ -51,8 +52,8 @@ exports.createRestaurant = async (req, res) => {
     // Create restaurant with images
     const restaurantData = {
       ...req.body,
-      background_image: backgroundImageUrl,
-      image: imageUrl,
+      background_image: backgroundImageUrl.url,
+      image: imageUrl.url,
     };
 
     const restaurant = await restaurantService.createRestaurant(restaurantData);
@@ -103,10 +104,12 @@ exports.getRestaurantById = async (req, res) => {
 
 exports.updateRestaurant = async (req, res) => {
   try {
+    if (!req.files) {
+      return res.status(400).json({ message: "No files uploaded" });
+    }
+
     const restaurantId = req.params.id;
     let updateData = { ...req.body };
-    console.log("data:" + req.body);
-    console.log("images:" + req.files);
     // Check if restaurant exists
     const existingRestaurant = await restaurantService.getRestaurantById(
       restaurantId
@@ -115,41 +118,30 @@ exports.updateRestaurant = async (req, res) => {
       return res.status(404).json({ message: "Restaurant not found" });
     }
     // Handle image updates if files are provided
-    if (req.files && req.files.length > 0) {
+    if (req.files.background_image) {
+      const background_image = req.files.background_image[0];
       const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
-
-      // Process background image if provided
-      if (req.files[0]) {
-        const background_image = req.files[0];
-        if (!allowedMimeTypes.includes(background_image.mimetype)) {
-          return res.status(400).json({
-            message:
-              "Invalid background image type. Only JPEG, PNG and WebP are allowed",
-          });
-        }
-        // Delete old image from Cloudinary if exists
-        if (existingRestaurant.background_image) {
-          await deleteImageFromCloudinary(existingRestaurant.background_image);
-        }
-        updateData.background_image = await uploadImageToCloudinary(
-          background_image
-        );
+      if (!allowedMimeTypes.includes(background_image.mimetype)) {
+        return res.status(400).json({
+          message:
+            "Invalid background image type. Only JPEG, PNG and WebP are allowed",
+        });
       }
 
-      // Process main image if provided
-      if (req.files[1]) {
-        const image = req.files[1];
-        if (!allowedMimeTypes.includes(image.mimetype)) {
-          return res.status(400).json({
-            message: "Invalid image type. Only JPEG, PNG and WebP are allowed",
-          });
-        }
-        // Delete old image from Cloudinary if exists
-        if (existingRestaurant.image) {
-          await deleteImageFromCloudinary(existingRestaurant.image);
-        }
-        updateData.image = await uploadImageToCloudinary(image);
+      updateData.background_image = await uploadImageToCloudinary(
+        background_image
+      );
+    }
+
+    if (req.files.image) {
+      const image = req.files.image[0];
+      const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
+      if (!allowedMimeTypes.includes(image.mimetype)) {
+        return res.status(400).json({
+          message: "Invalid image type. Only JPEG, PNG and WebP are allowed",
+        });
       }
+      updateData.image = await uploadImageToCloudinary(image);
     }
 
     const updatedRestaurant = await restaurantService.updateRestaurant(

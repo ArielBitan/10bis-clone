@@ -88,6 +88,17 @@ const EditRestaurant: React.FC = () => {
     getRestaurant();
   }, []);
 
+  const handleFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    name: string
+  ) => {
+    const file = e.target.files?.[0];
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: file,
+    }));
+  };
+
   const handleWeeklyHoursChange = (
     day: string,
     timeType: "open" | "close",
@@ -332,16 +343,20 @@ const EditRestaurant: React.FC = () => {
 
           <Input
             name="image"
-            value={formData.image}
-            onChange={handleChange}
-            placeholder="כתובת תמונה"
+            type="file"
+            onChange={(e) => handleFileChange(e, "image")}
+            placeholder="בחר תמונה"
+            required
+            accept="image/*"
           />
 
           <Input
             name="background_image"
-            value={formData.background_image}
-            onChange={handleChange}
-            placeholder="כתובת תמונת רקע"
+            type="file"
+            onChange={(e) => handleFileChange(e, "background_image")}
+            placeholder="בחר תמונה"
+            required
+            accept="image/*"
           />
 
           <Input
