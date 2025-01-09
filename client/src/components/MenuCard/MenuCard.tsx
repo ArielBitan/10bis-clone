@@ -3,7 +3,7 @@ import { useUser } from "../context/userContext";
 import { Button } from "../ui/button";
 import { useDeleteMenuItem } from "@/services/tan-stack/menuItem-TenStack";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
-import EditItem from "../restaurantowner/EditItem";
+import EditItem from "../restaurantOwner/EditItem";
 
 interface MenuItemCardProps {
   item: IMenuItem;

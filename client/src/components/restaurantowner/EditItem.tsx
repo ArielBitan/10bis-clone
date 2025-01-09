@@ -50,6 +50,17 @@ const EditItem: React.FC<EditItemProps> = ({ item, renderFunc }) => {
     }
   };
 
+  const handleFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    name: string
+  ) => {
+    const file = e.target.files?.[0];
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: file,
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSuccessMessage("");
@@ -99,11 +110,10 @@ const EditItem: React.FC<EditItemProps> = ({ item, renderFunc }) => {
         required
       />
       <Input
-        type="text"
+        type="file"
+        id="image"
         name="image"
-        placeholder="לינק לתמונה"
-        value={formData.image}
-        onChange={handleChange}
+        onChange={(e) => handleFileChange(e, "image")}
       />
       <Input
         type="text"

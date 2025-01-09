@@ -8,7 +8,7 @@ import { FiSearch } from "react-icons/fi";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { fetchRestaurantById } from "@/services/restaurantService";
-import AddItem from "@/components/restaurantowner/AddItem";
+import AddItem from "@/components/restaurantOwner/AddItem";
 import { useQueryClient } from "@tanstack/react-query";
 import { useUser } from "@/components/context/userContext";
 import { IRestaurantOwner } from "@/types/userType";
@@ -23,15 +23,10 @@ const MenuEdit = () => {
   const renderFunc = () => {
     queryClient.invalidateQueries({ queryKey: ["restaurant"] });
   };
-  console.log(user);
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["restaurant"],
-    queryFn: () =>
-      fetchRestaurantById(
-        // "6776fdb5d1030347fd0fabd7"
-        ownedRestId
-      ), //enter the real restaurant
+    queryKey: ["restaurant", ownedRestId],
+    queryFn: () => fetchRestaurantById(ownedRestId),
   });
 
   const [selectedCategory, setSelectedCategory] = useState<string>("");

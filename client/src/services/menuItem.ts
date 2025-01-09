@@ -6,7 +6,12 @@ export const createMenuItem = async (
   menuItem: IMenuItem
 ): Promise<IMenuItem> => {
   try {
-    const { data } = await api.post<IMenuItem>("/items/", menuItem);
+    console.log(menuItem);
+    const { data } = await api.post<IMenuItem>("/items", menuItem, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return data;
   } catch (error) {
     console.error("Error creating menu item:", error);
@@ -20,7 +25,11 @@ export const updateMenuItem = async (
   menuItem: Partial<IMenuItem>
 ): Promise<IMenuItem> => {
   try {
-    const { data } = await api.put<IMenuItem>(`/items/${id}`, menuItem);
+    const { data } = await api.put<IMenuItem>(`/items/${id}`, menuItem, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return data;
   } catch (error) {
     console.error(`Error updating menu item with ID ${id}:`, error);

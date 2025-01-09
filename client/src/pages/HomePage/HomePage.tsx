@@ -3,7 +3,7 @@ import AllRestaurants from "@/components/HomePage/AllRestaurants";
 import Navbar from "@/components/layout/Navbar";
 import CategoriesSection from "@/components/HomePage/CategoriesSection";
 import { useUser } from "@/components/context/userContext";
-import RestaurantOwnerDashboard from "@/components/restaurantowner/RestaurantOwnerDashboard";
+import RestaurantOwnerDashboard from "@/components/restaurantOwner/RestaurantOwnerDashboard";
 import { useEffect } from "react";
 
 const HomePage = () => {

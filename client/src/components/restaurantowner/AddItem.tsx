@@ -22,6 +22,7 @@ const AddItem: React.FC<AddItemProps> = ({ resId, onItemAdded }) => {
     category: "",
     available: true,
   });
+
   const clearForm = () => {
     setFormData({
       name: "",
@@ -52,6 +53,17 @@ const AddItem: React.FC<AddItemProps> = ({ resId, onItemAdded }) => {
     }
   };
 
+  const handleFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    name: string
+  ) => {
+    const file = e.target.files?.[0];
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: file,
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSuccessMessage("");
@@ -75,54 +87,92 @@ const AddItem: React.FC<AddItemProps> = ({ resId, onItemAdded }) => {
       dir="rtl"
     >
       <h2 className="text-xl font-bold">הוסף פריט חדש</h2>
-      <Input
-        type="text"
-        name="name"
-        placeholder="שם המנה"
-        value={formData.name}
-        onChange={handleChange}
-        required
-      />
-      <textarea
-        name="description"
-        placeholder="תיאור המנה"
-        value={formData.description}
-        onChange={handleChange}
-        rows={4}
-        className="p-2 border rounded-md"
-      />
-      <Input
-        type="number"
-        name="price"
-        placeholder="מחיר"
-        value={formData.price}
-        onChange={handleChange}
-        required
-      />
-      <Input
-        type="text"
-        name="image"
-        placeholder="לינק לתמונה"
-        value={formData.image}
-        onChange={handleChange}
-      />
-      <Input
-        type="text"
-        name="category"
-        placeholder="קטגוריה"
-        value={formData.category}
-        onChange={handleChange}
-        required
-      />
+
+      <div className="flex flex-col gap-2">
+        <label htmlFor="name" className="font-medium">
+          שם המנה
+        </label>
+        <Input
+          type="text"
+          id="name"
+          name="name"
+          placeholder="שם המנה"
+          value={formData.name}
+          onChange={handleChange}
+          required
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label htmlFor="description" className="font-medium">
+          תיאור המנה
+        </label>
+        <textarea
+          id="description"
+          name="description"
+          placeholder="תיאור המנה"
+          value={formData.description}
+          onChange={handleChange}
+          rows={4}
+          className="p-2 border rounded-md"
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label htmlFor="price" className="font-medium">
+          מחיר
+        </label>
+        <Input
+          type="number"
+          id="price"
+          name="price"
+          placeholder="מחיר"
+          value={formData.price}
+          onChange={handleChange}
+          required
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label htmlFor="image" className="font-medium">
+          תמונה
+        </label>
+        <Input
+          type="file"
+          id="image"
+          name="image"
+          onChange={(e) => handleFileChange(e, "image")}
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label htmlFor="category" className="font-medium">
+          קטגוריה
+        </label>
+        <Input
+          type="text"
+          id="category"
+          name="category"
+          placeholder="קטגוריה"
+          value={formData.category}
+          onChange={handleChange}
+          required
+        />
+      </div>
+
       <div className="flex items-center gap-2">
-        <label htmlFor="available">זמין:</label>
+        <label htmlFor="available" className="font-medium">
+          זמין:
+        </label>
         <input
           type="checkbox"
+          id="available"
           name="available"
           checked={formData.available}
           onChange={handleChange}
         />
       </div>
+
       <Button type="submit">הוסף פריט</Button>
       <div className="text-xl text-white">{successMessage}</div>
     </form>
