@@ -7,6 +7,7 @@ import DetailPage from "./pages/DetailPage/DetailPage";
 import EditRestaurant from "./pages/EditRestaurant/EditRestaurant";
 import CourierPage from "./pages/CourierPage/CourierPage";
 import MenuEdit from "./pages/MenuEdit/MenuEdit";
+import EditUser from "./pages/EditUser/EditUser";
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -26,6 +27,7 @@ const App: React.FC = () => {
       {state?.backgroundLocation && (
         <Routes>
           <Route path="/edit-restaurant" element={<EditRestaurant />} />
+          <Route path="/edit-user" element={<EditUser />} />
           {/* <Route path="/active-orders" element={<ActiveOrders />} /> */}
         </Routes>
       )}
