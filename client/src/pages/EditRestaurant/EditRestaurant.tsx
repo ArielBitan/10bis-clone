@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,6 +21,7 @@ import {
 } from "@/services/restaurantService";
 import { useUser } from "@/components/context/userContext";
 import { IRestaurantOwner } from "@/types/userType";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 interface FormDataState extends Omit<IRestaurant, "weekly_hours"> {
   weekly_hours: Array<{
@@ -57,42 +58,31 @@ const INITIAL_FORM_STATE: FormDataState = {
 };
 
 const EditRestaurant: React.FC = () => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [formData, setFormData] = useState<FormDataState>(INITIAL_FORM_STATE);
-  const [isLoading, setIsLoading] = useState(true);
   const { user } = useUser();
   const ownedRestId = (user as IRestaurantOwner)?.owned_restaurants?.[0];
   console.log(ownedRestId);
 
-  useEffect(() => {
-    const getRestaurant = async () => {
-      try {
-        const fetchedRestaurant = await fetchRestaurantById(
-          // "6776fdb5d1030347fd0fabd7"
-          ownedRestId
-        );
+  const { isLoading, isError } = useQuery({
+    queryKey: ["restaurant", ownedRestId],
+    queryFn: async () => {
+      const restaurant = await fetchRestaurantById(ownedRestId);
+      const transformedHours =
+        restaurant.weekly_hours && restaurant.weekly_hours.length > 0
+          ? restaurant.weekly_hours.map((hour) => ({
+              day: hour.day,
+              time_ranges: hour.time_ranges.split(", "),
+            }))
+          : INITIAL_FORM_STATE.weekly_hours;
 
-        // Transform weekly_hours data
-        const transformedHours =
-          fetchedRestaurant.weekly_hours?.map((hour) => ({
-            day: hour.day,
-            time_ranges: hour.time_ranges.split(", "),
-          })) || INITIAL_FORM_STATE.weekly_hours;
-
-        setFormData({
-          ...fetchedRestaurant,
-          weekly_hours: transformedHours,
-        });
-      } catch (error) {
-        console.error("Error fetching restaurant:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    getRestaurant();
-  }, []);
+      setFormData({ ...restaurant, weekly_hours: transformedHours });
+      return restaurant;
+    },
+    enabled: !!ownedRestId,
+  });
 
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -112,6 +102,7 @@ const EditRestaurant: React.FC = () => {
   ) => {
     setFormData((prev) => {
       const updatedHours = prev.weekly_hours.map((hour) => {
+        console.log(value);
         if (hour.day === day) {
           const [openTime, closeTime] = hour.time_ranges[0]?.split(" - ") || [
             "",
@@ -187,22 +178,27 @@ const EditRestaurant: React.FC = () => {
           time_ranges: hour.time_ranges.join(", "),
         })),
       };
-
+      console.log(submissionData.weekly_hours);
       const response = await updateRestaurant(ownedRestId, submissionData);
 
       if (!response) {
         throw new Error("Failed to update restaurant");
       }
-
+      queryClient.invalidateQueries({ queryKey: ["restaurant", ownedRestId] });
       navigate("/");
     } catch (error) {
       console.error("Error updating restaurant:", error);
     }
   };
 
-  if (isLoading) {
-    return <div className="p-4 text-center">Loading...</div>;
-  }
+  if (isLoading) return <div className="p-4 text-center">טוען...</div>;
+
+  if (isError)
+    return (
+      <div className="p-4 text-center text-red-500">
+        שגיאה בטעינת נתוני המסעדה
+      </div>
+    );
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
@@ -349,7 +345,6 @@ const EditRestaurant: React.FC = () => {
             type="file"
             onChange={(e) => handleFileChange(e, "image")}
             placeholder="בחר תמונה"
-            required
             accept="image/*"
           />
 
@@ -358,7 +353,6 @@ const EditRestaurant: React.FC = () => {
             type="file"
             onChange={(e) => handleFileChange(e, "background_image")}
             placeholder="בחר תמונה"
-            required
             accept="image/*"
           />
 

@@ -55,6 +55,7 @@ export const updateRestaurant = async (
   updatedData: Partial<IRestaurant>
 ): Promise<IRestaurant> => {
   try {
+    console.log(updatedData.name);
     const { data } = await api.put<IRestaurant>(
       `/restaurants/${restaurantId}`,
       updatedData,

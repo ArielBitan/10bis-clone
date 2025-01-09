@@ -1,38 +1,34 @@
 import { fetchRestaurantById } from "@/services/restaurantService";
-import { IRestaurant } from "@/types/restaurantTypes";
-import { useEffect, useState } from "react";
 import { useUser } from "../context/userContext";
 import Chart from "../Chart";
 import Order from "../orders/Order";
 import { OrdersTable } from "../orders/Orders";
+import { IRestaurantOwner } from "@/types/userType";
+import { useQuery } from "@tanstack/react-query";
 
 const RestaurantOwnerDashboard = () => {
-  const [restaurant, setRestaurant] = useState<IRestaurant | null>(null);
   const { user } = useUser();
-  console.log(user);
+  const ownedRestId = (user as IRestaurantOwner)?.owned_restaurants?.[0];
 
-  useEffect(() => {
-    const getRestaurant = async () => {
-      try {
-        const fetchedRestaurant = await fetchRestaurantById(
-          //   user?.owned_restaurants[0]
-          "6776fdb5d1030347fd0fabd7"
-        );
-        setRestaurant(fetchedRestaurant);
-        console.log(fetchedRestaurant);
-      } catch (error) {
-        console.error("Error fetching restaurant:", error);
-      }
-    };
+  const {
+    data: restaurant,
+    isLoading: isRestaurantLoading,
+    isError: isRestaurantError,
+  } = useQuery({
+    queryKey: ["restaurant", ownedRestId],
+    queryFn: () => fetchRestaurantById(ownedRestId),
+    enabled: !!ownedRestId,
+  });
 
-    getRestaurant();
-  }, []);
+  if (isRestaurantLoading) return <div>Loading ...</div>;
+  if (isRestaurantError) return <div>Error loading</div>;
+  if (!restaurant) return <div>No restaurant data available</div>;
 
   return (
     <div>
       <div className="relative">
         <img
-          src={restaurant?.background_image}
+          src={restaurant?.background_image as string}
           alt="background_image"
           className="object-cover w-full h-auto"
         />
@@ -44,7 +40,7 @@ const RestaurantOwnerDashboard = () => {
         ></div>
         <div className="absolute inset-0 flex flex-col items-center justify-center top-3/4">
           <img
-            src={restaurant?.image}
+            src={restaurant?.image as string}
             alt="logo"
             className="object-cover border-4 rounded-full w-36 h-36 border-slate-100"
           />
@@ -57,7 +53,7 @@ const RestaurantOwnerDashboard = () => {
       <div className="px-4 mt-[100px] flex flex-col items-center justify-center">
         <div className="mb-2 text-xl">כל ההזמנות</div>
         <OrdersTable />
-      <Order/>
+        <Order />
         {restaurant?._id ? <Chart id={restaurant._id} /> : <div>xxx</div>}
       </div>
     </div>

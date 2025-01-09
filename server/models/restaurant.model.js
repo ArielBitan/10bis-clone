@@ -19,8 +19,11 @@ const restaurantSchema = new mongoose.Schema(
     is_kosher: { type: Boolean, default: false },
     weekly_hours: [
       {
-        day: { type: String, required: true },
-        time_ranges: { type: String, required: true },
+        day: { type: String },
+        time_ranges: {
+          type: String,
+          default: "08:00 - 15:00",
+        },
       },
     ],
   },

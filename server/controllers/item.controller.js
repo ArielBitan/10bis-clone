@@ -1,9 +1,13 @@
-const MenuItem = require("../models/menu-item.model");
 const itemService = require("../services/item.service");
+const validateAndUploadImage = require("../utils/uploadImage");
 
 exports.createItem = async (req, res) => {
   try {
-    const item = await itemService.createItem(req.body);
+    let updateData = { ...req.body };
+    if (req.file) {
+      updateData.image = await validateAndUploadImage(req.file);
+    }
+    const item = await itemService.createItem(updateData);
     res.status(201).json(item);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -12,10 +16,16 @@ exports.createItem = async (req, res) => {
 
 exports.updateItem = async (req, res) => {
   try {
-    const updatedItem = await itemService.updateItem(req.params.id, req.body);
+    let updateData = { ...req.body };
+
+    if (req.file) {
+      updateData.image = await validateAndUploadImage(req.file);
+    }
+    const updatedItem = await itemService.updateItem(req.params.id, updateData);
     if (!updatedItem) {
       return res.status(404).json({ message: "Item not found" });
     }
+
     res.status(200).json(updatedItem);
   } catch (error) {
     res.status(400).json({ message: error.message });
