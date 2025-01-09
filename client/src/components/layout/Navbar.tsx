@@ -10,6 +10,7 @@ const Navbar = () => {
   const { user } = useUser();
   console.log(user);
   const role = user?.role;
+  const guestAddress = localStorage.getItem("userAddress");
 
   return (
     <>
@@ -75,7 +76,7 @@ const Navbar = () => {
                 משלוח ל:
               </span>
               <div className="text-right truncate max-w-[150px] sm:max-w-[150px] md:max-w-[150px] lg:max-w-full overflow-hidden whitespace-nowrap text-ellipsis">
-                החילזון 3 , רמת גן
+                {guestAddress}
               </div>
               <IoIosArrowDown />
             </button>
