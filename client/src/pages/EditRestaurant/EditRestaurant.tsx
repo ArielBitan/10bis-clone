@@ -19,6 +19,8 @@ import {
   fetchRestaurantById,
   updateRestaurant,
 } from "@/services/restaurantService";
+import { useUser } from "@/components/context/userContext";
+import { IRestaurantOwner } from "@/types/userType";
 
 interface FormDataState extends Omit<IRestaurant, "weekly_hours"> {
   weekly_hours: Array<{
@@ -59,12 +61,16 @@ const EditRestaurant: React.FC = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [formData, setFormData] = useState<FormDataState>(INITIAL_FORM_STATE);
   const [isLoading, setIsLoading] = useState(true);
+  const { user } = useUser();
+  const ownedRestId = (user as IRestaurantOwner)?.owned_restaurants?.[0];
+  console.log(ownedRestId);
 
   useEffect(() => {
     const getRestaurant = async () => {
       try {
         const fetchedRestaurant = await fetchRestaurantById(
-          "6776fdb5d1030347fd0fabd7"
+          // "6776fdb5d1030347fd0fabd7"
+          ownedRestId
         );
 
         // Transform weekly_hours data
@@ -198,7 +204,7 @@ const EditRestaurant: React.FC = () => {
   };
 
   if (isLoading) {
-    return <div className="text-center p-4">Loading...</div>;
+    return <div className="p-4 text-center">Loading...</div>;
   }
 
   return (
@@ -243,14 +249,14 @@ const EditRestaurant: React.FC = () => {
             <Button
               type="button"
               onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="w-full justify-start"
+              className="justify-start w-full"
             >
               בחר קטגוריות
             </Button>
 
             {dropdownOpen && (
               <div className="absolute z-10 w-56 mt-2 bg-white border rounded-md shadow-lg">
-                <ul className="p-2 max-h-48 overflow-y-auto">
+                <ul className="p-2 overflow-y-auto max-h-48">
                   {categories.map((category) => (
                     <li
                       key={category.id}
