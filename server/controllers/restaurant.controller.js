@@ -9,20 +9,15 @@ exports.createRestaurant = async (req, res) => {
     // Handle image updates if files are provided
     if (req.files.background_image) {
       const background_image = req.files.background_image[0];
-      const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
-      if (!allowedMimeTypes.includes(background_image.mimetype)) {
-        return res.status(400).json({
-          message:
-            "Invalid background image type. Only JPEG, PNG and WebP are allowed",
-        });
-      }
       updateData.background_image = await validateAndUploadImage(
         background_image
       );
     }
 
     if (req.files.image) {
-      updateData.image = await validateAndUploadImage(req.files.image);
+      const image = req.files.image[0];
+
+      updateData.image = await validateAndUploadImage(image);
     }
 
     const restaurant = await restaurantService.createRestaurant(updateData);

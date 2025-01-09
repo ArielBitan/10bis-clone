@@ -18,9 +18,9 @@ exports.getRestaurantById = async (id) => {
 
 exports.updateRestaurant = async (id, updateData) => {
   try {
+    console.log(updateData);
     const restaurant = await Restaurant.findByIdAndUpdate(id, updateData, {
       new: true,
-      runValidators: true,
     });
     return restaurant;
   } catch (error) {
