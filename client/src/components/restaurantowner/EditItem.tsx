@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { IMenuItem } from "@/types/restaurantTypes";
 import { updateMenuItem } from "@/services/menuItem";
+import { Loader } from "lucide-react";
 
 interface EditItemProps {
   item: IMenuItem;
@@ -11,6 +12,7 @@ interface EditItemProps {
 
 const EditItem: React.FC<EditItemProps> = ({ item, renderFunc }) => {
   const [successMessage, setSuccessMessage] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState<IMenuItem>({
     name: item.name,
     description: item.description,
@@ -63,6 +65,7 @@ const EditItem: React.FC<EditItemProps> = ({ item, renderFunc }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     setSuccessMessage("");
     if (item._id)
       try {
@@ -75,6 +78,7 @@ const EditItem: React.FC<EditItemProps> = ({ item, renderFunc }) => {
         setSuccessMessage("בעיה בעריכה!");
       } finally {
         clearForm();
+        setLoading(false);
       }
   };
 
@@ -132,7 +136,13 @@ const EditItem: React.FC<EditItemProps> = ({ item, renderFunc }) => {
           onChange={handleChange}
         />
       </div>
-      <Button type="submit">ערוך פריט</Button>
+      <Button
+        type="submit"
+        className="w-full bg-green-600 hover:bg-green-700"
+        disabled={loading as boolean}
+      >
+        {loading ? <Loader /> : <div>שמור שינויים</div>}
+      </Button>
       <div className="text-xl text-white">{successMessage}</div>
     </form>
   );

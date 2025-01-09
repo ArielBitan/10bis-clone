@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import Loader from "@/components/Loader";
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -64,7 +65,7 @@ const EditRestaurant: React.FC = () => {
   const [formData, setFormData] = useState<FormDataState>(INITIAL_FORM_STATE);
   const { user } = useUser();
   const ownedRestId = (user as IRestaurantOwner)?.owned_restaurants?.[0];
-  console.log(ownedRestId);
+  const [loading, setLoading] = useState(false);
 
   const { isLoading, isError } = useQuery({
     queryKey: ["restaurant", ownedRestId],
@@ -168,7 +169,7 @@ const EditRestaurant: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    setLoading(true);
     try {
       // Transform weekly_hours back to the format expected by the API
       const submissionData = {
@@ -188,6 +189,8 @@ const EditRestaurant: React.FC = () => {
       navigate("/");
     } catch (error) {
       console.error("Error updating restaurant:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -394,8 +397,12 @@ const EditRestaurant: React.FC = () => {
             <option value="non-kosher">לא כשר</option>
           </select>
 
-          <Button type="submit" className="w-full">
-            שמור שינויים
+          <Button
+            type="submit"
+            className="w-full bg-green-600 hover:bg-green-700"
+            disabled={loading}
+          >
+            {loading ? <Loader /> : <div>שמור שינויים</div>}
           </Button>
         </form>
       </div>

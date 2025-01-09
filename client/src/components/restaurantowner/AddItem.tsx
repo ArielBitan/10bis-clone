@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { IMenuItem } from "@/types/restaurantTypes";
 import { createMenuItem } from "@/services/menuItem";
+import { Loader } from "lucide-react";
 
 type IMenuItemF = Omit<IMenuItem, "_id">;
 
@@ -13,6 +14,7 @@ interface AddItemProps {
 
 const AddItem: React.FC<AddItemProps> = ({ resId, onItemAdded }) => {
   const [successMessage, setSuccessMessage] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState<IMenuItemF>({
     name: "",
     description: "",
@@ -66,6 +68,7 @@ const AddItem: React.FC<AddItemProps> = ({ resId, onItemAdded }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     setSuccessMessage("");
     try {
       const newItem = await createMenuItem(formData);
@@ -77,6 +80,7 @@ const AddItem: React.FC<AddItemProps> = ({ resId, onItemAdded }) => {
       setSuccessMessage("בעיה ביצירת הפריט!");
     } finally {
       clearForm();
+      setLoading(false);
     }
   };
 
@@ -173,7 +177,13 @@ const AddItem: React.FC<AddItemProps> = ({ resId, onItemAdded }) => {
         />
       </div>
 
-      <Button type="submit">הוסף פריט</Button>
+      <Button
+        type="submit"
+        className="w-full bg-green-600 hover:bg-green-700"
+        disabled={loading as boolean}
+      >
+        {loading ? <Loader /> : <div>הוסף פריט</div>}
+      </Button>
       <div className="text-xl text-white">{successMessage}</div>
     </form>
   );

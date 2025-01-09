@@ -30,7 +30,7 @@ const RestaurantOwnerDashboard = () => {
         <img
           src={restaurant?.background_image as string}
           alt="background_image"
-          className="object-cover w-full h-auto"
+          className="object-fill max-h-[400px] w-full"
         />
         <div
           className="absolute top-0 left-0 w-full h-full bg-white"

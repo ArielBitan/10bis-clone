@@ -75,13 +75,9 @@ const MenuEdit = () => {
       <Navbar />
       <div className="relative">
         <img
-          src={
-            data.background_image instanceof File
-              ? URL.createObjectURL(data.background_image)
-              : data.background_image
-          }
+          src={data.background_image as string}
           alt="background_image"
-          className="object-cover w-full h-auto"
+          className="object-fill w-full max-h-[400px]"
           onLoad={(e) => {
             if (data.background_image instanceof File) {
               URL.revokeObjectURL((e.target as HTMLImageElement).src);
