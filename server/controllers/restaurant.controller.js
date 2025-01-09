@@ -1,12 +1,69 @@
 const MenuItem = require("../models/menu-item.model");
 const restaurantService = require("../services/restaurant.service");
+const cloudinary = require("cloudinary");
+
+// Helper function for image upload
+const uploadImageToCloudinary = async (file) => {
+  try {
+    const base64Data = Buffer.from(file.buffer).toString("base64");
+    const dataURI = `data:${file.mimetype};base64,${base64Data}`;
+
+    const uploadResponse = await cloudinary.v2.uploader.upload(dataURI, {
+      resource_type: "image",
+      quality: "auto",
+      fetch_format: "auto",
+    });
+
+    return uploadResponse.url;
+  } catch (error) {
+    throw new Error(`Error uploading image to Cloudinary: ${error.message}`);
+  }
+};
 
 exports.createRestaurant = async (req, res) => {
   try {
-    const restaurant = await restaurantService.createRestaurant(req.body);
-    res.status(201).json(restaurant);
+    // Input validation
+    if (!req.files || !req.files.background_image || !req.files.image) {
+      return res.status(400).json({
+        message: "Both background image and restaurant image are required",
+      });
+    }
+
+    const background_image = req.files.background_image[0];
+    const image = req.files.image[0];
+
+    // Validate file types
+    const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
+    if (
+      !allowedMimeTypes.includes(background_image.mimetype) ||
+      !allowedMimeTypes.includes(image.mimetype)
+    ) {
+      return res.status(400).json({
+        message: "Invalid file type. Only JPEG, PNG and WebP are allowed",
+      });
+    }
+
+    // Handle image uploads
+    const [backgroundImageUrl, imageUrl] = await Promise.all([
+      uploadImageToCloudinary(background_image),
+      uploadImageToCloudinary(image),
+    ]);
+
+    // Create restaurant with images
+    const restaurantData = {
+      ...req.body,
+      background_image: backgroundImageUrl.url,
+      image: imageUrl.url,
+    };
+
+    const restaurant = await restaurantService.createRestaurant(restaurantData);
+
+    return res.status(201).json(restaurant);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error("Error creating restaurant:", error);
+    return res.status(error.status || 500).json({
+      message: error.message || "Internal server error",
+    });
   }
 };
 
@@ -47,16 +104,57 @@ exports.getRestaurantById = async (req, res) => {
 
 exports.updateRestaurant = async (req, res) => {
   try {
-    const updatedRestaurant = await restaurantService.updateRestaurant(
-      req.params.id,
-      req.body
+    if (!req.files) {
+      return res.status(400).json({ message: "No files uploaded" });
+    }
+
+    const restaurantId = req.params.id;
+    let updateData = { ...req.body };
+    // Check if restaurant exists
+    const existingRestaurant = await restaurantService.getRestaurantById(
+      restaurantId
     );
-    if (!updatedRestaurant) {
+    if (!existingRestaurant) {
       return res.status(404).json({ message: "Restaurant not found" });
     }
-    res.status(200).json(updatedRestaurant);
+    // Handle image updates if files are provided
+    if (req.files.background_image) {
+      const background_image = req.files.background_image[0];
+      const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
+      if (!allowedMimeTypes.includes(background_image.mimetype)) {
+        return res.status(400).json({
+          message:
+            "Invalid background image type. Only JPEG, PNG and WebP are allowed",
+        });
+      }
+
+      updateData.background_image = await uploadImageToCloudinary(
+        background_image
+      );
+    }
+
+    if (req.files.image) {
+      const image = req.files.image[0];
+      const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
+      if (!allowedMimeTypes.includes(image.mimetype)) {
+        return res.status(400).json({
+          message: "Invalid image type. Only JPEG, PNG and WebP are allowed",
+        });
+      }
+      updateData.image = await uploadImageToCloudinary(image);
+    }
+
+    const updatedRestaurant = await restaurantService.updateRestaurant(
+      restaurantId,
+      updateData
+    );
+
+    return res.status(200).json(updatedRestaurant);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error("Error updating restaurant:", error);
+    return res.status(error.status || 500).json({
+      message: error.message || "Internal server error",
+    });
   }
 };
 

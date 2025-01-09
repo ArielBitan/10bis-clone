@@ -14,8 +14,8 @@ export interface IRestaurant {
   name: string;
   description?: string;
   cuisine_types: string[];
-  image: string;
-  background_image: string;
+  image: File | string;
+  background_image: File | string;
   location?: Location;
   min_order?: string;
   delivery_fee?: string;

@@ -57,7 +57,12 @@ export const updateRestaurant = async (
   try {
     const { data } = await api.put<IRestaurant>(
       `/restaurants/${restaurantId}`,
-      updatedData
+      updatedData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
     return data;
   } catch (error) {
