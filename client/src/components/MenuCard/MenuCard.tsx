@@ -38,7 +38,7 @@ const MenuCard: React.FC<MenuItemCardProps> = ({ item, renderFunc }) => {
     }
   };
 
-  if (isRestOwner) {
+  if (!isRestOwner) {
     return (
       <div className="flex justify-between w-auto mx-6 my-4 transition duration-300 border shadow-lg hover:shadow-xl hover:border-gray-300">
         <div className="flex flex-col justify-between px-4 pt-4">
