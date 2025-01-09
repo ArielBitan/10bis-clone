@@ -188,10 +188,7 @@ const EditRestaurant: React.FC = () => {
         })),
       };
 
-      const response = await updateRestaurant(
-        "6776fdb5d1030347fd0fabd7",
-        submissionData
-      );
+      const response = await updateRestaurant(ownedRestId, submissionData);
 
       if (!response) {
         throw new Error("Failed to update restaurant");

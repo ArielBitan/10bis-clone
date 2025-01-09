@@ -17,20 +17,21 @@ const MenuEdit = () => {
   const { user } = useUser();
   const ownedRestId = (user as IRestaurantOwner)?.owned_restaurants?.[0];
   console.log(ownedRestId);
-  
+
   const queryClient = useQueryClient();
   // const [menu, setMenu] = useState<IMenuItem[] | null | []>(null);
   const renderFunc = () => {
     queryClient.invalidateQueries({ queryKey: ["restaurant"] });
   };
-console.log(user);
+  console.log(user);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["restaurant"],
-    queryFn: () => fetchRestaurantById(
-      // "6776fdb5d1030347fd0fabd7" 
-      ownedRestId
-    ),//enter the real restaurant
+    queryFn: () =>
+      fetchRestaurantById(
+        // "6776fdb5d1030347fd0fabd7"
+        ownedRestId
+      ), //enter the real restaurant
   });
 
   const [selectedCategory, setSelectedCategory] = useState<string>("");
@@ -53,12 +54,15 @@ console.log(user);
   if (isError) return <div>Error loading </div>;
   if (!data) return <div>No data available</div>;
 
-  const uniqueCategories = data?.menuItems?.reduce<string[]>((categories, item) => {
-    if (item.category && !categories.includes(item?.category)) {
-      categories.push(item?.category);
-    }
-    return categories;
-  }, []);
+  const uniqueCategories = data?.menuItems?.reduce<string[]>(
+    (categories, item) => {
+      if (item.category && !categories.includes(item?.category)) {
+        categories.push(item?.category);
+      }
+      return categories;
+    },
+    []
+  );
 
   const searchedMenuItems = data?.menuItems?.filter((item) =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -76,9 +80,18 @@ console.log(user);
       <Navbar />
       <div className="relative">
         <img
-          src={data.background_image}
+          src={
+            data.background_image instanceof File
+              ? URL.createObjectURL(data.background_image)
+              : data.background_image
+          }
           alt="background_image"
           className="object-cover w-full h-auto"
+          onLoad={(e) => {
+            if (data.background_image instanceof File) {
+              URL.revokeObjectURL((e.target as HTMLImageElement).src);
+            }
+          }}
         />
         <div
           className="absolute top-0 left-0 w-full h-full bg-white"
@@ -88,9 +101,18 @@ console.log(user);
         ></div>
         <div className="absolute inset-0 items-center justify-center hidden top-2/3 md:flex">
           <img
-            src={data.image}
+            src={
+              data.image instanceof File
+                ? URL.createObjectURL(data.image)
+                : data.image
+            }
             alt="logo"
             className="object-cover border-4 rounded-full w-36 h-36 border-slate-100"
+            onLoad={(e) => {
+              if (data.image instanceof File) {
+                URL.revokeObjectURL((e.target as HTMLImageElement).src);
+              }
+            }}
           />
         </div>
       </div>
