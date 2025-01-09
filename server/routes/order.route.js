@@ -6,6 +6,8 @@ const {
   checkCourierActiveOrder,
 } = require("../middleware/courierAuth.middleware");
 
+const { authenticateUser } = require("../middleware/auth.middleware");
+
 // Routes
 router.post("/", orderController.createOrder);
 router.get("/", orderController.getAllOrders);
@@ -16,7 +18,6 @@ router.get(
   authenticateCourier,
   orderController.getActiveOrder
 );
-
 router.get("/user/:userId", orderController.getOrdersByUser);
 router.put(
   "/:id/accept",
@@ -26,5 +27,11 @@ router.put(
 );
 router.put("/:id/status/:status", orderController.updateOrderStatus);
 router.delete("/:id", orderController.deleteOrder);
+
+router.post(
+  "/checkout/create-checkout-session",
+  authenticateUser,
+  orderController.createCheckoutSession
+);
 
 module.exports = router;
