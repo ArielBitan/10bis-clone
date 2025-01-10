@@ -12,9 +12,7 @@ const HomePage = () => {
   useEffect(() => {
     fetchUser();
   }, []);
-  console.log(user);
   const role = user?.role;
-  console.log(role);
 
   return role ? (
     role === "restaurant_owner" ? (
@@ -28,7 +26,7 @@ const HomePage = () => {
     ) : (
       <div className="bg-gray-100">
         <Navbar />
-        <div className="grid gap-4 mx-60 ">
+        <div className="grid gap-4 mx-60">
           <HeroSection />
           <CategoriesSection />
           <AllRestaurants />

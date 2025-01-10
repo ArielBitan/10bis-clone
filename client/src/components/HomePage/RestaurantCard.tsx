@@ -14,12 +14,12 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({ item }) => {
   return (
     <div
       onClick={() => {
-        navigateToDetails(item._id);
+        navigateToDetails(item._id as string);
       }}
       className=" max-w-[325px] mb-2 border shadow-lg"
     >
       <img
-        src={item.background_image}
+        src={item.background_image as string}
         alt="background_image"
         className="w-max"
       />

@@ -12,7 +12,7 @@ const CategoriesSection = () => {
 
   return (
     <div className="col-start-1 row-start-1 row-span-3">
-      <div className="bg-white border border-gray-300 ">
+      <div className="bg-white border border-gray-300 sticky top-20">
         <div
           className={`ml-4 overflow-hidden transition-[max-height] duration-500 ${
             showOverflow ? "max-h-[1000px]" : "max-h-[270px]"
