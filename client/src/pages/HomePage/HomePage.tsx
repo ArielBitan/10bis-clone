@@ -1,17 +1,20 @@
 import HeroSection from "@/components/HomePage/HeroSection";
 import AllRestaurants from "@/components/HomePage/AllRestaurants";
 import Navbar from "@/components/layout/Navbar";
-import CategoriesSection from "@/components/HomePage/CategoriesSection";
-import { useUser } from "@/components/context/userContext";
-import RestaurantOwnerDashboard from "@/components/restaurantOwner/RestaurantOwnerDashboard";
-import { useEffect } from "react";
 import CourierPage from "../CourierPage/CourierPage";
+import CategoriesSection from "@/components/HomePage/CategoriesSection/CategoriesSection";
+import RestaurantOwnerDashboard from "@/components/restaurantOwner/RestaurantOwnerDashboard";
+
+import { useUser } from "@/components/context/userContext";
+import { useEffect } from "react";
 
 const HomePage = () => {
   const { user, fetchUser } = useUser();
+
   useEffect(() => {
     fetchUser();
   }, []);
+
   const role = user?.role;
 
   return role ? (

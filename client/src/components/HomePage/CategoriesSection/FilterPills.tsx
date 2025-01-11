@@ -18,7 +18,7 @@ const FilterPills = () => {
         {filters.map((filter, index) => (
           <div
             key={index}
-            className="px-4 py-2 bg-white rounded-full text-sm border border-gray-200 hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
+            className="px-2 py-1 rounded-full bg-gray-100 text-sm border border-gray-200 hover:bg-gray-300 transition-colors duration-200 cursor-pointer"
           >
             {filter}
           </div>
