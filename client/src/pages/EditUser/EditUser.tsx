@@ -57,7 +57,7 @@ const EditUser: React.FC = () => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div
-        className="w-[70%] h-[85%] sm:max-w-[700px] overflow-auto p-10 text-3xl bg-orangePrimary relative rounded-md"
+        className="w-[70%] h-[50%] sm:max-w-[700px] overflow-auto p-10 text-3xl bg-orangePrimary relative rounded-md"
         onClick={(e) => e.stopPropagation()}
       >
         <button

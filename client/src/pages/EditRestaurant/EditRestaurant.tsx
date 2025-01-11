@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import Loader from "@/components/Loader";
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -23,6 +22,7 @@ import {
 import { useUser } from "@/components/context/userContext";
 import { IRestaurantOwner } from "@/types/userType";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import Loading from "@/components/Loading";
 
 interface FormDataState extends Omit<IRestaurant, "weekly_hours"> {
   weekly_hours: Array<{
@@ -402,7 +402,7 @@ const EditRestaurant: React.FC = () => {
             className="w-full bg-green-600 hover:bg-green-700"
             disabled={loading}
           >
-            {loading ? <Loader /> : <div>שמור שינויים</div>}
+            {loading ? <Loading/> : <div>שמור שינויים</div>}
           </Button>
         </form>
       </div>

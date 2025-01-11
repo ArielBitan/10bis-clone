@@ -4,6 +4,7 @@ import AvailableOrders from "@/components/CourierPage/AvailableOrders";
 import { useEffect, useState } from "react";
 import { useUser } from "@/components/context/userContext";
 import { fetchUserProfile } from "@/services/userService";
+import Loading from "@/components/Loading";
 
 const CourierPage = () => {
   const { setUser } = useUser();
@@ -22,13 +23,13 @@ const CourierPage = () => {
   }, []);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loading/>;
   }
 
   return (
-    <div className="max-w-md mx-auto h-screen bg-gray-50">
-      <div className="bg-orangePrimary p-4 shadow-sm sticky top-0 z-10">
-        <div className="flex justify-between items-center">
+    <div className="h-screen max-w-md mx-auto bg-gray-50">
+      <div className="sticky top-0 z-10 p-4 shadow-sm bg-orangePrimary">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <UserMenu />
           </div>

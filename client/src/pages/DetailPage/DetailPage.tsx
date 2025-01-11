@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { FaStar } from "react-icons/fa6";
 import { FiSearch } from "react-icons/fi";
 import { useParams } from "react-router-dom";
+import Loading from "@/components/Loading";
 
 const DetailPage = () => {
   const { id } = useParams();
@@ -29,8 +30,9 @@ const DetailPage = () => {
     }
   }, [data]);
 
-  if (isLoading) return <div>Loading ...</div>;
-  if (isError) return <div>Error loading </div>;
+  if (isLoading) return <Loading/>;
+  if (isError) return <div>Error loading
+    <Loading/> </div>;
   if (!data) return <div>No data available</div>;
 
   const uniqueCategories = data.menuItems.reduce((categories, item) => {
@@ -51,7 +53,7 @@ const DetailPage = () => {
         <img
           src={data.background_image}
           alt="background_image"
-          className="w-full h-auto object-cover"
+          className="object-cover w-full h-auto"
         />
         <div
           className="absolute top-0 left-0 w-full h-full bg-white"
@@ -59,18 +61,18 @@ const DetailPage = () => {
             clipPath: "polygon(0 85%, 100% 65%, 100% 100%, 0 100%)",
           }}
         ></div>
-        <div className="absolute inset-0 top-2/3 items-center justify-center hidden md:flex">
+        <div className="absolute inset-0 items-center justify-center hidden top-2/3 md:flex">
           <img
             src={data.image}
             alt="logo"
-            className="w-36 h-36 rounded-full object-cover border-4 border-slate-100"
+            className="object-cover border-4 rounded-full w-36 h-36 border-slate-100"
           />
         </div>
       </div>
       <div className="px-4">
-        <div className="flex gap-1 datas-center text-sm ">
-          <div className="flex datas-center gap-1">
-            <FaStar className="text-yellow-500 mb-1" />
+        <div className="flex gap-1 text-sm datas-center ">
+          <div className="flex gap-1 datas-center">
+            <FaStar className="mb-1 text-yellow-500" />
             <span>0</span>
           </div>
           <span>•</span>
@@ -87,7 +89,7 @@ const DetailPage = () => {
           </div>
         </div>
         {data.description && (
-          <div className=" m-3 font-bold">{`*${data.description}`}</div>
+          <div className="m-3 font-bold ">{`*${data.description}`}</div>
         )}
         <InfoRestaurant item={data} />
         <div className="flex items-center mt-4">
@@ -98,13 +100,13 @@ const DetailPage = () => {
               placeholder={`חיפוש ב${data.name}`}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="border-none h-4 text-sm bg-gray-100"
+              className="h-4 text-sm bg-gray-100 border-none"
             />
           </div>
         </div>
       </div>
 
-      <div className="flex gap-4 overflow-x-auto categories-scroll mt-4">
+      <div className="flex gap-4 mt-4 overflow-x-auto categories-scroll">
         {uniqueCategories.map((category) => (
           <div
             key={category}

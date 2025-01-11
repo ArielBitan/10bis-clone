@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getActiveOrder, updateOrderStatus } from "@/services/orderService";
 import { useState } from "react";
 import NextLocationCard from "./NextLocationCard";
+import Loading from "../Loading";
 
 interface ActiveOrderProps {
   setIsDelivering: React.Dispatch<React.SetStateAction<Boolean>>;
@@ -60,9 +61,15 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
     );
   };
 
-  if (isLoading) return <div>Loading ...</div>;
-  if (isError) return <div>Error loading </div>;
-  if (!activeOrder) return <div>loading..</div>;
+  if (isLoading) return <Loading />;
+  if (isError)
+    return (
+      <div>
+        Error loading
+        <Loading />
+      </div>
+    );
+  if (!activeOrder) return <Loading />;
 
   return (
     <div className="p-4 space-y-4">
@@ -74,7 +81,7 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
               <h2 className="text-lg font-bold">
                 הזמנה נוכחית #{activeOrder._id}
               </h2>
-              <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
+              <span className="px-3 py-1 text-sm text-blue-700 bg-blue-100 rounded-full">
                 {activeOrder.status === "Accepted" ? "איסוף" : "משלוח"}
               </span>
             </div>
@@ -102,7 +109,7 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
               <ul className="text-sm text-gray-600">
                 {activeOrder.order_items.map((item) => (
                   <li key={item._id} className="flex items-center gap-2">
-                    <Package className="h-4 w-4" />
+                    <Package className="w-4 h-4" />
                     {item.name} - {item.price} ₪
                   </li>
                 ))}
@@ -115,23 +122,23 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
                 <button
                   onClick={() => handleOrderStatusChange("Picked Up")}
                   disabled={mutation.isPending}
-                  className="w-full py-3 bg-green-500 text-white rounded-lg flex items-center justify-center gap-2 hover:bg-green-600 disabled:bg-gray-400"
+                  className="flex items-center justify-center w-full gap-2 py-3 text-white bg-green-500 rounded-lg hover:bg-green-600 disabled:bg-gray-400"
                 >
-                  <CheckCircle className="h-5 w-5" />
+                  <CheckCircle className="w-5 h-5" />
                   {mutation.isPending ? "מעדכן..." : "אשר איסוף"}
                 </button>
               ) : (
                 <button
                   onClick={() => handleOrderStatusChange("Delivered")}
                   disabled={mutation.isPending}
-                  className="w-full py-3 bg-green-500 text-white rounded-lg flex items-center justify-center gap-2 hover:bg-green-600 disabled:bg-gray-400"
+                  className="flex items-center justify-center w-full gap-2 py-3 text-white bg-green-500 rounded-lg hover:bg-green-600 disabled:bg-gray-400"
                 >
-                  <CheckCircle className="h-5 w-5" />
+                  <CheckCircle className="w-5 h-5" />
                   {mutation.isPending ? "מעדכן..." : "אשר משלוח"}
                 </button>
               )}
-              <button className="w-full py-3 border border-red-500 text-red-500 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-100">
-                <AlertCircle className="h-5 w-5" />
+              <button className="flex items-center justify-center w-full gap-2 py-3 text-red-500 border border-red-500 rounded-lg hover:bg-gray-100">
+                <AlertCircle className="w-5 h-5" />
                 דיווח על תקלה
               </button>
             </div>

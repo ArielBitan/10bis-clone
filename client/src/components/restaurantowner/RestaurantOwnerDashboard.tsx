@@ -5,6 +5,7 @@ import Order from "../orders/Order";
 import { OrdersTable } from "../orders/Orders";
 import { IRestaurantOwner } from "@/types/userType";
 import { useQuery } from "@tanstack/react-query";
+import Loading from "../Loading";
 
 const RestaurantOwnerDashboard = () => {
   const { user } = useUser();
@@ -20,8 +21,10 @@ const RestaurantOwnerDashboard = () => {
     enabled: !!ownedRestId,
   });
 
-  if (isRestaurantLoading) return <div>Loading ...</div>;
-  if (isRestaurantError) return <div>Error loading</div>;
+  if (isRestaurantLoading) return <Loading/>;
+  if (isRestaurantError) return <div>Error loading
+    <Loading/>
+  </div>;
   if (!restaurant) return <div>No restaurant data available</div>;
 
   return (

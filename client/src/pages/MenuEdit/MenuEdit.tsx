@@ -12,6 +12,7 @@ import AddItem from "@/components/restaurantOwner/AddItem";
 import { useQueryClient } from "@tanstack/react-query";
 import { useUser } from "@/components/context/userContext";
 import { IRestaurantOwner } from "@/types/userType";
+import Loading from "@/components/Loading";
 
 const MenuEdit = () => {
   const { user } = useUser();
@@ -45,8 +46,14 @@ const MenuEdit = () => {
     // }
   }, [data]);
 
-  if (isLoading) return <div>Loading ...</div>;
-  if (isError) return <div>Error loading </div>;
+  if (isLoading) return <Loading />;
+  if (isError)
+    return (
+      <div>
+        Error loading
+        <Loading />
+      </div>
+    );
   if (!data) return <div>No data available</div>;
 
   const uniqueCategories = data?.menuItems?.reduce<string[]>(
