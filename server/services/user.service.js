@@ -23,6 +23,7 @@ const userService = {
       {
         email,
         _id: user._id,
+        phone: user.phone,
         first_name: user.first_name,
         last_name: user.last_name,
         role: user.role,

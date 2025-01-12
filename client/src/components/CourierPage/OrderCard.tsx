@@ -32,21 +32,25 @@ const OrderCard: React.FC<IOrderCardProps> = ({
 
   const toggleDetails = () => setShowDetails(!showDetails);
 
-  // const openInWaze = () => {
-  //   if (restaurant.location?.coordinates && user.location?.coordinates) {
-  //     const destination = `${user.location.coordinates[0]},${user.location.coordinates[1]}`;
-  //     window.open(
-  //       `https://www.waze.com/ul?ll=${destination}&navigate=yes`,
-  //       "_blank"
-  //     );
-  //   } else {
-  //     const destination = encodeURIComponent(user.location?.address || "");
-  //     window.open(
-  //       `https://www.waze.com/ul?q=${destination}&navigate=yes`,
-  //       "_blank"
-  //     );
-  //   }
-  // };
+  const openInWaze = () => {
+    if (restaurant.location?.coordinates && user.location?.coordinates) {
+      const restaurantCoords = `${restaurant.location.coordinates[1]},${restaurant.location.coordinates[0]}`;
+      const userCoords = `${user.location.coordinates[1]},${user.location.coordinates[0]}`;
+      window.open(
+        `https://www.waze.com/ul?ll=${userCoords}&via=${restaurantCoords}&navigate=yes`,
+        "_blank"
+      );
+    } else {
+      const restaurantDestination = encodeURIComponent(
+        restaurant.location?.address || ""
+      );
+      const userDestination = encodeURIComponent(user.location?.address || "");
+      window.open(
+        `https://www.waze.com/ul?q=${restaurantDestination}&via=${userDestination}&navigate=yes`,
+        "_blank"
+      );
+    }
+  };
 
   return (
     <div className="bg-white shadow-md rounded-lg m-2 p-4 max-w-sm mx-auto">
@@ -105,7 +109,7 @@ const OrderCard: React.FC<IOrderCardProps> = ({
         )}
         <div className="flex gap-2">
           <button
-            // onClick={openInWaze}
+            onClick={openInWaze}
             className="flex items-center justify-center gap-2 flex-1 bg-green-500 hover:bg-blue-600 text-white py-2 px-4 rounded-full text-sm font-semibold transition-colors"
           >
             <Navigation size={16} />

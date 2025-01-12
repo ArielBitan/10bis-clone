@@ -9,7 +9,7 @@ exports.createOrder = async (orderData) => {
 exports.getAllOrders = async () => {
   return await Order.find()
     .populate("user_id", "name email")
-    .populate("restaurant_id", "name address")
+    .populate("restaurant_id", "name address phone")
     .populate("order_items");
 };
 
@@ -65,20 +65,27 @@ exports.getOrdersByStatus = async (status) => {
 exports.getOrderById = async (id) => {
   return await Order.findById(id)
     .populate("user_id", "name email")
-    .populate("restaurant_id", "name address")
+    .populate("restaurant_id", "name address phone")
     .populate("courier_id", "name phone")
     .populate("order_items");
 };
 
 exports.getOrdersByUser = async (userId) => {
   return await Order.find({ user_id: userId })
-    .populate("restaurant_id", "name address")
+    .populate("restaurant_id", "name address phone")
+    .populate("order_items");
+};
+
+exports.getOrdersByRestaurant = async (restaurantId) => {
+  return await Order.find({ restaurant_id: restaurantId })
+    .populate("user_id", "name address phone")
     .populate("order_items");
 };
 
 exports.updateOrderStatus = async (id, status) => {
   try {
     const validStatuses = ["Open", "Accepted", "Picked Up", "Delivered"];
+    console.log(status);
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new Error("Invalid order ID");
     }
@@ -92,7 +99,7 @@ exports.updateOrderStatus = async (id, status) => {
       { new: true }
     )
       .populate("user_id", "name email")
-      .populate("restaurant_id", "name address")
+      .populate("restaurant_id", "name address phone")
       .populate("order_items");
 
     if (!order) {

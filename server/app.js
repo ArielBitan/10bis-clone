@@ -8,7 +8,7 @@ const orderRoutes = require("./routes/order.route");
 const reviewRoutes = require("./routes/review.route");
 const restaurantRoutes = require("./routes/restaurant.route");
 const userRoutes = require("./routes/user.route");
-
+const itemRoutes = require("./routes/item.route");
 const app = express();
 
 // Middleware
@@ -22,6 +22,7 @@ app.use(
 );
 
 // Routes
+app.use("/items", itemRoutes);
 app.use("/orders", orderRoutes);
 app.use("/reviews", reviewRoutes);
 app.use("/restaurants", restaurantRoutes);

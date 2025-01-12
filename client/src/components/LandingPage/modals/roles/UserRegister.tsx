@@ -15,7 +15,7 @@ const UserRegister = ({ toggleRole }: UserRegisterProps) => {
   const [formType, setFormType] = useState<"user" | "business">("user");
   const [showPassword, setShowPassword] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [sucsessMessage, setSucsessMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [userFields, setUserFields] = useState({
     email: "",
     first_name: "",
@@ -78,9 +78,9 @@ const UserRegister = ({ toggleRole }: UserRegisterProps) => {
     try {
       await registerUser(userFields);
       clearFields();
-      setSucsessMessage(null);
+      setSuccessMessage(null);
       setErrorMessage(null);
-      setSucsessMessage("המשתמש נרשם בהצלחה");
+      setSuccessMessage("המשתמש נרשם בהצלחה");
       setTimeout(() => {
         toggleRole();
       }, 1500);
@@ -189,7 +189,7 @@ const UserRegister = ({ toggleRole }: UserRegisterProps) => {
               </div>
               <div className="text-xs text-red-500">{errorMessage}</div>
               <div className="text-lg text-center text-orangePrimary">
-                {sucsessMessage}
+                {successMessage}
               </div>
 
               <Button

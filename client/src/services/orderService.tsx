@@ -77,6 +77,24 @@ export const fetchOrdersByUser = async (userId: string): Promise<IOrder[]> => {
   }
 };
 
+// Function to fetch orders by rest
+export const fetchOrdersByRestaurant = async (
+  restaurantId: string
+): Promise<IOrder[]> => {
+  try {
+    const { data } = await api.get<IOrder[]>(
+      `/orders/restaurant/${restaurantId}`
+    );
+    return data;
+  } catch (error) {
+    console.error(
+      `Error fetching orders for user with ID ${restaurantId}:`,
+      error
+    );
+    throw error;
+  }
+};
+
 // Function to create a new order
 export const createOrder = async (orderData: IOrder): Promise<IOrder> => {
   try {
@@ -94,6 +112,7 @@ export const updateOrderStatus = async (
   status: string
 ): Promise<IOrder> => {
   try {
+    console.log("status" + status);
     const { data } = await api.put<IOrder>(
       `/orders/${orderId}/status/${status}`
     );

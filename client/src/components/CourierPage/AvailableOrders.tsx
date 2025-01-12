@@ -4,6 +4,7 @@ import { Package } from "lucide-react";
 import OrderCard from "./OrderCard";
 import { IOrder } from "@/types/orderTypes";
 import { useUser } from "../context/userContext";
+import Loading from "../Loading";
 
 interface AvailableOrdersProps {
   setIsDelivering: React.Dispatch<React.SetStateAction<Boolean>>;
@@ -21,6 +22,7 @@ const AvailableOrders: React.FC<AvailableOrdersProps> = ({
   } = useQuery<IOrder[]>({
     queryKey: ["openOrders"],
     queryFn: () => fetchOrdersByStatus("Open"),
+    refetchInterval: 5000,
   });
 
   const handleAcceptOrder = async (order: IOrder) => {
@@ -37,8 +39,14 @@ const AvailableOrders: React.FC<AvailableOrdersProps> = ({
     }
   };
 
-  if (isLoading) return <div>טוען ...</div>;
-  if (isError) return <div>שגיאה בטעינה </div>;
+  if (isLoading) return <Loading />;
+  if (isError)
+    return (
+      <div>
+        שגיאה בטעינה
+        <Loading />
+      </div>
+    );
 
   return (
     <div>
@@ -53,7 +61,7 @@ const AvailableOrders: React.FC<AvailableOrdersProps> = ({
         ))
       ) : (
         <div className="p-4 flex flex-col items-center justify-center h-[80vh] text-center space-y-4">
-          <Package className="h-16 w-16 text-gray-400" />
+          <Package className="w-16 h-16 text-gray-400" />
           <h2 className="text-xl font-medium">זמין למשלוחים</h2>
           <p className="text-gray-500">אנחנו נודיע לך כשיהיו משלוחים זמינים</p>
         </div>

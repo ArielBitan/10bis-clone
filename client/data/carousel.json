@@ -1,0 +1,29 @@
+{
+  "slides": [
+    {
+      "title": "סופר עד אליכם",
+      "desc": "חסר חלב? ירקות? לחם? מגוון ענק של סופרמרקטים מחכים לכם אצלנו",
+      "image": "https://cdn.10bis.co.il/marketing-banner-image/MarketingBanner_862_20241209153539.jpg"
+    },
+    {
+      "title": "פינוק גדול במחיר קטן",
+      "desc": "הגעתם למקום שבו נמצאים כל המבצעים הטעימים - אל תפספסו אותם!",
+      "image": "https://cdn.10bis.co.il/marketing-banner-image/MarketingBanner_860_20241209151520.jpg"
+    },
+    {
+      "title": "משלוח חינם",
+      "desc": "לחצו כאן כדי לגלות את רשימת המסעדות ללא דמי משלוח!",
+      "image": "https://cdn.10bis.co.il/marketing-banner-image/MarketingBanner_863_20241209155642.jpg"
+    },
+    {
+      "title": "מחזקים ומסייעים",
+      "desc": "מוזמנים לתרום לכוחות הביטחון ולתושבי העורף",
+      "image": "https://cdn.10bis.co.il/marketing-banner-image/MarketingBanner_673_20240606092655.jpg"
+    },
+    {
+      "title": "זה הזמן למרק חם",
+      "desc": "חורף בלי מרק זה לא חורף… אז מינסטרונה או אפונה? אצלנו יש גם וגם!",
+      "image": "https://cdn.10bis.co.il/marketing-banner-image/MarketingBanner_859_20241209151004.jpg"
+    }
+  ]
+}

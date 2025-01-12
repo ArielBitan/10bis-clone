@@ -14,8 +14,8 @@ export interface IRestaurant {
   name: string;
   description?: string;
   cuisine_types: string[];
-  image: string;
-  background_image: string;
+  image: File | string;
+  background_image: File | string;
   location?: Location;
   min_order?: string;
   delivery_fee?: string;
@@ -30,11 +30,11 @@ export interface IRestaurant {
 }
 
 export interface IMenuItem {
-  _id: string;
+  _id?: string;
   name: string;
-  available:boolean;
-  category:string;
-  description?:string;
+  available: boolean;
+  category: string;
+  description?: string;
   image: string;
   price: number;
   restaurant_id: string;

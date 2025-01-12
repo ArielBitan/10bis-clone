@@ -114,7 +114,7 @@ const DetailPage = () => {
         <img
           src={data.background_image}
           alt="background_image"
-          className="w-full h-auto object-cover"
+          className="object-cover w-full h-auto"
         />
         <div
           className="absolute top-0 left-0 w-full h-full bg-white"
@@ -122,11 +122,11 @@ const DetailPage = () => {
             clipPath: "polygon(0 85%, 100% 65%, 100% 100%, 0 100%)",
           }}
         ></div>
-        <div className="absolute inset-0 top-2/3 items-center justify-center hidden md:flex">
+        <div className="absolute inset-0 items-center justify-center hidden top-2/3 md:flex">
           <img
             src={data.image}
             alt="logo"
-            className="w-36 h-36 rounded-full object-cover border-4 border-slate-100"
+            className="object-cover border-4 rounded-full w-36 h-36 border-slate-100"
           />
         </div>
       </div>
@@ -153,7 +153,7 @@ const DetailPage = () => {
           </div>
         </div>
         {data.description && (
-          <div className=" m-3 font-bold">{`*${data.description}`}</div>
+          <div className="m-3 font-bold ">{`*${data.description}`}</div>
         )}
         <InfoRestaurant item={data} />
         <div className="lg:flex gap-4 lg:items-center pb-2">

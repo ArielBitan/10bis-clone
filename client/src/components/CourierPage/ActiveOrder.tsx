@@ -1,16 +1,11 @@
-import {
-  AlertCircle,
-  CheckCircle,
-  MapPin,
-  Phone,
-  Package,
-  User,
-} from "lucide-react";
+import { AlertCircle, CheckCircle, MapPin, Package, User } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
 import { IOrder } from "@/types/orderTypes";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getActiveOrder, updateOrderStatus } from "@/services/orderService";
 import { useState } from "react";
+import NextLocationCard from "./NextLocationCard";
+import Loading from "../Loading";
 
 interface ActiveOrderProps {
   setIsDelivering: React.Dispatch<React.SetStateAction<Boolean>>;
@@ -42,17 +37,16 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
 
   const handleOrderStatusChange = (newStatus: string) => {
     if (!activeOrder) return;
-    setStatus(newStatus);
+
     mutation.mutate(
       {
         orderId: activeOrder._id,
-        status,
+        status: newStatus,
       },
       {
         onSuccess: () => {
-          if (status === "Delivered") {
+          if (newStatus === "Delivered") {
             setIsDelivering(false);
-            mutation.isPending = true;
             return;
           }
           setStatus("Pick Up");
@@ -67,9 +61,16 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
     );
   };
 
-  if (isLoading) return <div>Loading ...</div>;
-  if (isError) return <div>Error loading </div>;
-  if (!activeOrder) return <div>loading..</div>;
+  if (isLoading) return <Loading />;
+  if (isError)
+    return (
+      <div>
+        Error loading
+        <Loading />
+      </div>
+    );
+  if (!activeOrder) return <Loading />;
+
   return (
     <div className="p-4 space-y-4">
       <Card>
@@ -80,55 +81,27 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
               <h2 className="text-lg font-bold">
                 הזמנה נוכחית #{activeOrder._id}
               </h2>
-              <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
+              <span className="px-3 py-1 text-sm text-blue-700 bg-blue-100 rounded-full">
                 {activeOrder.status === "Accepted" ? "איסוף" : "משלוח"}
               </span>
             </div>
 
-            {/* Restaurant Details */}
-            <div className="space-y-2 p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-center gap-2">
-                <MapPin className="h-5 w-5 text-gray-500" />
-                <div>
-                  <p className="font-medium">
-                    {activeOrder.restaurant_id.name}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {activeOrder.restaurant_id.location?.address}
-                  </p>
-                </div>
-              </div>
-              {activeOrder.restaurant_id.phone && (
-                <a
-                  href={`tel:${activeOrder.restaurant_id.phone}`}
-                  className="flex items-center gap-2 text-blue-500"
-                >
-                  <Phone className="h-4 w-4" />
-                  <span className="text-sm">
-                    {activeOrder.restaurant_id.phone}
-                  </span>
-                </a>
-              )}
-            </div>
-
-            {/* Customer Details */}
-            <div className="space-y-2 p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-center gap-2">
-                <User className="h-5 w-5 text-gray-500" />
-                <div>
-                  <p className="font-medium">
-                    {activeOrder.user_id.first_name}{" "}
-                    {activeOrder.user_id.last_name}
-                  </p>
-                  <a
-                    href={`tel:${activeOrder.user_id.phone}`}
-                    className="text-sm text-blue-500"
-                  >
-                    {activeOrder.user_id.phone}
-                  </a>
-                </div>
-              </div>
-            </div>
+            {/* Next Location  */}
+            {activeOrder.status === "Accepted" ? (
+              <NextLocationCard
+                name={activeOrder.restaurant_id.name}
+                address={activeOrder.restaurant_id.location?.address}
+                phone={activeOrder.restaurant_id.phone}
+                icon={MapPin}
+              />
+            ) : (
+              <NextLocationCard
+                name={`${activeOrder.user_id.first_name}  ${activeOrder.user_id.last_name}`}
+                address={activeOrder.user_id.location?.address}
+                phone={activeOrder.user_id.phone}
+                icon={User}
+              />
+            )}
 
             {/* Order Items */}
             <div className="space-y-2">
@@ -136,7 +109,7 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
               <ul className="text-sm text-gray-600">
                 {activeOrder.order_items.map((item) => (
                   <li key={item._id} className="flex items-center gap-2">
-                    <Package className="h-4 w-4" />
+                    <Package className="w-4 h-4" />
                     {item.name} - {item.price} ₪
                   </li>
                 ))}
@@ -149,23 +122,23 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
                 <button
                   onClick={() => handleOrderStatusChange("Picked Up")}
                   disabled={mutation.isPending}
-                  className="w-full py-3 bg-green-500 text-white rounded-lg flex items-center justify-center gap-2 hover:bg-green-600 disabled:bg-gray-400"
+                  className="flex items-center justify-center w-full gap-2 py-3 text-white bg-green-500 rounded-lg hover:bg-green-600 disabled:bg-gray-400"
                 >
-                  <CheckCircle className="h-5 w-5" />
+                  <CheckCircle className="w-5 h-5" />
                   {mutation.isPending ? "מעדכן..." : "אשר איסוף"}
                 </button>
               ) : (
                 <button
                   onClick={() => handleOrderStatusChange("Delivered")}
                   disabled={mutation.isPending}
-                  className="w-full py-3 bg-green-500 text-white rounded-lg flex items-center justify-center gap-2 hover:bg-green-600 disabled:bg-gray-400"
+                  className="flex items-center justify-center w-full gap-2 py-3 text-white bg-green-500 rounded-lg hover:bg-green-600 disabled:bg-gray-400"
                 >
-                  <CheckCircle className="h-5 w-5" />
+                  <CheckCircle className="w-5 h-5" />
                   {mutation.isPending ? "מעדכן..." : "אשר משלוח"}
                 </button>
               )}
-              <button className="w-full py-3 border border-red-500 text-red-500 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-100">
-                <AlertCircle className="h-5 w-5" />
+              <button className="flex items-center justify-center w-full gap-2 py-3 text-red-500 border border-red-500 rounded-lg hover:bg-gray-100">
+                <AlertCircle className="w-5 h-5" />
                 דיווח על תקלה
               </button>
             </div>
