@@ -32,6 +32,7 @@ router.delete("/:id", orderController.deleteOrder);
 
 router.post(
   "/checkout/create-checkout-session",
+  authenticateUser,
   orderController.createCheckoutSession
 );
 

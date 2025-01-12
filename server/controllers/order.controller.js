@@ -27,17 +27,36 @@ exports.createCheckoutSession = async (req, res) => {
       throw new Error("Restaurant not found");
     }
 
+    // Create the order in your database after the session is created
+    const orderData = {
+      user_id: req.user._id,
+      restaurant_id: restaurant._id,
+      order_items: checkoutSessionRequest.cartItems.map((item) => ({
+        item_id: item._id,
+        quantity: item.quantity,
+      })),
+      status: "Awaiting Payment",
+      delivery_fee: restaurant.delivery_fee,
+      payment_details: { method: "Card", amount: 0 },
+    };
+
+    const order = await orderService.createOrder(orderData);
+
     const lineItems = await createLineItems(checkoutSessionRequest);
 
+    // Create the checkout session
     const session = await createSession(
       lineItems,
-      "TEST_ORDER_ID",
+      order._id.toString(),
       restaurant.delivery_fee,
       restaurant._id.toString()
     );
+
     if (!session.url) {
       return res.status(500).json({ message: "Error creating stripe session" });
     }
+    order.payment_details.amount = session.amount_total;
+    // Once the order is created, redirect the user to their order page
     res.json({ url: session.url });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -173,7 +192,6 @@ const createSession = async (
   deliveryPrice,
   restaurantId
 ) => {
-  console.log(lineItems);
   const sessionData = await STRIPE.checkout.sessions.create({
     line_items: lineItems,
     shipping_options: [
@@ -193,7 +211,7 @@ const createSession = async (
       orderId,
       restaurantId,
     },
-    success_url: `${FRONTEND_URL}/order-status?success=true`,
+    success_url: `${FRONTEND_URL}/order/${orderId}`,
     cancel_url: `${FRONTEND_URL}/restaurant/${restaurantId}?cancelled=true`,
   });
   return sessionData;
