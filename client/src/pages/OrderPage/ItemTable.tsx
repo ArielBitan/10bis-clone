@@ -6,10 +6,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { IMenuItem } from "@/types/restaurantTypes";
+import { IOrderItem } from "@/types/orderTypes";
 
 interface TableDemoProps {
-  items: IMenuItem[];
+  items: IOrderItem[];
 }
 
 export const TableDemo: React.FC<TableDemoProps> = ({ items }) => {
@@ -19,17 +19,17 @@ export const TableDemo: React.FC<TableDemoProps> = ({ items }) => {
         <TableHeader>הפריטים שהזמנת</TableHeader>
         <TableBody>
           {items.map((item) => (
-            <TableRow key={item.name}>
-              <TableCell className="font-medium">{item.name}</TableCell>
-              <TableCell>{item.description}</TableCell>
+            <TableRow key={item._id.name}>
+              <TableCell className="font-medium">{item._id.name}</TableCell>
+              <TableCell>{item._id.description}</TableCell>
               <TableCell className="text-center">
                 <img
-                  src={item.image}
-                  alt={item.name}
+                  src={item._id.image}
+                  alt={item._id.name}
                   className="object-cover w-16 h-16"
                 />
               </TableCell>
-              <TableCell className="text-right">₪{item.price}</TableCell>
+              <TableCell className="text-right">₪{item._id.price}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -37,7 +37,7 @@ export const TableDemo: React.FC<TableDemoProps> = ({ items }) => {
           <TableRow>
             <TableCell colSpan={3}>מחיר סופי</TableCell>
             <TableCell className="text-right">
-              ₪{items.reduce((acc, item) => acc + item.price, 0).toFixed(2)}
+              ₪{items.reduce((acc, item) => acc + item._id.price, 0).toFixed(2)}
             </TableCell>
           </TableRow>
         </TableFooter>

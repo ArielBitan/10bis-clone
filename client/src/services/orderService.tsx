@@ -59,7 +59,7 @@ export const fetchOrdersByStatus = async (
 // Function to fetch a single order by ID
 export const fetchOrderById = async (orderId: string): Promise<IOrder> => {
   try {
-    const { data } = await api.get<IOrder>(`/orders/${orderId}`);
+    const { data } = await api.get<IOrder>(`/orders/order/${orderId}`);
     return data;
   } catch (error) {
     console.error(`Error fetching order with ID ${orderId}:`, error);

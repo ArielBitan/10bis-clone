@@ -26,13 +26,12 @@ exports.createCheckoutSession = async (req, res) => {
     if (!restaurant) {
       throw new Error("Restaurant not found");
     }
-
     // Create the order in your database after the session is created
     const orderData = {
       user_id: req.user._id,
       restaurant_id: restaurant._id,
       order_items: checkoutSessionRequest.cartItems.map((item) => ({
-        item_id: item._id,
+        _id: item._id,
         quantity: item.quantity,
       })),
       status: "Awaiting Payment",
@@ -74,7 +73,9 @@ exports.getAllOrders = async (req, res) => {
 
 exports.getOrderById = async (req, res) => {
   try {
-    const order = await orderService.getOrderById(req.params.id);
+    const { id } = req.params;
+
+    const order = await orderService.getOrderById(id);
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }

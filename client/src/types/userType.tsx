@@ -11,6 +11,7 @@ export interface IUser {
   password?: string;
   role?: "courier" | "restaurant_owner";
   createdAt?: string;
+  full_name: string;
   location: Location;
   updatedAt?: string;
   isDelivering?: boolean;

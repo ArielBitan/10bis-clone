@@ -64,10 +64,13 @@ exports.getOrdersByStatus = async (status) => {
 
 exports.getOrderById = async (id) => {
   return await Order.findById(id)
-    .populate("user_id", "name email")
-    .populate("restaurant_id", "name address phone")
-    .populate("courier_id", "name phone")
-    .populate("order_items");
+    .populate("user_id")
+    .populate("restaurant_id")
+    .populate("courier_id")
+    .populate({
+      path: "order_items._id",
+      model: "MenuItem",
+    });
 };
 
 exports.getOrdersByUser = async (userId) => {

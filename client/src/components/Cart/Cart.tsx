@@ -21,6 +21,7 @@ const Cart: React.FC<InfoCartProps> = ({
     if (!item._id) {
       return;
     }
+    console.log(cartDetails);
     const response = await createCheckoutSession(item._id, cartDetails);
 
     window.location.href = response.url;

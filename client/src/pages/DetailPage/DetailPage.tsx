@@ -27,6 +27,7 @@ const DetailPage = () => {
     queryKey: ["restaurant", id],
     queryFn: () => fetchRestaurantById(id),
   });
+
   const [footerTotal, setFooterTotal] = useState<number>(0);
 
   const [selectedCategory, setSelectedCategory] = useState<string>("");

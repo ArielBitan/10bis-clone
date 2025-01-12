@@ -13,10 +13,10 @@ const orderSchema = new mongoose.Schema(
       ref: "Restaurant",
       required: true,
     },
-    courier_id: { type: mongoose.Schema.Types.ObjectId, ref: "Courier" },
+    courier_id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     order_items: [
       {
-        menu_item_id: { type: mongoose.Schema.Types.ObjectId, ref: "MenuItem" },
+        _id: { type: mongoose.Schema.Types.ObjectId, ref: "MenuItem" },
         quantity: { type: Number, default: 1 },
       },
     ],
