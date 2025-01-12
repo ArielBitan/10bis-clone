@@ -8,12 +8,12 @@ import { useUser } from "../context/userContext";
 
 const Navbar = () => {
   const { user } = useUser();
-  console.log(user);
+
   const role = user?.role;
 
   return (
     <>
-      <nav className="sticky top-0 z-50 px-6 border-b shadow-sm bg-backgroundOrange text-foreground border-border sm:px-6 md:px-6 lg:px-32">
+      <nav className="sticky top-0 z-50 px-6 shadow-sm bg-backgroundOrange text-foreground border-border sm:px-6 md:px-6 lg:px-32">
         <div className="flex items-center justify-between py-3">
           {/* Logo */}
           <Link
