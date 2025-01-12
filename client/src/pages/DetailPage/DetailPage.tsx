@@ -9,8 +9,9 @@ import { FaStar } from "react-icons/fa6";
 import { FiSearch } from "react-icons/fi";
 import { useParams } from "react-router-dom";
 import Cart from "@/components/Cart/Cart";
+import { IMenuItem } from "@/types/restaurantTypes";
 
-interface CartItem {
+export interface CartItem extends IMenuItem {
   id: string;
   name: string;
   price: number;
@@ -27,31 +28,19 @@ const DetailPage = () => {
   const [footerTotal, setFooterTotal] = useState<number>(0);
 
   const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [cartDetail, setCartDetail] = useState<CartItem[]>([]);
+  const [cartDetails, setCartDetails] = useState<CartItem[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  // useEffect(() => {
-  //   const storedId = localStorage.getItem("restaurantId");
-
-  //   if (storedId && storedId !== id) {
-  //     // Clear the cart when switching restaurants
-  //     localStorage.setItem("cartDetail", JSON.stringify([]));
-  //   }
-
-  //   // Update the stored restaurantId to the current restaurant
-  //   localStorage.setItem("restaurantId", id);
-  // }, [id]);
-
-  const handleUpdateFooter = (price: number, meal: any, quantity: number) => {
+  const handleUpdateFooter = (price: number) => {
     setFooterTotal(price);
   };
 
-  const totalPrice = cartDetail.reduce(
+  const totalPrice = cartDetails.reduce(
     (sum, item) => sum + item.quantity * item.price,
     0
   );
 
-  const hasItemsInCart = cartDetail.length > 0;
+  const hasItemsInCart = cartDetails.length > 0;
 
   useEffect(() => {
     if (data) {
@@ -63,29 +52,23 @@ const DetailPage = () => {
   }, [data]);
 
   useEffect(() => {
-    const storedCart = localStorage.getItem("cartDetail");
-    const storedCartDetail = localStorage.getItem("cartDetail");
+    const storedCart = localStorage.getItem("cartDetails");
+    const storedCartDetails = localStorage.getItem("cartDetails");
     if (storedCart) {
-      setCartDetail(JSON.parse(storedCart));
-      if (storedCartDetail) {
-        setCartDetail(JSON.parse(storedCartDetail));
+      setCartDetails(JSON.parse(storedCart));
+      if (storedCartDetails) {
+        setCartDetails(JSON.parse(storedCartDetails));
       }
     }
   }, []);
 
   useEffect(() => {
-    if (cartDetail.length > 0) {
-      localStorage.setItem("cartDetail", JSON.stringify(cartDetail));
+    if (cartDetails.length > 0) {
+      localStorage.setItem("cartDetails", JSON.stringify(cartDetails));
     } else {
-      localStorage.removeItem("cartDetail");
+      localStorage.removeItem("cartDetails");
     }
-  }, [cartDetail]);
-
-  useEffect(() => {
-    if (cartDetail.length > 0) {
-      localStorage.setItem("cartDetail", JSON.stringify(cartDetail));
-    }
-  }, [cartDetail]);
+  }, [cartDetails]);
 
   if (isLoading) return <div>Loading ...</div>;
   if (isError) return <div>Error loading </div>;
@@ -112,7 +95,7 @@ const DetailPage = () => {
       <Navbar />
       <div className="relative">
         <img
-          src={data.background_image}
+          src={data.background_image as string}
           alt="background_image"
           className="object-cover w-full h-auto"
         />
@@ -124,7 +107,7 @@ const DetailPage = () => {
         ></div>
         <div className="absolute inset-0 items-center justify-center hidden top-2/3 md:flex">
           <img
-            src={data.image}
+            src={data.image as string}
             alt="logo"
             className="object-cover border-4 rounded-full w-36 h-36 border-slate-100"
           />
@@ -194,8 +177,8 @@ const DetailPage = () => {
       <div className="sm:grid sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 lg:gap-6">
         {filteredMenuItems.length ? (
           filteredMenuItems.map((item) => {
-            const savedOrder = cartDetail.find(
-              (order) => order._id === item._id
+            const savedOrder = cartDetails.find(
+              (order) => order.id === item._id
             );
             const initialQuantity = savedOrder ? savedOrder.quantity : 0;
 
@@ -205,8 +188,8 @@ const DetailPage = () => {
                 item={item}
                 initialQuantity={initialQuantity}
                 onUpdateFooter={handleUpdateFooter}
-                setCartDetail={setCartDetail}
-                cartDetail={cartDetail}
+                setCartDetails={setCartDetails}
+                cartDetails={cartDetails}
               />
             );
           })
@@ -224,10 +207,9 @@ const DetailPage = () => {
           <div className="flex justify-center">
             {
               <Cart
-                cartDetail={cartDetail}
-                totalPrice={totalPrice}
+                cartDetails={cartDetails}
                 item={data}
-                setCartDetail={setCartDetail}
+                setCartDetails={setCartDetails}
               />
             }
             <div className="px-1">{`(₪${(

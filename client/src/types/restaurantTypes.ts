@@ -40,8 +40,6 @@ export interface IMenuItem {
   restaurant_id: string;
   createdAt?: string;
   updatedAt?: string;
-  quantity?: string;
-
 }
 
 export interface IRestaurantForm {

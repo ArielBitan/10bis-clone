@@ -1,88 +1,77 @@
+import { CartItem } from "@/pages/DetailPage/DetailPage";
 import { IMenuItem } from "@/types/restaurantTypes";
 import { useEffect, useState } from "react";
 
 interface MenuItemCardProps {
   item: IMenuItem;
-  // onUpdateCart: (itemPrice: number, quantity: number, itemId: string) => void;
   initialQuantity?: number;
   onUpdateFooter: (price: number, meal: IMenuItem, quantity: number) => void;
-  setCartDetail;
+  setCartDetails: React.Dispatch<React.SetStateAction<CartItem[]>>;
+  cartDetails: CartItem[];
 }
+
 const MenuCard: React.FC<MenuItemCardProps> = ({
   item,
-  // onUpdateCart,
   onUpdateFooter,
-  initialQuantity,
-  setCartDetail,
-  cartDetail,
+  initialQuantity = 0,
+  setCartDetails,
+  cartDetails,
 }) => {
   const [quantity, setQuantity] = useState(initialQuantity);
 
   useEffect(() => {
-    setQuantity(initialQuantity);
-  }, [cartDetail]);
+    const cartItem = cartDetails.find((cartItem) => cartItem.id === item._id);
+    if (cartItem) {
+      setQuantity(cartItem.quantity);
+    }
+  }, [cartDetails, item._id]);
 
   const handleIncrement = () => {
-    setCartDetail((prev) => {
-      const existingItemIndex = prev.findIndex(
-        (order) => order._id === item._id
-      );
+    const existingItemIndex = cartDetails.findIndex(
+      (order) => order.id === item._id
+    );
 
-      if (existingItemIndex !== -1) {
-        // If item exists, update its quantity
-        const updatedCartDetail = [...prev];
-        updatedCartDetail[existingItemIndex] = {
-          ...updatedCartDetail[existingItemIndex],
-          quantity: (updatedCartDetail[existingItemIndex].quantity || 0) + 1, // Increment quantity or set to 1
-        };
-        return updatedCartDetail;
-      } else {
-        // If item does not exist, add it with a quantity key
-        return [...prev, { ...item, quantity: 1 }];
-      }
-    });
+    if (existingItemIndex !== -1) {
+      const updatedCartDetails = [...cartDetails];
+      updatedCartDetails[existingItemIndex] = {
+        ...updatedCartDetails[existingItemIndex],
+        quantity: updatedCartDetails[existingItemIndex].quantity + 1,
+      };
+      setCartDetails(updatedCartDetails);
+    } else {
+      setCartDetails([
+        ...cartDetails,
+        { ...item, id: item._id as string, quantity: 1 },
+      ]);
+    }
 
-    const newQuantity = quantity + 1;
-    setQuantity(newQuantity);
-    // onUpdateCart(item.price, newQuantity, item._id);
-    onUpdateFooter(item.price, item, newQuantity);
+    setQuantity((prevQuantity) => prevQuantity + 1);
+    onUpdateFooter(item.price, item, quantity + 1);
   };
 
   const handleDecrement = () => {
     if (quantity > 1) {
-      const newQuantity = quantity - 1;
-
-      // Update quantity in cartDetail
-      setCartDetail((prev) =>
+      const updatedQuantity = quantity - 1;
+      setCartDetails((prev) =>
         prev.map((cartItem) =>
-          cartItem._id === item._id
-            ? { ...cartItem, quantity: newQuantity }
+          cartItem.id === item._id
+            ? { ...cartItem, quantity: updatedQuantity }
             : cartItem
         )
       );
-
-      // Update local quantity state
-      setQuantity(newQuantity);
-
-      // Update cart and footer
-      // onUpdateCart(item.price, newQuantity, item._id);
-      onUpdateFooter(item.price, item, newQuantity);
+      setQuantity(updatedQuantity);
+      onUpdateFooter(item.price, item, updatedQuantity);
     } else if (quantity === 1) {
-      // Remove item from cartDetail when quantity reaches 0
-      setCartDetail((prev) =>
-        prev.filter((cartItem) => cartItem._id !== item._id)
+      setCartDetails((prev) =>
+        prev.filter((cartItem) => cartItem.id !== item._id)
       );
-
-      setQuantity(0); // Optional: reset local quantity state
-
-      // Update cart and footer
-      // onUpdateCart(item.price, 0, item._id);
+      setQuantity(0);
       onUpdateFooter(item.price, item, 0);
     }
   };
 
   return (
-    <div className=" bg-white border shadow-lg flex sm:flex-row lg:flex-col my-4 mx-2 justify-between w-[97%] hover:shadow-xl hover:border-gray-300 transition duration-300 overflow-hidden">
+    <div className="bg-white border shadow-lg flex sm:flex-row lg:flex-col my-4 mx-2 justify-between w-[97%] hover:shadow-xl hover:border-gray-300 transition duration-300 overflow-hidden">
       <div className="px-4 pt-4 flex-grow sm:w-2/3 lg:w-full">
         <h3 className="font-bold text-lg mb-2">{item.name}</h3>
         {item.description && (
