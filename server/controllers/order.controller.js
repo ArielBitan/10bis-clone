@@ -34,7 +34,7 @@ exports.createCheckoutSession = async (req, res) => {
         _id: item._id,
         quantity: item.quantity,
       })),
-      status: "Awaiting Payment",
+      status: "Pending",
       delivery_fee: restaurant.delivery_fee,
       payment_details: { method: "Card", amount: 0 },
     };
