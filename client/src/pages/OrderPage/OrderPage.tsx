@@ -45,6 +45,22 @@ const OrderPage = () => {
   if (!order) return <div>No data available</div>;
 
   const dateObj = new Date(order.createdAt);
+
+  // Define status-specific styles or messages
+  const statusDetails: Record<string, { color: string; message: string }> = {
+    "Awaiting Payment": { color: "text-red-500", message: "ממתין לתשלום" },
+    Pending: { color: "text-orange-500", message: "ממתין לאישור" },
+    Open: { color: "text-blue-500", message: "פתוח" },
+    Accepted: { color: "text-green-500", message: "התקבל" },
+    "Picked Up": { color: "text-purple-500", message: "נאסף" },
+    Delivered: { color: "text-green-700", message: "נמסר" },
+  };
+
+  const statusInfo = statusDetails[order.status] || {
+    color: "text-gray-500",
+    message: "סטטוס לא ידוע",
+  };
+
   return (
     <div>
       <Navbar />
@@ -53,7 +69,7 @@ const OrderPage = () => {
           <h1 className="text-3xl font-bold">
             {order.restaurant_id.name} | {userAddress || ""}
           </h1>
-        </Link>{" "}
+        </Link>
         <div>
           <p className="text-textBlackSecondary">
             {"מספר ההזמנה: " + order._id}
@@ -76,22 +92,12 @@ const OrderPage = () => {
                 <p className="text-xl text-textBlackSecondary">
                   {"נשלח אל: " + userAddress || " "}
                 </p>
-                <svg
-                  stroke="currentColor"
-                  fill="currentColor"
-                  stroke-width="0"
-                  viewBox="0 0 24 24"
-                  height="1.5em"
-                  width="1.5em"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path fill="none" d="M0 0h24v24H0z"></path>
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"></path>
-                </svg>
               </div>
               <div className="flex gap-2">
                 <Briefcase size={24} />
-                <div>סטטוס: {order.status} </div>
+                <div className={`${statusInfo.color}`}>
+                  סטטוס: {statusInfo.message}
+                </div>
               </div>
               <div className="flex gap-2">
                 <DollarSign size={24} />

@@ -4,7 +4,6 @@ import CartCard from "./CartCard";
 import { useEffect } from "react";
 import { CartItem } from "@/pages/DetailPage/DetailPage";
 import { createCheckoutSession } from "@/services/orderService";
-import { useNavigate } from "react-router-dom";
 
 interface InfoCartProps {
   item: IRestaurant;

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import InfoRestaurant from "@/components/DetailPage/InfoRestaurant";
 import MenuCard from "@/components/MenuCard/MenuCard";
 import Navbar from "@/components/layout/Navbar";

@@ -29,15 +29,23 @@ export const TableDemo: React.FC<TableDemoProps> = ({ items }) => {
                   className="object-cover w-16 h-16"
                 />
               </TableCell>
-              <TableCell className="text-right">₪{item._id.price}</TableCell>
+              <TableCell className="text-right">
+                ₪{item._id.price.toFixed(2)} × {item.quantity}
+              </TableCell>
+              <TableCell className="text-right">
+                ₪{(item._id.price * item.quantity).toFixed(2)}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={3}>מחיר סופי</TableCell>
+            <TableCell colSpan={4}>מחיר סופי</TableCell>
             <TableCell className="text-right">
-              ₪{items.reduce((acc, item) => acc + item._id.price, 0).toFixed(2)}
+              ₪
+              {items
+                .reduce((acc, item) => acc + item._id.price * item.quantity, 0)
+                .toFixed(2)}
             </TableCell>
           </TableRow>
         </TableFooter>

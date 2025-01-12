@@ -217,3 +217,7 @@ const createSession = async (
   });
   return sessionData;
 };
+
+module.exports = {
+  STRIPE,
+};

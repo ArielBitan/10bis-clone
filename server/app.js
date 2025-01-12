@@ -9,6 +9,7 @@ const reviewRoutes = require("./routes/review.route");
 const restaurantRoutes = require("./routes/restaurant.route");
 const userRoutes = require("./routes/user.route");
 const itemRoutes = require("./routes/item.route");
+const webhookRoutes = require("./routes/webhook.route");
 const app = express();
 
 // Middleware
@@ -27,6 +28,7 @@ app.use("/orders", orderRoutes);
 app.use("/reviews", reviewRoutes);
 app.use("/restaurants", restaurantRoutes);
 app.use("/users", userRoutes);
+app.use("/api", webhookRoutes);
 
 // Global Error Handling Middleware
 app.use((err, req, res, next) => {
