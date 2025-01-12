@@ -19,6 +19,8 @@ router.get(
   orderController.getActiveOrder
 );
 router.get("/user/:userId", orderController.getOrdersByUser);
+router.get("/restaurant/:restaurantId", orderController.getOrdersByRestaurant);
+
 router.put(
   "/:id/accept",
   authenticateCourier,

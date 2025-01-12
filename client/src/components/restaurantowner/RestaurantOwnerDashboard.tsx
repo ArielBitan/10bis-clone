@@ -1,7 +1,6 @@
 import { fetchRestaurantById } from "@/services/restaurantService";
 import { useUser } from "../context/userContext";
 import Chart from "../Chart";
-import Order from "../orders/Order";
 import { OrdersTable } from "../orders/Orders";
 import { IRestaurantOwner } from "@/types/userType";
 import { useQuery } from "@tanstack/react-query";
@@ -21,10 +20,14 @@ const RestaurantOwnerDashboard = () => {
     enabled: !!ownedRestId,
   });
 
-  if (isRestaurantLoading) return <Loading/>;
-  if (isRestaurantError) return <div>Error loading
-    <Loading/>
-  </div>;
+  if (isRestaurantLoading) return <Loading />;
+  if (isRestaurantError)
+    return (
+      <div>
+        Error loading
+        <Loading />
+      </div>
+    );
   if (!restaurant) return <div>No restaurant data available</div>;
 
   return (
@@ -47,16 +50,16 @@ const RestaurantOwnerDashboard = () => {
             alt="logo"
             className="object-cover border-4 rounded-full w-36 h-36 border-slate-100"
           />
-          <div className="p-3 text-3xl font-bold shadow-sm ">
+          <div className="p-3 mb-10 text-3xl font-bold">
             {" "}
             {restaurant?.name}
           </div>
         </div>
       </div>
+      <h2 className="text-xl text-center">{restaurant.description}</h2>
       <div className="px-4 mt-[100px] flex flex-col items-center justify-center">
         <div className="mb-2 text-xl">כל ההזמנות</div>
         <OrdersTable />
-        <Order />
         {restaurant?._id ? <Chart id={restaurant._id} /> : <div>xxx</div>}
       </div>
     </div>
