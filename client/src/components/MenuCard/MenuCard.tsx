@@ -104,8 +104,12 @@ const MenuCard: React.FC<MenuItemCardProps> = ({
         </div>
       </div>
 
-      <div className="max-w-[150px]">
-        <img src={item.image} alt={item.name} className=" w-max object-cover" />
+      <div className="w-[250px] h-[150px]">
+        <img
+          src={item.image}
+          alt={item.name}
+          className="w-full h-full object-cover"
+        />
       </div>
     </div>
   );

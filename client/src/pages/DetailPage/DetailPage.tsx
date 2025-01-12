@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import InfoRestaurant from "@/components/DetailPage/InfoRestaurant";
 import MenuCard from "@/components/MenuCard/MenuCard";
 import Navbar from "@/components/layout/Navbar";
@@ -10,6 +10,8 @@ import { FiSearch } from "react-icons/fi";
 import { useParams } from "react-router-dom";
 import Cart from "@/components/Cart/Cart";
 import { IMenuItem } from "@/types/restaurantTypes";
+import RestaurantHeader from "@/components/DetailPage/RestaurantHeader";
+import Loading from "@/components/Loading";
 
 export interface CartItem extends IMenuItem {
   id: string;
@@ -70,8 +72,13 @@ const DetailPage = () => {
     }
   }, [cartDetails]);
 
-  if (isLoading) return <div>Loading ...</div>;
-  if (isError) return <div>Error loading </div>;
+  if (isLoading)
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
+  if (isError) return <div>Error loading</div>;
   if (!data) return <div>No data available</div>;
 
   const uniqueCategories =
@@ -93,26 +100,7 @@ const DetailPage = () => {
   return (
     <div className="relative bg-gray-100">
       <Navbar />
-      <div className="relative">
-        <img
-          src={data.background_image as string}
-          alt="background_image"
-          className="object-cover w-full h-auto"
-        />
-        <div
-          className="absolute top-0 left-0 w-full h-full bg-white"
-          style={{
-            clipPath: "polygon(0 85%, 100% 65%, 100% 100%, 0 100%)",
-          }}
-        ></div>
-        <div className="absolute inset-0 items-center justify-center hidden top-2/3 md:flex">
-          <img
-            src={data.image as string}
-            alt="logo"
-            className="object-cover border-4 rounded-full w-36 h-36 border-slate-100"
-          />
-        </div>
-      </div>
+      <RestaurantHeader data={data} />
       <div className="px-4 bg-white shadow-md">
         <div className="flex gap-1 datas-center text-sm ">
           <div className="flex datas-center gap-1">

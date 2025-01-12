@@ -18,7 +18,11 @@ const InfoRestaurant: React.FC<InfoRestaurantProps> = ({ item }) => {
             <p className="text-sm text-end">{item.location?.address}</p>
             <p className="text-sm text-end">{item.phone}</p>
           </div>
-          <img src={item.image} alt="logo" className="w-[80px] h-[80px]" />
+          <img
+            src={item.image as string}
+            alt="logo"
+            className="w-[80px] h-[80px]"
+          />
         </div>
         <div>
           <h2 className="font-bold mb-4">שעות פעילות</h2>
