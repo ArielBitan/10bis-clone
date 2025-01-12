@@ -71,7 +71,7 @@ const MenuCard: React.FC<MenuItemCardProps> = ({
   };
 
   return (
-    <div className="bg-white border shadow-lg flex sm:flex-row lg:flex-col my-4 mx-2 justify-between w-[97%] hover:shadow-xl hover:border-gray-300 transition duration-300 overflow-hidden">
+    <div className="bg-white border shadow-lg flex sm:flex-row my-4 mx-2 justify-between w-[97%] hover:shadow-xl hover:border-gray-300 transition duration-300 overflow-hidden">
       <div className="px-4 pt-4 flex-grow sm:w-2/3 lg:w-full">
         <h3 className="font-bold text-lg mb-2">{item.name}</h3>
         {item.description && (
@@ -79,7 +79,7 @@ const MenuCard: React.FC<MenuItemCardProps> = ({
             {item.description.split(".")[0]}
           </p>
         )}
-        <div className="flex justify-between items-center mt-4 lg:mb-2">
+        <div className="flex justify-between items-center mt-8 lg:mb-2">
           <div className="mt-2 text-base font-semibold">{`₪${
             Number.isInteger(item.price)
               ? item.price
@@ -104,12 +104,8 @@ const MenuCard: React.FC<MenuItemCardProps> = ({
         </div>
       </div>
 
-      <div className="">
-        <img
-          src={item.image}
-          alt={item.name}
-          className="w-[131px] lg:w-full h-[134px] object-cover sm:min-w-24 "
-        />
+      <div className="max-w-[150px]">
+        <img src={item.image} alt={item.name} className=" w-max object-cover" />
       </div>
     </div>
   );
