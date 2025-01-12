@@ -8,8 +8,8 @@ interface InfoRestaurantProps {
 const InfoRestaurant: React.FC<InfoRestaurantProps> = ({ item }) => {
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <div className="text-blue-700 cursor-pointer">אודות המסעדה</div>
+      <DialogTrigger className="text-blue-700 cursor-pointer">
+        אודות המסעדה
       </DialogTrigger>
       <DialogContent className="sm:max-w-[700px] dialog-slide w-full p-10 text-3xl text-center ">
         <div className="flex justify-end gap-4 ">
