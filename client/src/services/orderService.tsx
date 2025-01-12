@@ -1,4 +1,5 @@
 import api from "@/lib/api";
+import { CartItem } from "@/pages/DetailPage/DetailPage";
 import { IOrder } from "@/types/orderTypes";
 
 // Function to fetch all orders
@@ -73,6 +74,21 @@ export const fetchOrdersByUser = async (userId: string): Promise<IOrder[]> => {
     return data;
   } catch (error) {
     console.error(`Error fetching orders for user with ID ${userId}:`, error);
+    throw error;
+  }
+};
+
+export const createCheckoutSession = async (
+  restaurantId: string,
+  cartItems: CartItem[]
+) => {
+  try {
+    const { data } = await api.post(
+      "/orders/checkout/create-checkout-session",
+      { restaurantId, cartItems }
+    );
+    return data;
+  } catch (error) {
     throw error;
   }
 };

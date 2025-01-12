@@ -3,6 +3,8 @@ import { IRestaurant } from "@/types/restaurantTypes";
 import CartCard from "./CartCard";
 import { useEffect } from "react";
 import { CartItem } from "@/pages/DetailPage/DetailPage";
+import { createCheckoutSession } from "@/services/orderService";
+import { useNavigate } from "react-router-dom";
 
 interface InfoCartProps {
   item: IRestaurant;
@@ -15,6 +17,15 @@ const Cart: React.FC<InfoCartProps> = ({
   cartDetails,
   setCartDetails,
 }) => {
+  const handlePayment = async () => {
+    if (!item._id) {
+      return;
+    }
+    const response = await createCheckoutSession(item._id, cartDetails);
+
+    window.location.href = response.url;
+  };
+
   // Calculate total price
   const totalPrice = cartDetails.reduce(
     (total, cartItem) => total + cartItem.price * cartItem.quantity,
@@ -107,9 +118,12 @@ const Cart: React.FC<InfoCartProps> = ({
             </div>
           </div>
         </div>
-        <div className="w-full bg-blue-600 p-4 text-white font-bold text-lg hover:bg-blue-700 cursor-pointer">
+        <button
+          className="w-full bg-blue-600 p-4 text-white font-bold text-lg hover:bg-blue-700 cursor-pointer"
+          onClick={handlePayment}
+        >
           לעמוד התשלום
-        </div>
+        </button>
       </DialogContent>
     </Dialog>
   );

@@ -27,10 +27,7 @@ exports.createCheckoutSession = async (req, res) => {
       throw new Error("Restaurant not found");
     }
 
-    const lineItems = createLineItems(
-      checkoutSessionRequest,
-      restaurant.order_items
-    );
+    const lineItems = await createLineItems(checkoutSessionRequest);
 
     const session = await createSession(
       lineItems,
@@ -43,8 +40,7 @@ exports.createCheckoutSession = async (req, res) => {
     }
     res.json({ url: session.url });
   } catch (error) {
-    console.log(error);
-    res.status.json({ message: error.raw.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -146,23 +142,28 @@ exports.deleteOrder = async (req, res) => {
   }
 };
 
-const createLineItems = (checkoutSessionRequest, orderItems) => {
-  const lineItems = checkoutSessionRequest.cartItems.map((cartItem) => {
-    const menuItem = MenuItem.findById(cartItem._id);
-    if (!menuItem) {
-      throw new Error("Menu item not found " + cartItem._id);
-    }
-    const line_item = {
-      price_data: {
-        currency: "ils",
-        unit_amount: menuItem.price,
-        product_data: {
-          name: menuItem.name,
+const createLineItems = async (checkoutSessionRequest) => {
+  const lineItems = await Promise.all(
+    checkoutSessionRequest.cartItems.map(async (cartItem) => {
+      const menuItem = await MenuItem.findById(cartItem._id);
+      if (!menuItem) {
+        throw new Error("Menu item not found " + cartItem._id);
+      }
+      const priceInAgorot = menuItem.price * 100;
+
+      const line_item = {
+        quantity: cartItem.quantity,
+        price_data: {
+          currency: "ils",
+          unit_amount: priceInAgorot,
+          product_data: {
+            name: menuItem.name,
+          },
         },
-      },
-    };
-    return line_item;
-  });
+      };
+      return line_item;
+    })
+  );
   return lineItems;
 };
 
@@ -172,6 +173,7 @@ const createSession = async (
   deliveryPrice,
   restaurantId
 ) => {
+  console.log(lineItems);
   const sessionData = await STRIPE.checkout.sessions.create({
     line_items: lineItems,
     shipping_options: [
