@@ -17,7 +17,7 @@ interface OrderRestProps {
 
 const OrderRest: React.FC<OrderRestProps> = ({ order }) => {
   console.log(order);
-  
+
   // const order = {
   //   _id: "677d2d94ecd6cf90a8a6354b",
   //   user_id: {

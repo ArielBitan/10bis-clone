@@ -77,6 +77,7 @@ exports.getOrdersByUser = async (userId) => {
 };
 
 exports.getOrdersByRestaurant = async (restaurantId) => {
+  console.log(restaurantId + "aaa");
   return await Order.find({ restaurant_id: restaurantId })
     .populate("user_id", "name address phone")
     .populate("order_items");

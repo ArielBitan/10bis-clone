@@ -111,13 +111,14 @@ exports.getOrdersByUser = async (req, res) => {
 
 exports.getOrdersByRestaurant = async (req, res) => {
   try {
-    const orders = await orderService.getOrdersByUser(req.params.restaurantId);
+    const orders = await orderService.getOrdersByRestaurant(
+      req.params.restaurantId
+    );
     res.status(200).json(orders);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
-
 
 exports.updateOrderStatus = async (req, res) => {
   try {

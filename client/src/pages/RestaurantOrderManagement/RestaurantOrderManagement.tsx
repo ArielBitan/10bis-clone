@@ -5,18 +5,24 @@ import OrderRest from "@/components/orders/OrderRest";
 import { fetchOrdersByRestaurant } from "@/services/orderService";
 import { IRestaurantOwner } from "@/types/userType";
 import { useQuery } from "@tanstack/react-query";
-// import { log } from "console";
+import { useEffect, useState } from "react";
+
 const RestaurantOrderManagement = () => {
   const { user } = useUser();
-  const ownedRestId = (user as IRestaurantOwner)?.owned_restaurants?.[0];
+  const [ownedRestId, setOwnedRestId] = useState<string | undefined>(undefined);
+
+  // Update ownedRestId when user data is available
+  useEffect(() => {
+    if (user && (user as IRestaurantOwner)?.owned_restaurants?.[0]) {
+      setOwnedRestId((user as IRestaurantOwner)?.owned_restaurants?.[0]);
+    }
+  }, [user]);
+
   console.log(ownedRestId);
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["ordersByRestaurant"],
-    queryFn: () =>
-      fetchOrdersByRestaurant(
-        ownedRestId
-        // "6776fdb5d1030347fd0fabd7"
-      ),
+    queryKey: ["ordersByRestaurant", ownedRestId],
+    queryFn: () => fetchOrdersByRestaurant(ownedRestId as string),
+    enabled: !!ownedRestId, // Only fetch if ownedRestId is truthy
   });
 
   if (isLoading) return <Loading />;
@@ -28,8 +34,6 @@ const RestaurantOrderManagement = () => {
       </div>
     );
   if (!data) return <div>No data available</div>;
-  console.log(data);
-
   return (
     <div className="relative">
       <Navbar />
