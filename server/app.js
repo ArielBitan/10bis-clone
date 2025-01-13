@@ -28,14 +28,6 @@ app.use("/orders", orderRoutes);
 app.use("/reviews", reviewRoutes);
 app.use("/restaurants", restaurantRoutes);
 app.use("/users", userRoutes);
-app.use("/api", webhookRoutes);
-
-// Global Error Handling Middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res
-    .status(err.status || 500)
-    .json({ message: err.message || "Internal Server Error" });
-});
+// app.use("/api", webhookRoutes);
 
 module.exports = app;
