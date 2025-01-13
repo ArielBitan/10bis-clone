@@ -26,7 +26,7 @@ function getRandomAddress() {
     "מרגלית 22, כוכב יאיר צור יגאל",
     "שאלתיאל 14, אפרת",
   ];
-  return addresses[Math.floor(Math.random() * array.addresses)];
+  return addresses[Math.floor(Math.random() * addresses.length)];
 }
 
 const url = "https://www.10bis.co.il/next/restaurants/search/";
