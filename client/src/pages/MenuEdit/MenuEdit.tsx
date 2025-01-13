@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import MenuCard from "@/components/MenuCard/MenuCard";
+import RestaurantMenuCard from "@/components/restaurantOwner/RestaurantMenuCard";
 import Navbar from "@/components/layout/Navbar";
 import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
@@ -8,11 +8,11 @@ import { FiSearch } from "react-icons/fi";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { fetchRestaurantById } from "@/services/restaurantService";
-import AddItem from "@/components/restaurantOwner/AddItem";
 import { useQueryClient } from "@tanstack/react-query";
 import { useUser } from "@/components/context/userContext";
 import { IRestaurantOwner } from "@/types/userType";
 import Loading from "@/components/Loading";
+import AddItem from "@/components/restaurantOwner/AddItem";
 
 const MenuEdit = () => {
   const { user } = useUser();
@@ -163,7 +163,7 @@ const MenuEdit = () => {
               key={item._id}
               ref={(el) => (categoryRefs.current[item.category] = el)}
             >
-              <MenuCard item={item} renderFunc={renderFunc} />
+              <RestaurantMenuCard item={item} renderFunc={renderFunc} />
             </div>
           ))
         ) : (

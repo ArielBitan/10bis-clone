@@ -1,6 +1,7 @@
 import RestaurantCard from "./RestaurantCard";
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllRestaurants } from "@/services/restaurantService";
+import { useEffect } from "react";
 import Loading from "../Loading";
 
 const AllRestaurants = ({}) => {
@@ -8,6 +9,10 @@ const AllRestaurants = ({}) => {
     queryKey: ["restaurants"],
     queryFn: () => fetchAllRestaurants(),
   });
+
+  useEffect(() => {
+    localStorage.setItem("cartDetail", JSON.stringify([]));
+  }, []);
 
   if (isLoading) return <Loading />;
   if (isError)

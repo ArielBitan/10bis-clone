@@ -9,6 +9,7 @@ const reviewRoutes = require("./routes/review.route");
 const restaurantRoutes = require("./routes/restaurant.route");
 const userRoutes = require("./routes/user.route");
 const itemRoutes = require("./routes/item.route");
+const webhookRoutes = require("./routes/webhook.route");
 const app = express();
 
 // Middleware
@@ -28,13 +29,6 @@ app.use("/orders", orderRoutes);
 app.use("/reviews", reviewRoutes);
 app.use("/restaurants", restaurantRoutes);
 app.use("/users", userRoutes);
-
-// Global Error Handling Middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res
-    .status(err.status || 500)
-    .json({ message: err.message || "Internal Server Error" });
-});
+// app.use("/api", webhookRoutes);
 
 module.exports = app;

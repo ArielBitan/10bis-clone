@@ -12,7 +12,7 @@ const { authenticateUser } = require("../middleware/auth.middleware");
 router.post("/", orderController.createOrder);
 router.get("/", orderController.getAllOrders);
 router.get("/:status", orderController.getOrdersByStatus);
-router.get("/:id", orderController.getOrderById);
+router.get("/order/:id", orderController.getOrderById);
 router.get(
   "/courier/active",
   authenticateCourier,

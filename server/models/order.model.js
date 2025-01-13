@@ -13,13 +13,24 @@ const orderSchema = new mongoose.Schema(
       ref: "Restaurant",
       required: true,
     },
-    courier_id: { type: mongoose.Schema.Types.ObjectId, ref: "Courier" },
-    order_items: [{ type: mongoose.Schema.Types.ObjectId, ref: "MenuItem" }],
+    courier_id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    order_items: [
+      {
+        _id: { type: mongoose.Schema.Types.ObjectId, ref: "MenuItem" },
+        quantity: { type: Number, default: 1 },
+      },
+    ],
     status: {
       type: String,
-      enum: ["Pending", "Open", "Accepted", "Picked Up", "Delivered"],
+      enum: [
+        "Awaiting Payment",
+        "Pending",
+        "Open",
+        "Accepted",
+        "Picked Up",
+        "Delivered",
+      ],
       required: true,
-      default: "Pending",
     },
     delivered_at: { type: Date },
     special_instructions: [{ type: String }],

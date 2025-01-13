@@ -9,7 +9,7 @@ import Search from "./Search";
 
 const Navbar = () => {
   const { user } = useUser();
-  console.log(user);
+
   const role = user?.role;
   const guestAddress = localStorage.getItem("userAddress");
 

@@ -19,12 +19,17 @@ interface IPaymentDetails {
   amount: number;
 }
 
+export interface IOrderItem {
+  quantity: number;
+  _id: IMenuItem;
+}
+
 export interface IOrder {
   _id: string;
   user_id: IUser;
   restaurant_id: IRestaurant;
-  courier_id: string;
-  order_items: IMenuItem[];
+  courier_id: IUser;
+  order_items: IOrderItem[];
   status: string;
   special_instructions: string[];
   payment_details: IPaymentDetails;

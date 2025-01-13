@@ -26,25 +26,39 @@ exports.createCheckoutSession = async (req, res) => {
     if (!restaurant) {
       throw new Error("Restaurant not found");
     }
+    // Create the order in your database after the session is created
+    const orderData = {
+      user_id: req.user._id,
+      restaurant_id: restaurant._id,
+      order_items: checkoutSessionRequest.cartItems.map((item) => ({
+        _id: item._id,
+        quantity: item.quantity,
+      })),
+      status: "Pending",
+      delivery_fee: restaurant.delivery_fee,
+      payment_details: { method: "Card", amount: 0 },
+    };
 
-    const lineItems = createLineItems(
-      checkoutSessionRequest,
-      restaurant.order_items
-    );
+    const order = await orderService.createOrder(orderData);
 
+    const lineItems = await createLineItems(checkoutSessionRequest);
+
+    // Create the checkout session
     const session = await createSession(
       lineItems,
-      "TEST_ORDER_ID",
+      order._id.toString(),
       restaurant.delivery_fee,
       restaurant._id.toString()
     );
+
     if (!session.url) {
       return res.status(500).json({ message: "Error creating stripe session" });
     }
+    order.payment_details.amount = session.amount_total;
+    // Once the order is created, redirect the user to their order page
     res.json({ url: session.url });
   } catch (error) {
-    console.log(error);
-    res.status.json({ message: error.raw.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -59,7 +73,9 @@ exports.getAllOrders = async (req, res) => {
 
 exports.getOrderById = async (req, res) => {
   try {
-    const order = await orderService.getOrderById(req.params.id);
+    const { id } = req.params;
+
+    const order = await orderService.getOrderById(id);
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
@@ -111,13 +127,14 @@ exports.getOrdersByUser = async (req, res) => {
 
 exports.getOrdersByRestaurant = async (req, res) => {
   try {
-    const orders = await orderService.getOrdersByUser(req.params.restaurantId);
+    const orders = await orderService.getOrdersByRestaurant(
+      req.params.restaurantId
+    );
     res.status(200).json(orders);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
-
 
 exports.updateOrderStatus = async (req, res) => {
   try {
@@ -145,23 +162,28 @@ exports.deleteOrder = async (req, res) => {
   }
 };
 
-const createLineItems = (checkoutSessionRequest, orderItems) => {
-  const lineItems = checkoutSessionRequest.cartItems.map((cartItem) => {
-    const menuItem = MenuItem.findById(cartItem._id);
-    if (!menuItem) {
-      throw new Error("Menu item not found " + cartItem._id);
-    }
-    const line_item = {
-      price_data: {
-        currency: "ils",
-        unit_amount: menuItem.price,
-        product_data: {
-          name: menuItem.name,
+const createLineItems = async (checkoutSessionRequest) => {
+  const lineItems = await Promise.all(
+    checkoutSessionRequest.cartItems.map(async (cartItem) => {
+      const menuItem = await MenuItem.findById(cartItem._id);
+      if (!menuItem) {
+        throw new Error("Menu item not found " + cartItem._id);
+      }
+      const priceInAgorot = menuItem.price * 100;
+
+      const line_item = {
+        quantity: cartItem.quantity,
+        price_data: {
+          currency: "ils",
+          unit_amount: priceInAgorot,
+          product_data: {
+            name: menuItem.name,
+          },
         },
-      },
-    };
-    return line_item;
-  });
+      };
+      return line_item;
+    })
+  );
   return lineItems;
 };
 
@@ -190,7 +212,7 @@ const createSession = async (
       orderId,
       restaurantId,
     },
-    success_url: `${FRONTEND_URL}/order-status?success=true`,
+    success_url: `${FRONTEND_URL}/order/${orderId}`,
     cancel_url: `${FRONTEND_URL}/restaurant/${restaurantId}?cancelled=true`,
   });
   return sessionData;
