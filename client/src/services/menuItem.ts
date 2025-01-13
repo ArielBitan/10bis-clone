@@ -1,6 +1,5 @@
 import api from "@/lib/api";
 import { IMenuItem } from "@/types/restaurantTypes";
-
 // Function to create a new menu item
 export const createMenuItem = async (
   menuItem: IMenuItem
@@ -43,6 +42,30 @@ export const deleteMenuItem = async (id: string): Promise<void> => {
     await api.delete(`/items/${id}`);
   } catch (error) {
     console.error(`Error deleting menu item with ID ${id}:`, error);
+    throw error;
+  }
+};
+
+export interface IMenuItemWithRestaurant
+  extends Omit<IMenuItem, "restaurant_id"> {
+  restaurant_id: {
+    _id: string;
+    name: string;
+    image: string;
+  };
+}
+
+// Function to search for menuitems by name
+export const searchMenuItemsByName = async (
+  nameInput: string
+): Promise<IMenuItemWithRestaurant[]> => {
+  try {
+    const { data } = await api.get<IMenuItemWithRestaurant[]>(
+      `items/search/${nameInput}`
+    );
+    return data;
+  } catch (error) {
+    console.error(`Error searching menuitems with name "${nameInput}":`, error);
     throw error;
   }
 };

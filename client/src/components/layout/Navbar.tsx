@@ -5,6 +5,7 @@ import { FiSearch } from "react-icons/fi";
 import { Input } from "../ui/input";
 import UserMenu from "./UserMenu";
 import { useUser } from "../context/userContext";
+import Search from "./Search";
 
 const Navbar = () => {
   const { user } = useUser();
@@ -18,7 +19,7 @@ const Navbar = () => {
         <div>
           <div className="flex items-center justify-between py-3">
             <Link
-              to="/"
+              to="/home"
               className="flex items-center justify-center space-x-1 transition-transform duration-300 hover:scale-110"
             >
               <img
@@ -80,17 +81,7 @@ const Navbar = () => {
               </div>
               <IoIosArrowDown />
             </button>
-
-            <div className="flex items-center w-full sm:w-full md:w-full lg:w-auto">
-              <div className="flex items-center w-full h-8 gap-2 px-2 border border-gray-300 hover:border-gray-500">
-                <FiSearch className="hover:cursor-pointer" />
-                <Input
-                  type="text"
-                  placeholder="מנות, מסעדות או סוגי אוכל"
-                  className="h-4 text-sm border-none "
-                />
-              </div>
-            </div>
+            <Search />
 
             <div className="w-full my-4 sm:w-full md:w-full lg:w-auto">
               <button className="flex items-center w-full h-8 px-2 border border-gray-300 hover:border-gray-500 sm:w-full md:w-full lg:w-auto">

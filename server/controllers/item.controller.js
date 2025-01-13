@@ -43,3 +43,22 @@ exports.deleteItem = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+exports.searchItems = async (req, res) => {
+  try {
+    const { name } = req.params;
+    console.log("Received name input:", name);
+
+    if (!name) {
+      return res.status(400).json({ message: "Please provide a item name" });
+    }
+
+    const items = await itemService.searchItemsByName(name);
+    return res.status(200).json(items);
+  } catch (error) {
+    console.error("Error searching items:", error);
+    return res
+      .status(500)
+      .json({ message: error.message || "Internal server error" });
+  }
+};

@@ -81,3 +81,18 @@ export const deleteRestaurant = async (restaurantId: string): Promise<void> => {
     throw error;
   }
 };
+
+
+
+// Function to search for restaurants by name
+export const searchRestaurantsByName = async (
+  nameInput: string
+): Promise<IRestaurant[]> => {
+  try {
+    const { data } = await api.get<IRestaurant[]>(`/restaurants/search/${nameInput}`); 
+    return data;
+  } catch (error) {
+    console.error(`Error searching restaurants with name "${nameInput}":`, error);
+    throw error;
+  }
+};

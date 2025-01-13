@@ -13,3 +13,17 @@ exports.updateItem = async (id, itemData) => {
 exports.deleteItem = async (id) => {
   return await MenuItem.findByIdAndDelete(id);
 };
+
+exports.searchItemsByName = async (nameInput) => {
+  try {
+    const regex = new RegExp(nameInput, "i");
+    const items = await MenuItem.find({ name: regex }).populate(
+      "restaurant_id",
+      "name image"
+    );
+
+    return items;
+  } catch (error) {
+    throw new Error(`Error searching items: ${error.message}`);
+  }
+};
