@@ -40,6 +40,19 @@ exports.getAllRestaurants = async (req, res) => {
   }
 };
 
+exports.getNearbyRestaurants = async (req, res) => {
+  try {
+    const { coordinates } = req.body;
+
+    const restaurants = await restaurantService.getNearbyRestaurants(
+      coordinates
+    );
+    res.status(200).json(restaurants);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
 exports.getRestaurantById = async (req, res) => {
   try {
     // Get restaurant by ID

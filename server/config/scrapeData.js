@@ -1,13 +1,37 @@
-const mongoose = require("mongoose");
 const Restaurant = require("../models/restaurant.model");
-const Location = require("../models/location.model");
 const MenuItem = require("../models/menu-item.model");
 const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 
+function getRandomAddress() {
+  const addresses = [
+    "ירושלים 2, נס ציונה",
+    "שי עגנון 22, תל אביב-יפו",
+    "נס לגוים 14 יפו",
+    "הצליל 20 רעננה",
+    "כובשי החרמון 22 בת ים",
+    "כובשי החרמון 15, קרית עקרון",
+    "בראשית 2, משען",
+    "מרגלית 60, שוהם",
+    "נווה מרגלית 22, קרית מלאכי",
+    "לילינבלום 15, קרית אתא",
+    "דרך ההגנה 22, תל אביב",
+    "איילון דרום 15, תל אביב-יפו",
+    "איילון צפון 15, תל אביב-יפו",
+    "עמק זבולון 2, כפר סבא",
+    "זבולון 2, הרצליה",
+    "זבולון 2, קרית טבעון",
+    "רינה 44, אשקלון",
+    "מרגלית 22, תל מונד",
+    "מרגלית 22, כוכב יאיר צור יגאל",
+    "שאלתיאל 14, אפרת",
+  ];
+  return addresses[Math.floor(Math.random() * array.addresses)];
+}
+
 const url = "https://www.10bis.co.il/next/restaurants/search/";
 
-async function scrapeData() {
+async function scrapeData(retryCount = 0) {
   const browser = await puppeteer.launch({
     headless: true, // Set headless to false to see what's happening
   });
@@ -24,7 +48,7 @@ async function scrapeData() {
   await page.keyboard.press("Escape");
 
   // Step 3: Type the address into the input field
-  const address = "שדרות הנרקיסים, Sderat HaNarkisim 11, Ramat Gan, ישראל";
+  const address = getRandomAddress();
   await page.type("#homePage_SelectAddress", address);
 
   // Step 4: Wait for the `ul` dropdown to appear
@@ -152,6 +176,13 @@ async function scrapeData() {
         continue;
       }
 
+      if (
+        details.cuisineTypes.includes("חנות אלכוהול") ||
+        details.cuisineTypes.includes("סופרים")
+      ) {
+        console.log("חנות אלכוהול או סופר, מדלג...");
+        continue;
+      }
       $$('[data-test-id="restaurantBodyDishList"] section').each((i, item) => {
         const category = $$(item)
           .find(".CategoryName-fDhjRP.StyledCategoryName-itXoUn.cVUVYo.exAMne")
@@ -261,7 +292,7 @@ async function scrapeData() {
 
       const savedRestaurant = await Restaurant.create(newRestaurant);
 
-      console.log("Restaurant saved successfully:");
+      console.log(savedRestaurant);
 
       // Now save the menu items
       for (const category of details.menuItems) {
@@ -282,13 +313,35 @@ async function scrapeData() {
 
       // Close the restaurant page
       await restaurantPage.close();
+
+      // Close the main browser
+      await browser.close();
+      console.log("Finished scraping this address");
+
+      // Wait for a random time between 1-3 minutes before next iteration
+      const waitTime = Math.floor(Math.random() * (180000 - 60000) + 60000);
+      console.log(
+        `Waiting ${Math.floor(waitTime / 1000)} seconds before next address...`
+      );
+
+      await sleep(waitTime);
+
+      // Recursive call with reset retry count
+      return scrapeData(0);
     } catch (error) {
       console.log("Error scraping restaurant:", error);
+      // Implement retry logic
+      if (retryCount < 3) {
+        console.log(`Retry attempt ${retryCount + 1} of 3`);
+        await sleep(30000); // Wait 30 seconds before retry
+        return scrapeData(retryCount + 1);
+      } else {
+        console.log("Max retries reached. Starting fresh with new address...");
+        await sleep(60000); // Wait a minute before starting fresh
+        return scrapeData(0);
+      }
     }
   }
-
-  // Close the main browser
-  await browser.close();
 }
 
 function sleep(ms) {

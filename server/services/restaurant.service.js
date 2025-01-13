@@ -8,7 +8,7 @@ exports.createRestaurant = async (restaurantData) => {
   }
 };
 
-exports.getAllRestaurants = async () => {
+exports.getAllRestaurants = async (address) => {
   return await Restaurant.find();
 };
 
@@ -16,9 +16,31 @@ exports.getRestaurantById = async (id) => {
   return await Restaurant.findById(id);
 };
 
+exports.getNearbyRestaurants = async (
+  coordinates,
+  maxDistanceInMeters = 15000
+) => {
+  try {
+    // Perform a geo query to find restaurants near the user's coordinates
+    const restaurants = await Restaurant.find({
+      "location.coordinates": {
+        $near: {
+          $geometry: { type: "Point", coordinates },
+
+          $maxDistance: maxDistanceInMeters,
+        },
+      },
+    });
+
+    return restaurants;
+  } catch (error) {
+    console.error("Error fetching restaurants:", error);
+    throw error;
+  }
+};
+
 exports.updateRestaurant = async (id, updateData) => {
   try {
-    console.log(updateData);
     const restaurant = await Restaurant.findByIdAndUpdate(id, updateData, {
       new: true,
     });

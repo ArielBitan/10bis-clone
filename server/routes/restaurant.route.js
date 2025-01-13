@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const restaurantController = require("../controllers/restaurant.controller");
+const createCoordinatesFromAddress = require("../middleware/address.middleware");
 const upload = require("../middleware/upload.middleware");
 
 const uploadFields = [
@@ -21,6 +22,11 @@ router.post(
   restaurantController.createRestaurant
 );
 router.get("/", restaurantController.getAllRestaurants);
+router.post(
+  "/nearby",
+  createCoordinatesFromAddress,
+  restaurantController.getNearbyRestaurants
+);
 router.get("/:id", restaurantController.getRestaurantById);
 router.put(
   "/:id",
