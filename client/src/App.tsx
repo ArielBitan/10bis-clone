@@ -25,7 +25,11 @@ const App: React.FC = () => {
         <Route path="/courier" element={<CourierPage />} />
         <Route path="/menu-edit" element={<MenuEdit />} />
         <Route path="*" element={<NotFound />} />
-        <Route path="/restaurant-order-management"  element={<RestaurantOrderManagement />}/>
+        <Route
+          path="/restaurant-order-management"
+          element={<RestaurantOrderManagement />}
+        />
+        <Route path="/courier-register" element={<CourierPage />} />
       </Routes>
       {state?.backgroundLocation && (
         <Routes>

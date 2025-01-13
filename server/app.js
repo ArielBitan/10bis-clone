@@ -14,6 +14,7 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(express.json({ extended: true, charset: 'utf-8' }));
 app.use(
   cors({
     origin: "http://localhost:5173",

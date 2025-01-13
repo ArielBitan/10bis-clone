@@ -29,4 +29,8 @@ router.put(
 );
 router.delete("/:id", restaurantController.deleteRestaurant);
 
+
+//search
+router.get('/search/:name', restaurantController.searchRestaurants);
+
 module.exports = router;

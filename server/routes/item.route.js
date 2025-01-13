@@ -10,4 +10,7 @@ router.post("/", upload.single("image"), itemController.createItem);
 router.put("/:id", upload.single("image"), itemController.updateItem);
 router.delete("/:id", itemController.deleteItem);
 
+//search
+router.get("/search/:name", itemController.searchItems);
+
 module.exports = router;

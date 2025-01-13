@@ -31,3 +31,14 @@ exports.updateRestaurant = async (id, updateData) => {
 exports.deleteRestaurant = async (id) => {
   return await Restaurant.findByIdAndDelete(id);
 };
+
+
+exports.searchRestaurantsByName = async (nameInput) => {
+  try {
+    const regex = new RegExp(nameInput, 'i'); 
+    const restaurants = await Restaurant.find({ name: regex }); 
+    return restaurants;
+  } catch (error) {
+    throw new Error(`Error searching restaurants: ${error.message}`);
+  }
+};
