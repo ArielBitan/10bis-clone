@@ -1,114 +1,104 @@
-import { CartItem } from "@/pages/DetailPage/DetailPage";
 import { IMenuItem } from "@/types/restaurantTypes";
-import { useEffect, useState } from "react";
+import { useUser } from "../context/userContext";
+import { Button } from "../ui/button";
+import { useDeleteMenuItem } from "@/services/tan-stack/menuItem-TenStack";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import EditItem from "../restaurantOwner/EditItem";
 
 interface MenuItemCardProps {
   item: IMenuItem;
-  initialQuantity?: number;
-  onUpdateFooter: (price: number, meal: IMenuItem, quantity: number) => void;
-  setCartDetails: React.Dispatch<React.SetStateAction<CartItem[]>>;
-  cartDetails: CartItem[];
+  renderFunc: () => void;
 }
 
-const MenuCard: React.FC<MenuItemCardProps> = ({
-  item,
-  onUpdateFooter,
-  initialQuantity = 0,
-  setCartDetails,
-  cartDetails,
-}) => {
-  const [quantity, setQuantity] = useState(initialQuantity);
+const MenuCard: React.FC<MenuItemCardProps> = ({ item, renderFunc }) => {
+  const { user } = useUser();
+  let isRestOwner = false;
+  if (user) {
+    if ("owned_restaurants" in user) {
+      // console.log(user.owned_restaurants);
+      // console.log(item.restaurant_id);
 
-  useEffect(() => {
-    const cartItem = cartDetails.find((cartItem) => cartItem.id === item._id);
-    if (cartItem) {
-      setQuantity(cartItem.quantity);
-    }
-  }, [cartDetails, item._id]);
-
-  const handleIncrement = () => {
-    const existingItemIndex = cartDetails.findIndex(
-      (order) => order.id === item._id
-    );
-
-    if (existingItemIndex !== -1) {
-      const updatedCartDetails = [...cartDetails];
-      updatedCartDetails[existingItemIndex] = {
-        ...updatedCartDetails[existingItemIndex],
-        quantity: updatedCartDetails[existingItemIndex].quantity + 1,
-      };
-      setCartDetails(updatedCartDetails);
-    } else {
-      setCartDetails([
-        ...cartDetails,
-        { ...item, id: item._id as string, quantity: 1 },
-      ]);
-    }
-
-    setQuantity((prevQuantity) => prevQuantity + 1);
-    onUpdateFooter(item.price, item, quantity + 1);
-  };
-
-  const handleDecrement = () => {
-    if (quantity > 1) {
-      const updatedQuantity = quantity - 1;
-      setCartDetails((prev) =>
-        prev.map((cartItem) =>
-          cartItem.id === item._id
-            ? { ...cartItem, quantity: updatedQuantity }
-            : cartItem
-        )
+      isRestOwner = user.owned_restaurants.some(
+        (res) => res === item.restaurant_id
       );
-      setQuantity(updatedQuantity);
-      onUpdateFooter(item.price, item, updatedQuantity);
-    } else if (quantity === 1) {
-      setCartDetails((prev) =>
-        prev.filter((cartItem) => cartItem.id !== item._id)
-      );
-      setQuantity(0);
-      onUpdateFooter(item.price, item, 0);
+
+      // console.log("owner?" + isRestOwner);
+    }
+  }
+
+  const { mutate: deleteMenuItemMutation } = useDeleteMenuItem();
+
+  const handleDelete = async () => {
+    if (!item?._id) return;
+    try {
+      deleteMenuItemMutation(item._id);
+      renderFunc();
+    } catch (error) {
+      console.error("Error deleting menu item:", error);
     }
   };
 
-  return (
-    <div className="bg-white border shadow-lg flex sm:flex-row my-4 mx-2 justify-between w-[97%] hover:shadow-xl hover:border-gray-300 transition duration-300 overflow-hidden">
-      <div className="px-4 pt-4 flex-grow sm:w-2/3 lg:w-full">
-        <h3 className="font-bold text-lg mb-2">{item.name}</h3>
-        {item.description && (
-          <p className="text-sm truncate md:w-3/4 max-w-56 ">
-            {item.description.split(".")[0]}
-          </p>
-        )}
-        <div className="flex justify-between items-center mt-8 lg:mb-2">
-          <div className="mt-2 text-base font-semibold">{`₪${
-            Number.isInteger(item.price)
-              ? item.price
-              : (Math.round((item.price || 0) * 10) / 10).toFixed(2)
-          }`}</div>
-
-          <div className="flex items-center justify-between flex-row-reverse border border-gray-300 rounded-full px-4  h-10 w-24">
-            <button
-              onClick={handleDecrement}
-              className="text-gray-300 text-4xl"
-            >
-              -
-            </button>
-            <span className="text-lg font-semibold">{quantity}</span>
-            <button
-              onClick={handleIncrement}
-              className="text-blue-600 text-xl "
-            >
-              +
-            </button>
+  if (!isRestOwner) {
+    return (
+      <div className="flex justify-between w-auto mx-6 my-4 transition duration-300 border shadow-lg hover:shadow-xl hover:border-gray-300">
+        <div className="flex flex-col justify-between px-4 pt-4">
+          <div className="mb-2">
+            <h3 className="text-lg font-bold">{item.name}</h3>
+            {item.description && (
+              <p className="w-64 text-sm truncate md:w-3/4 ">
+                {item.description.split(".")[0]}
+              </p>
+            )}
+          </div>
+          <div className="mb-2 text-base">
+            <span>{` ₪${item.price || 0}`}</span>
           </div>
         </div>
+        <div>
+          <img
+            src={item.image}
+            alt="background_image"
+            className="w-[131px] h-[134px] object-cover "
+          />
+        </div>
       </div>
+    );
+  }
 
-      <div className="w-[250px] h-[150px]">
+  return (
+    <div className="flex justify-between w-auto mx-6 my-4 transition duration-300 border shadow-lg hover:shadow-xl hover:border-gray-300">
+      <div className="flex flex-col justify-between px-4 pt-4">
+        <div className="mb-2">
+          <div className="flex items-center gap-2 mb-2">
+            <Button variant={"delete"} onClick={handleDelete}>
+              מחק פריט
+            </Button>
+
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button>ערוך פריט</Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px] bg-orangePrimary">
+                <EditItem item={item} renderFunc={renderFunc} />
+              </DialogContent>
+            </Dialog>
+          </div>
+          <h3 className="text-lg font-bold">{item.name}</h3>
+          {item.description && (
+            <p className="w-64 text-sm truncate md:w-3/4 ">
+              {item.description.split(".")[0]}
+            </p>
+          )}
+        </div>
+        <div className="mb-2 text-base">
+          <span>{` ₪${item.price || 0}`}</span>
+        </div>
+      </div>
+      <div>
         <img
           src={item.image}
-          alt={item.name}
-          className="w-full h-full object-cover"
+          alt="background_image"
+          className="w-[131px] h-[134px] object-cover "
         />
       </div>
     </div>
