@@ -182,7 +182,11 @@ const AddItem: React.FC<AddItemProps> = ({ resId, onItemAdded }) => {
         className="w-full bg-green-600 hover:bg-green-700"
         disabled={loading as boolean}
       >
-        {loading ? <Loader /> : <div>הוסף פריט</div>}
+        {loading ? (
+          <Loader className="motion-preset-spin motion-duration-2000" />
+        ) : (
+          <div>הוסף פריט</div>
+        )}
       </Button>
       <div className="text-xl text-white">{successMessage}</div>
     </form>

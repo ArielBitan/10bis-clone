@@ -108,9 +108,9 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
               <h3 className="font-medium">פריטי הזמנה:</h3>
               <ul className="text-sm text-gray-600">
                 {activeOrder.order_items.map((item) => (
-                  <li key={item._id} className="flex items-center gap-2">
+                  <li key={item._id._id} className="flex items-center gap-2">
                     <Package className="w-4 h-4" />
-                    {item.name} - {item.price} ₪
+                    {item._id.name} - {item._id.price} ₪
                   </li>
                 ))}
               </ul>
