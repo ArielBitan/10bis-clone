@@ -25,6 +25,7 @@ function getRandomAddress() {
     "מרגלית 22, תל מונד",
     "מרגלית 22, כוכב יאיר צור יגאל",
     "שאלתיאל 14, אפרת",
+    "החילזון 4, רמת גן",
   ];
   return addresses[Math.floor(Math.random() * addresses.length)];
 }
@@ -313,21 +314,6 @@ async function scrapeData(retryCount = 0) {
 
       // Close the restaurant page
       await restaurantPage.close();
-
-      // Close the main browser
-      await browser.close();
-      console.log("Finished scraping this address");
-
-      // Wait for a random time between 1-3 minutes before next iteration
-      const waitTime = Math.floor(Math.random() * (180000 - 60000) + 60000);
-      console.log(
-        `Waiting ${Math.floor(waitTime / 1000)} seconds before next address...`
-      );
-
-      await sleep(waitTime);
-
-      // Recursive call with reset retry count
-      return scrapeData(0);
     } catch (error) {
       console.log("Error scraping restaurant:", error);
       // Implement retry logic
@@ -342,6 +328,20 @@ async function scrapeData(retryCount = 0) {
       }
     }
   }
+  // Close the main browser
+  await browser.close();
+  console.log("Finished scraping this address");
+
+  // Wait for a random time between 1-3 minutes before next iteration
+  const waitTime = Math.floor(Math.random() * (180000 - 60000) + 60000);
+  console.log(
+    `Waiting ${Math.floor(waitTime / 1000)} seconds before next address...`
+  );
+
+  await sleep(waitTime);
+
+  // Recursive call with reset retry count
+  return scrapeData(0);
 }
 
 function sleep(ms) {
