@@ -72,7 +72,7 @@ const OrderCard: React.FC<IOrderCardProps> = ({
       <div className="flex items-center gap-3 mb-3">
         <div className="w-12 h-12 bg-gray-300 rounded-full overflow-hidden">
           <img
-            src={restaurant.image}
+            src={restaurant.image as string}
             alt={`${restaurant.name} logo`}
             className="w-full h-full object-cover"
           />
@@ -139,8 +139,8 @@ const OrderCard: React.FC<IOrderCardProps> = ({
                     key={index}
                     className="flex justify-between border-b border-gray-100 pb-2"
                   >
-                    <span>{item.name}</span>
-                    <span className="font-medium">{item.price} ₪</span>
+                    <span>{item._id.name}</span>
+                    <span className="font-medium">{item._id.price} ₪</span>
                   </div>
                 ))
               ) : (

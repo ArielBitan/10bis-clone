@@ -1,9 +1,10 @@
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { IRestaurant } from "@/types/restaurantTypes";
 import CartCard from "./CartCard";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { CartItem } from "@/pages/DetailPage/DetailPage";
 import { createCheckoutSession } from "@/services/orderService";
+import { Loader } from "lucide-react";
 
 interface InfoCartProps {
   item: IRestaurant;
@@ -16,13 +17,15 @@ const Cart: React.FC<InfoCartProps> = ({
   cartDetails,
   setCartDetails,
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const handlePayment = async () => {
+    setIsLoading(true);
     if (!item._id) {
       return;
     }
     console.log(cartDetails);
     const response = await createCheckoutSession(item._id, cartDetails);
-
+    setIsLoading(false);
     window.location.href = response.url;
   };
 
@@ -119,10 +122,19 @@ const Cart: React.FC<InfoCartProps> = ({
           </div>
         </div>
         <button
-          className="w-full bg-blue-600 p-4 text-white font-bold text-lg hover:bg-blue-700 cursor-pointer"
+          className={`w-full flex justify-center p-4 text-white font-bold text-lg cursor-pointer ${
+            isLoading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700"
+          }`}
           onClick={handlePayment}
+          disabled={isLoading}
         >
-          לעמוד התשלום
+          {isLoading ? (
+            <Loader className="motion-preset-spin motion-duration-2000" />
+          ) : (
+            "לעמוד התשלום"
+          )}
         </button>
       </DialogContent>
     </Dialog>

@@ -141,7 +141,11 @@ const EditItem: React.FC<EditItemProps> = ({ item, renderFunc }) => {
         className="w-full bg-green-600 hover:bg-green-700"
         disabled={loading as boolean}
       >
-        {loading ? <Loader /> : <div>שמור שינויים</div>}
+        {loading ? (
+          <Loader className="motion-preset-spin motion-duration-2000" />
+        ) : (
+          <div>שמור שינויים</div>
+        )}
       </Button>
       <div className="text-xl text-white">{successMessage}</div>
     </form>
