@@ -27,7 +27,7 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <div className="relative flex flex-col w-full h-64 col-span-4 row-start-1 mb-8 overflow-hidden">
+    <div className="relative flex flex-col w-full max-w-[955px] h-64 col-span-4 row-start-1 mb-8 overflow-hidden">
       <AnimatePresence>
         {slides.map((slide, index) =>
           index === currentSlide ? (

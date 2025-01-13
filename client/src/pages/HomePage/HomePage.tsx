@@ -22,27 +22,31 @@ const HomePage = () => {
       <div className="bg-gray-100">
         <Navbar />
         <RestaurantOwnerDashboard />
-        <div className="grid gap-4 mx-60 "></div>
+        {/* <div className="grid gap-4 mx-60 "></div> */}
       </div>
     ) : role === "courier" ? (
       <CourierPage />
     ) : (
-      <div className="bg-gray-100">
+      <div className="bg-gray-100 ">
         <Navbar />
-        <div className="grid gap-4 mx-60">
-          <HeroSection />
+        <div className="flex justify-center gap-4">
           <CategoriesSection />
-          <AllRestaurants />
+          <div className="flex flex-col gap-4 lg:max-w-[955px] ">
+            <HeroSection />
+            <AllRestaurants />
+          </div>
         </div>
       </div>
     )
   ) : (
-    <div className="bg-gray-100">
+    <div className="bg-gray-100 ">
       <Navbar />
-      <div className="grid gap-4 mx-60 ">
-        <HeroSection />
+      <div className="flex justify-center gap-4">
         <CategoriesSection />
-        <AllRestaurants />
+        <div className="flex flex-col gap-4 lg:max-w-[955px] md:max-w-[699px]">
+          <HeroSection />
+          <AllRestaurants />
+        </div>
       </div>
     </div>
   );

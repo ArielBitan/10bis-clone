@@ -16,7 +16,7 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({ item }) => {
       onClick={() => {
         navigateToDetails(item._id as string);
       }}
-      className=" max-w-[325px] mb-2 border shadow-lg"
+      className=" sm:w-[302px] max-w-[525px] w-full mb-2 border shadow-lg"
     >
       <img
         src={item.background_image as string}
