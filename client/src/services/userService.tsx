@@ -92,3 +92,16 @@ export const registerUser = async (
     throw error;
   }
 };
+
+//register as a deliver
+
+export const registerCourier = async (userId: string): Promise<IUser | undefined> => {
+  try {
+    const response = await api.post<IUser>("/users/register/courier", { userId });
+    console.log("Courier created:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error registering user:", error);
+    return undefined; 
+  }
+}
