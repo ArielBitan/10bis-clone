@@ -11,10 +11,10 @@ import { useUser } from "../context/userContext";
 import UserIcon from "./UserIcon";
 import LogInModal from "../LandingPage/modals/LoginModal";
 import { Link, useLocation } from "react-router-dom";
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
 
 const UserMenu = () => {
-  const { user, fetchUser } = useUser();
+  const { user, fetchUser, logout } = useUser();
   const location = useLocation();
   const role = user?.role;
 
@@ -23,7 +23,7 @@ const UserMenu = () => {
   }, []);
 
   const handleLogOut = () => {
-    Cookies.remove("jwt");
+    logout();
     window.location.href = "/";
   };
 

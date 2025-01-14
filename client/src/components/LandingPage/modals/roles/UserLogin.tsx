@@ -52,7 +52,9 @@ const UserLogin: React.FC<UserLoginProps> = ({ toggleRole, setDialogOpen }) => {
       console.log(user);
       clearFields();
       setDialogOpen(false);
-      navigate("/home", { state: { refresh: true } });
+      if (user?.role === "restaurant_owner" || user?.role === "courier") {
+        navigate("/home", { state: { refresh: true } });
+      }
       window.location.reload();
     } catch (error: unknown) {
       if (error instanceof Error && error.message.includes("400")) {

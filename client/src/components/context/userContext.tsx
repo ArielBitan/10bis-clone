@@ -42,7 +42,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   };
 
   const logout = () => {
-    Cookies.remove("token");
+    Cookies.remove("jwt");
     setUser(null);
   };
 
