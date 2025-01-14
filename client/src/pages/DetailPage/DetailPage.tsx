@@ -98,9 +98,15 @@ const DetailPage = () => {
     <div className="relative bg-gray-100">
       <Navbar />
       <RestaurantHeader data={data} />
-      <div className="px-4 bg-white shadow-md">
-        <div className="flex gap-1 datas-center text-sm ">
-          <div className="flex datas-center gap-1">
+      <div className="px-4 bg-white shadow-md pt-8 sm:pt-0">
+        <h1 className="text-2xl sm:block hidden font-semibold pt-8">
+          {data.name}
+        </h1>
+        <h3 className="py-2 text-sm text-gray-600 sm:block hidden">
+          <span>{data.cuisine_types.join(", ")}</span>
+        </h3>
+        <div className="flex gap-1 text-sm text-gray-600">
+          <div className="flex gap-1">
             <FaStar className="text-yellow-500 mb-1" />
             <span>0</span>
           </div>
@@ -187,9 +193,9 @@ const DetailPage = () => {
         )}
       </div>
 
+      <div className="h-[72px]"></div>
       {hasItemsInCart && (
         <>
-          <div className="h-[72px]"></div>
           <footer className="fixed bottom-0 w-full bg-blue-600 p-4 text-white hover:bg-blue-700 cursor-pointer">
             <div className="flex justify-center">
               {
