@@ -7,17 +7,18 @@ exports.createRestaurant = async (req, res) => {
     let updateData = { ...req.body };
 
     // Handle image updates if files are provided
-    if (req.files.background_image) {
-      const background_image = req.files.background_image[0];
-      updateData.background_image = await validateAndUploadImage(
-        background_image
-      );
-    }
+    if (req.files) {
+      if (req.files.background_image) {
+        const background_image = req.files.background_image[0];
+        updateData.background_image = await validateAndUploadImage(
+          background_image
+        );
+      }
+      if (req.files.image) {
+        const image = req.files.image[0];
 
-    if (req.files.image) {
-      const image = req.files.image[0];
-
-      updateData.image = await validateAndUploadImage(image);
+        updateData.image = await validateAndUploadImage(image);
+      }
     }
 
     const restaurant = await restaurantService.createRestaurant(updateData);
@@ -133,17 +134,21 @@ exports.deleteRestaurant = async (req, res) => {
 
 exports.searchRestaurants = async (req, res) => {
   try {
-    const { name } = req.params; 
+    const { name } = req.params;
     console.log("Received name input:", name);
-    
+
     if (!name) {
-      return res.status(400).json({ message: "Please provide a restaurant name" });
+      return res
+        .status(400)
+        .json({ message: "Please provide a restaurant name" });
     }
-    
-    const restaurants = await restaurantService.searchRestaurantsByName(name);  
+
+    const restaurants = await restaurantService.searchRestaurantsByName(name);
     return res.status(200).json(restaurants);
   } catch (error) {
-    console.error('Error searching restaurants:', error);
-    return res.status(500).json({ message: error.message || 'Internal server error' });
+    console.error("Error searching restaurants:", error);
+    return res
+      .status(500)
+      .json({ message: error.message || "Internal server error" });
   }
 };

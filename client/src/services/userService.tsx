@@ -1,6 +1,7 @@
 import api from "@/lib/api";
 import {
   IRestaurantOwner,
+  IRestaurantOwnerForm,
   IUser,
   //   ICourier,
   //   IRestaurantOwner,
@@ -44,7 +45,7 @@ export const updateUserProfile = async (
 
 // Function to create a new restaurant owner user
 export const createRestaurantOwner = async (
-  restaurantOwnerData: Omit<IRestaurantOwner, "_id" | "createdAt" | "updatedAt">
+  restaurantOwnerData: IRestaurantOwnerForm
 ): Promise<IRestaurantOwner> => {
   try {
     const { data } = await api.post<IRestaurantOwner>(

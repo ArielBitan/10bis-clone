@@ -17,6 +17,15 @@ export interface IUser {
   isDelivering?: boolean;
 }
 
+export interface IRestaurantOwnerForm {
+  owned_restaurants: (string | undefined)[];
+  email: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
+  password?: string;
+}
+
 export interface IRestaurantOwner extends IUser {
   owned_restaurants: [string];
   role: "restaurant_owner";

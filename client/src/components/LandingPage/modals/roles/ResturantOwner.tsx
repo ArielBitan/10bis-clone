@@ -25,6 +25,7 @@ const RestaurantRegister = ({ toggleRole }: RestaurantRegisterProps) => {
   const [restaurantFields, setRestaurantFields] = useState({
     restaurantName: "",
     restaurantPhone: "",
+    address: "",
   });
 
   const [errors, setErrors] = useState({
@@ -35,6 +36,7 @@ const RestaurantRegister = ({ toggleRole }: RestaurantRegisterProps) => {
     password: "",
     restaurantName: "",
     restaurantPhone: "",
+    address: "",
   });
 
   const [showPassword, setShowPassword] = useState(true);
@@ -52,6 +54,7 @@ const RestaurantRegister = ({ toggleRole }: RestaurantRegisterProps) => {
     setRestaurantFields({
       restaurantName: "",
       restaurantPhone: "",
+      address: "",
     });
     setErrors({
       email: "",
@@ -61,6 +64,7 @@ const RestaurantRegister = ({ toggleRole }: RestaurantRegisterProps) => {
       password: "",
       restaurantName: "",
       restaurantPhone: "",
+      address: "",
     });
   };
 
@@ -73,6 +77,7 @@ const RestaurantRegister = ({ toggleRole }: RestaurantRegisterProps) => {
       password: "",
       restaurantName: "",
       restaurantPhone: "",
+      address: "",
     };
 
     if (!userFields.email) newErrors.email = "אימייל נדרש";
@@ -101,6 +106,7 @@ const RestaurantRegister = ({ toggleRole }: RestaurantRegisterProps) => {
       const restaurantFieldss = {
         name: restaurantFields.restaurantName,
         phone: restaurantFields.restaurantPhone,
+        location: { address: restaurantFields.address },
       };
 
       const createdRestaurant = await createRestaurant(restaurantFieldss);
@@ -272,6 +278,25 @@ const RestaurantRegister = ({ toggleRole }: RestaurantRegisterProps) => {
             {errors.restaurantPhone && (
               <div className="text-xs text-red-500">
                 {errors.restaurantPhone}
+              </div>
+            )}
+          </div>
+          <div className="w-full max-w-[400px] mx-auto rtl">
+            <Input
+              id="address"
+              placeholder="*כתובת המסעדה"
+              className="w-full text-right bg-slate-100"
+              value={restaurantFields.address}
+              onChange={(e) =>
+                setRestaurantFields({
+                  ...restaurantFields,
+                  address: e.target.value,
+                })
+              }
+            />
+            {errors.restaurantName && (
+              <div className="text-xs text-red-500">
+                {errors.restaurantName}
               </div>
             )}
           </div>
