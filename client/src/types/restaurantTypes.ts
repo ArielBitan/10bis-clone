@@ -5,7 +5,7 @@ export interface WeeklyHour {
 
 export interface Location {
   type?: "Point";
-  coordinates?: [number, number];
+  coordinates: number[];
   address?: string;
 }
 
@@ -16,7 +16,7 @@ export interface IRestaurant {
   cuisine_types: string[];
   image: File | string;
   background_image: File | string;
-  location?: Location;
+  location: Location;
   min_order?: string;
   delivery_fee?: string;
   delivery_time?: string;

@@ -15,9 +15,9 @@ const UserPage = () => {
   }, []);
 
   return (
-    <div className="bg-gray-100 ">
+    <div className="bg-gray-100">
       <Navbar />
-      <div className="flex justify-center gap-4">
+      <div className="flex justify-center gap-4 pt-4">
         <CategoriesSection />
         <div className="flex flex-col gap-4 lg:max-w-[955px] ">
           <HeroSection />

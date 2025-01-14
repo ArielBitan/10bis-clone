@@ -20,6 +20,7 @@ import Footer from "@/components/layout/footer";
 import { useQuery } from "@tanstack/react-query";
 import { fetchOrderById } from "@/services/orderService";
 import Loading from "@/components/Loading";
+import OrderMap from "@/components/OrderPage/OrderMap";
 
 const OrderPage = () => {
   const { id: orderId } = useParams();
@@ -77,14 +78,13 @@ const OrderPage = () => {
             {"טלפון לבירורים: " + order.restaurant_id.phone}
           </p>
         </div>
-        <Separator className="my-2" />
         <div className="flex items-center h-5 space-x-3 text-sm">
           <div className="ml-2">{dateObj.toTimeString().slice(0, 5)}</div>
           <Separator orientation="vertical" />
           <div>{dateObj.toISOString().split("T")[0]}</div>
         </div>
         <div className="flex flex-col gap-4 mt-10 text-xl">
-          <div className="flex flex-col gap-10 lg:gap-40 lg:flex-row">
+          <div className="flex flex-col gap-10 relative lg:flex-row">
             <div>
               <div className="flex ">
                 <MapPin size={24} />
@@ -114,8 +114,14 @@ const OrderPage = () => {
                 <p>טלפון: {order.user_id.phone}</p>
               </div>
             </div>
+            <div className="sm:absolute sm:left-5 sm:-top-24">
+              <OrderMap
+                userLocation={order.userAddress}
+                restaurantLocation={order.restaurant_id.location?.coordinates}
+              />
+            </div>
           </div>
-          <div className="flex gap-2 mt-10">
+          <div className="flex gap-2 mt-20">
             <ShoppingCart size={24} />
             <p>ההזמנה האישית שלך</p>
           </div>
