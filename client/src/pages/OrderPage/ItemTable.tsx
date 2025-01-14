@@ -16,7 +16,20 @@ export const TableDemo: React.FC<TableDemoProps> = ({ items }) => {
   return (
     <div className="overflow-x-auto">
       <Table>
-        <TableHeader>הפריטים שהזמנת</TableHeader>
+        <TableHeader>
+          <TableRow>
+            <TableCell colSpan={5} className="text-center">
+              הפריטים שהזמנת
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>שם</TableCell>
+            <TableCell>תיאור</TableCell>
+            <TableCell className="text-center">תמונה</TableCell>
+            <TableCell className="text-right">מחיר × כמות</TableCell>
+            <TableCell className="text-right">סה״כ</TableCell>
+          </TableRow>
+        </TableHeader>
         <TableBody>
           {items.map((item) => (
             <TableRow key={item._id.name}>

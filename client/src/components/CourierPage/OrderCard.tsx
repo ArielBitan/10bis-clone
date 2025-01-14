@@ -33,23 +33,14 @@ const OrderCard: React.FC<IOrderCardProps> = ({
   const toggleDetails = () => setShowDetails(!showDetails);
 
   const openInWaze = () => {
-    if (restaurant.location?.coordinates && user.location?.coordinates) {
-      const restaurantCoords = `${restaurant.location.coordinates[1]},${restaurant.location.coordinates[0]}`;
-      const userCoords = `${user.location.coordinates[1]},${user.location.coordinates[0]}`;
-      window.open(
-        `https://www.waze.com/ul?ll=${userCoords}&via=${restaurantCoords}&navigate=yes`,
-        "_blank"
-      );
-    } else {
-      const restaurantDestination = encodeURIComponent(
-        restaurant.location?.address || ""
-      );
-      const userDestination = encodeURIComponent(user.location?.address || "");
-      window.open(
-        `https://www.waze.com/ul?q=${restaurantDestination}&via=${userDestination}&navigate=yes`,
-        "_blank"
-      );
-    }
+    const restaurantDestination = encodeURIComponent(
+      restaurant.location?.address || ""
+    );
+    const userDestination = encodeURIComponent(order.userAddress || "");
+    window.open(
+      `https://www.waze.com/ul?q=${restaurantDestination}&via=${userDestination}&navigate=yes`,
+      "_blank"
+    );
   };
 
   return (
@@ -101,10 +92,10 @@ const OrderCard: React.FC<IOrderCardProps> = ({
             <span>{restaurant.location.address}</span>
           </div>
         )}
-        {user.location && (
+        {order.userAddress && (
           <div className="flex items-start gap-1">
             <span className="font-semibold">כתובת לקוח:</span>
-            <span>{user.location.address}</span>
+            <span>{order.userAddress}</span>
           </div>
         )}
         <div className="flex gap-2">

@@ -30,6 +30,7 @@ exports.createCheckoutSession = async (req, res) => {
     const orderData = {
       user_id: req.user._id,
       restaurant_id: restaurant._id,
+      userAddress: checkoutSessionRequest.userAddress,
       order_items: checkoutSessionRequest.cartItems.map((item) => ({
         _id: item._id,
         quantity: item.quantity,

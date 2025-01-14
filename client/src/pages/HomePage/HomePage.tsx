@@ -1,12 +1,10 @@
-import HeroSection from "@/components/HomePage/HeroSection";
-import AllRestaurants from "@/components/HomePage/AllRestaurants";
 import Navbar from "@/components/layout/Navbar";
 import CourierPage from "../CourierPage/CourierPage";
-import CategoriesSection from "@/components/HomePage/CategoriesSection/CategoriesSection";
-import RestaurantOwnerDashboard from "@/components/restaurantOwner/RestaurantOwnerDashboard";
+import RestaurantOwnerDashboard from "@/components/restaurantowner/RestaurantOwnerDashboard";
 
 import { useUser } from "@/components/context/userContext";
 import { useEffect } from "react";
+import UserPage from "../UserPage/UserPage";
 
 const HomePage = () => {
   const { user, fetchUser } = useUser();
@@ -27,28 +25,10 @@ const HomePage = () => {
     ) : role === "courier" ? (
       <CourierPage />
     ) : (
-      <div className="bg-gray-100 ">
-        <Navbar />
-        <div className="flex justify-center gap-4">
-          <CategoriesSection />
-          <div className="flex flex-col gap-4 lg:max-w-[955px] ">
-            <HeroSection />
-            <AllRestaurants />
-          </div>
-        </div>
-      </div>
+      <UserPage />
     )
   ) : (
-    <div className="bg-gray-100 ">
-      <Navbar />
-      <div className="flex justify-center gap-4">
-        <CategoriesSection />
-        <div className="flex flex-col gap-4 lg:max-w-[955px] md:max-w-[699px]">
-          <HeroSection />
-          <AllRestaurants />
-        </div>
-      </div>
-    </div>
+    <UserPage />
   );
 };
 

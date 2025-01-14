@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { CartItem } from "@/pages/DetailPage/DetailPage";
 import { createCheckoutSession } from "@/services/orderService";
 import { Loader } from "lucide-react";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 interface InfoCartProps {
   item: IRestaurant;
@@ -18,13 +19,17 @@ const Cart: React.FC<InfoCartProps> = ({
   setCartDetails,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const userAddress = localStorage.getItem("userAddress");
   const handlePayment = async () => {
     setIsLoading(true);
     if (!item._id) {
       return;
     }
-    console.log(cartDetails);
-    const response = await createCheckoutSession(item._id, cartDetails);
+    const response = await createCheckoutSession(
+      item._id,
+      cartDetails,
+      userAddress as string
+    );
     setIsLoading(false);
     window.location.href = response.url;
   };
@@ -45,7 +50,10 @@ const Cart: React.FC<InfoCartProps> = ({
         : cartItem
     );
     setCartDetails(updatedCart);
-    localStorage.setItem("cartDetail", JSON.stringify(updatedCart));
+    sessionStorage.setItem(
+      `cartDetails_${item._id}`,
+      JSON.stringify(updatedCart)
+    );
   };
 
   // Handle decrementing the quantity of an item
@@ -59,9 +67,12 @@ const Cart: React.FC<InfoCartProps> = ({
             }
           : cartItem
       )
-      .filter((cartItem) => cartItem.quantity > 0); // Remove items with 0 quantity
+      .filter((cartItem) => cartItem.quantity > 0);
     setCartDetails(updatedCart);
-    localStorage.setItem("cartDetail", JSON.stringify(updatedCart));
+    sessionStorage.setItem(
+      `cartDetails_${item._id}`,
+      JSON.stringify(updatedCart)
+    );
   };
 
   // Handle removing an item from the cart
@@ -70,17 +81,23 @@ const Cart: React.FC<InfoCartProps> = ({
       (cartItem) => cartItem.id !== itemId
     );
     setCartDetails(updatedCart);
-    localStorage.setItem("cartDetail", JSON.stringify(updatedCart));
+    sessionStorage.setItem(
+      `cartDetails_${item._id}`,
+      JSON.stringify(updatedCart)
+    );
   };
 
-  useEffect(() => {
-    localStorage.setItem("cartDetail", JSON.stringify(cartDetails)); // Sync cart with localStorage
-  }, [cartDetails]);
+  // useEffect(() => {
+  //   sessionStorage.setItem(
+  //     `cartDetails_${item._id}`,
+  //     JSON.stringify(cartDetails)
+  //   );
+  // }, [cartDetails]);
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <div className="font-bold bg-transparent">מעבר לעגלה</div>
+      <DialogTrigger className="font-bold bg-transparent">
+        <DialogTitle> מעבר לעגלה</DialogTitle>
       </DialogTrigger>
       <DialogContent className="border-none sm:max-w-[700px] dialog-slide w-full max-h-[80vh] overflow-y-auto text-3xl text-center">
         <div className="p-3 flex justify-end items-center gap-4 bg-backgroundOrange text-white">

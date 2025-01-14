@@ -1,10 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PlacesAutocomplete from "./PlacesAutocomplete";
+import { useNavigate } from "react-router-dom";
 
 const FirstContent = () => {
   const [selectedOption, setSelectedOption] = useState<"delivery" | "pickup">(
     "delivery"
   );
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const existingAddress = localStorage.getItem("userAddress");
+    if (existingAddress) {
+      navigate("/home");
+    }
+  }, []);
   return (
     <div className="flex flex-col items-center justify-center w-[90%] mx-auto bg-black/60 rounded-lg py-16 relative max-w-[1170px]">
       <div>

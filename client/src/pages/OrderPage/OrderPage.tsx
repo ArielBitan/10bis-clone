@@ -23,8 +23,6 @@ import Loading from "@/components/Loading";
 
 const OrderPage = () => {
   const { id: orderId } = useParams();
-  const userAddress = localStorage.getItem("userAddress");
-
   const {
     data: order,
     isLoading,
@@ -45,6 +43,7 @@ const OrderPage = () => {
   if (!order) return <div>No data available</div>;
 
   const dateObj = new Date(order.createdAt);
+  sessionStorage.removeItem(`cartDetails_${order.restaurant_id}`);
 
   // Define status-specific styles or messages
   const statusDetails: Record<string, { color: string; message: string }> = {
@@ -67,7 +66,7 @@ const OrderPage = () => {
       <div className="mt-10 mr-10">
         <Link to={`/restaurant/${order.restaurant_id._id}`}>
           <h1 className="text-3xl font-bold">
-            {order.restaurant_id.name} | {userAddress || ""}
+            {order.restaurant_id.name} | {order.userAddress || ""}
           </h1>
         </Link>
         <div>
@@ -90,7 +89,7 @@ const OrderPage = () => {
               <div className="flex ">
                 <MapPin size={24} />
                 <p className="text-xl text-textBlackSecondary">
-                  {"נשלח אל: " + userAddress || " "}
+                  {"נשלח אל: " + order.userAddress || " "}
                 </p>
               </div>
               <div className="flex gap-2">

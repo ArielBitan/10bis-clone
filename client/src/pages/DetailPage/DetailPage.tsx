@@ -55,23 +55,19 @@ const DetailPage = () => {
   }, [data]);
 
   useEffect(() => {
-    const storedCart = localStorage.getItem("cartDetails");
-    const storedCartDetails = localStorage.getItem("cartDetails");
+    const storedCart = sessionStorage.getItem(`cartDetails_${id}`);
     if (storedCart) {
       setCartDetails(JSON.parse(storedCart));
-      if (storedCartDetails) {
-        setCartDetails(JSON.parse(storedCartDetails));
-      }
     }
   }, []);
 
   useEffect(() => {
     if (cartDetails.length > 0) {
-      localStorage.setItem("cartDetails", JSON.stringify(cartDetails));
+      sessionStorage.setItem(`cartDetails_${id}`, JSON.stringify(cartDetails));
     } else {
-      localStorage.removeItem("cartDetails");
+      sessionStorage.removeItem(`cartDetails_${id}`);
     }
-  }, [cartDetails]);
+  }, [cartDetails, id]);
 
   if (isLoading)
     return (
@@ -192,20 +188,23 @@ const DetailPage = () => {
       </div>
 
       {hasItemsInCart && (
-        <footer className="fixed bottom-0 w-full bg-blue-600 p-4 text-white hover:bg-blue-700 cursor-pointer">
-          <div className="flex justify-center">
-            {
-              <Cart
-                cartDetails={cartDetails}
-                item={data}
-                setCartDetails={setCartDetails}
-              />
-            }
-            <div className="px-1">{`(₪${(
-              Math.round(totalPrice * 10) / 10
-            ).toFixed(2)})`}</div>
-          </div>
-        </footer>
+        <>
+          <div className="h-[72px]"></div>
+          <footer className="fixed bottom-0 w-full bg-blue-600 p-4 text-white hover:bg-blue-700 cursor-pointer">
+            <div className="flex justify-center">
+              {
+                <Cart
+                  cartDetails={cartDetails}
+                  item={data}
+                  setCartDetails={setCartDetails}
+                />
+              }
+              <div className="px-1">{`(₪${(
+                Math.round(totalPrice * 10) / 10
+              ).toFixed(2)})`}</div>
+            </div>
+          </footer>
+        </>
       )}
     </div>
   );
