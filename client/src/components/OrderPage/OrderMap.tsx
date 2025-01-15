@@ -65,13 +65,13 @@ const OrderMap: React.FC<OrderMapProps> = ({
   }
 
   const restaurantIcon = {
-    url: "../../../data/restaurant.png",
+    url: "../../../data/restaurant (1).png",
     scaledSize: new google.maps.Size(40, 40),
     anchor: new google.maps.Point(20, 40),
   };
 
   const userIcon = {
-    url: "../../../data/map-pin.png",
+    url: "../../../data/home.png",
     scaledSize: new google.maps.Size(40, 40),
     anchor: new google.maps.Point(20, 40),
   };
@@ -80,7 +80,7 @@ const OrderMap: React.FC<OrderMapProps> = ({
     return <div>API key not found</div>;
   }
 
-  const mapWidth = screenWidth < 768 ? "85vw" : "40vw";
+  const mapWidth = screenWidth < 1360 ? "85vw" : "40vw";
 
   return (
     <APIProvider apiKey={API_KEY}>
@@ -90,6 +90,7 @@ const OrderMap: React.FC<OrderMapProps> = ({
         defaultZoom={16}
         gestureHandling={"greedy"}
         disableDefaultUI={true}
+        colorScheme="DARK"
         clickableIcons={false}
       >
         {/* Restaurant marker */}

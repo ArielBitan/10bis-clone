@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 // import AnimatedCard from "./LogInAnim";
 
 const LandingPage = () => {
-  const navigate= useNavigate()
+  const navigate = useNavigate();
   const { user, fetchUser } = useUser();
   useEffect(() => {
     fetchUser();
@@ -22,7 +22,6 @@ const LandingPage = () => {
   if (user?.role === "restaurant_owner" || user?.role === "courier") {
     navigate("/home", { state: { refresh: true } });
   }
-
 
   return (
     <div className="overflow-x-hidden">
@@ -47,9 +46,10 @@ const LandingPage = () => {
               <LogInModal rolee="login" />
             ) : (
               <div className="flex items-center gap-2 cursor-pointer">
-              <UserIcon width={40} height={40} fill="#000" />
-              <div className="text-2xl font-medium text-white">{`היי , ${user.first_name}`}</div>
-            </div>            )}
+                <UserIcon width={40} height={40} fill="#000" />
+                <div className="text-2xl font-medium text-white">{`היי , ${user.first_name}`}</div>
+              </div>
+            )}
           </div>
 
           <div className="relative z-10 flex items-center justify-center min-h-screen">

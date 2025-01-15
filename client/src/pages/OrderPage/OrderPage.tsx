@@ -21,9 +21,23 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchOrderById } from "@/services/orderService";
 import Loading from "@/components/Loading";
 import OrderMap from "@/components/OrderPage/OrderMap";
+import { useEffect, useState } from "react";
+import { useSocket } from "@/components/context/socketContext";
+import { useToast } from "@/hooks/use-toast";
+
+// Define types for order updates
+interface OrderUpdate {
+  message: string;
+  timestamp: string;
+  status: "Pending" | "Open" | "Accepted" | "Picked Up" | "Delivered";
+}
 
 const OrderPage = () => {
   const { id: orderId } = useParams();
+  const { socket, connected, joinRoom, leaveRoom } = useSocket();
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const { toast } = useToast();
+
   const {
     data: order,
     isLoading,
@@ -33,6 +47,61 @@ const OrderPage = () => {
     queryFn: () => fetchOrderById(orderId as string),
     enabled: !!orderId,
   });
+
+  useEffect(() => {
+    if (!connected || !orderId || !socket) {
+      return;
+    }
+    const handleOrderUpdate = (data: OrderUpdate) => {
+      console.log("Order update received:", data);
+
+      let statusMessage = "";
+
+      switch (data.status) {
+        case "Pending":
+          statusMessage = "ההזמנה שלך ממתינה לעיבוד.";
+          break;
+        case "Open":
+          statusMessage = "ההזמנה שלך נפתחה והועברה לטיפול.";
+          break;
+        case "Accepted":
+          statusMessage = "ההזמנה שלך התקבלה ונמצאת בעבודה.";
+          break;
+        case "Picked Up":
+          statusMessage = "השליח לקח את ההזמנה שלך.";
+          break;
+        case "Delivered":
+          statusMessage = "ההזמנה שלך נמסרה בהצלחה.";
+          break;
+        default:
+          statusMessage = "הסטטוס של ההזמנה לא זמין.";
+      }
+
+      toast({ title: "הזמנתך עודכנה", description: statusMessage });
+    };
+    const subscribeToUpdates = () => {
+      if (!isSubscribed) {
+        joinRoom(orderId);
+        setIsSubscribed(true);
+      }
+    };
+
+    const unsubscribeFromUpdates = () => {
+      if (isSubscribed) {
+        leaveRoom(orderId);
+        setIsSubscribed(false);
+      }
+    };
+
+    subscribeToUpdates();
+    console.log("subscribed to order-update");
+    socket.on("order-update", handleOrderUpdate);
+
+    return () => {
+      socket.off("order-update", handleOrderUpdate);
+      unsubscribeFromUpdates();
+    };
+  }, [socket, connected, orderId, isSubscribed]);
 
   if (isLoading)
     return (
@@ -46,7 +115,6 @@ const OrderPage = () => {
   const dateObj = new Date(order.createdAt);
   sessionStorage.removeItem(`cartDetails_${order.restaurant_id}`);
 
-  // Define status-specific styles or messages
   const statusDetails: Record<string, { color: string; message: string }> = {
     "Awaiting Payment": { color: "text-red-500", message: "ממתין לתשלום" },
     Pending: { color: "text-orange-500", message: "ממתין לאישור" },
@@ -65,11 +133,13 @@ const OrderPage = () => {
     <div>
       <Navbar />
       <div className="mt-10 mr-10">
+        {/* Existing order header content */}
         <Link to={`/restaurant/${order.restaurant_id._id}`}>
           <h1 className="text-3xl font-bold">
             {order.restaurant_id.name} | {order.userAddress || ""}
           </h1>
         </Link>
+
         <div>
           <p className="text-textBlackSecondary">
             {"מספר ההזמנה: " + order._id}
@@ -137,8 +207,8 @@ const OrderPage = () => {
             </CardHeader>
           </Card>
         </div>
+        <Footer />
       </div>
-      <Footer />
     </div>
   );
 };

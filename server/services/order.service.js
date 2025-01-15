@@ -20,7 +20,6 @@ exports.acceptOrder = async (id, userId) => {
       { isDelivering: true },
       { new: true }
     );
-    console.log(courier);
     const order = Order.findOneAndUpdate(
       { _id: id },
       { courier_id: userId, status: "Accepted" }
@@ -80,7 +79,6 @@ exports.getOrdersByUser = async (userId) => {
 };
 
 exports.getOrdersByRestaurant = async (restaurantId) => {
-  console.log(restaurantId + "aaa");
   return await Order.find({ restaurant_id: restaurantId })
     .populate("user_id", "name address phone")
     .populate("order_items");
@@ -89,7 +87,6 @@ exports.getOrdersByRestaurant = async (restaurantId) => {
 exports.updateOrderStatus = async (id, status) => {
   try {
     const validStatuses = ["Open", "Accepted", "Picked Up", "Delivered"];
-    console.log(status);
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new Error("Invalid order ID");
     }
@@ -109,7 +106,6 @@ exports.updateOrderStatus = async (id, status) => {
     if (!order) {
       throw new Error("Order not found");
     }
-    console.log(status);
     if (status === "Delivered") {
       await Courier.findOneAndUpdate(
         { _id: order.courier_id },

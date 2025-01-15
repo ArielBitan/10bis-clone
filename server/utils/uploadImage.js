@@ -19,7 +19,6 @@ const uploadImageToCloudinary = async (file) => {
 };
 
 const validateAndUploadImage = async (file) => {
-  console.log(file);
   const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
   if (!file || !allowedMimeTypes.includes(file.mimetype)) {
     throw new Error("Invalid image type. Only JPEG, PNG and WebP are allowed");
