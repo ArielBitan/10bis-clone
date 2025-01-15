@@ -15,11 +15,6 @@ const PlacesAutocomplete = () => {
     region: "il",
   });
 
-  const existingAddress = localStorage.getItem("userAddress");
-  if (existingAddress) {
-    navigate("/home");
-  }
-
   const handleOnPlacesChange = () => {
     if (!inputRef.current) return;
     const places = inputRef.current.getPlaces();
@@ -62,13 +57,13 @@ const PlacesAutocomplete = () => {
               <input
                 type="text"
                 placeholder="לאן לשלוח את האוכל?"
-                className="w-full outline-none placeholder-gray-700 pl-2 pr-4 py-1 "
+                className="w-full outline-none placeholder-gray-700 pl-2 pr-4 py-1"
               />
             </StandaloneSearchBox>
           </div>
-          <Button className="bg-gray-300 p-6" onClick={() => saveUserAddress()}>
+          <Button className="bg-gray-300 p-6" onClick={saveUserAddress}>
             <img
-              src="	https://cdn.10bis.co.il/10bis-spa-static-prod/assets/white-left-arrow-hp-f55b92.svg"
+              src="https://cdn.10bis.co.il/10bis-spa-static-prod/assets/white-left-arrow-hp-f55b92.svg"
               alt="arrow-image"
               className="w-5"
             />

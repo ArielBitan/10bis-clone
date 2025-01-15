@@ -7,7 +7,9 @@ import { fetchUserProfile } from "@/services/userService";
 import Loading from "@/components/Loading";
 
 const CourierPage = () => {
-  const { setUser } = useUser();
+  const { setUser, user } = useUser();
+  console.log(user);
+
   const [isDelivering, setIsDelivering] = useState<Boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -23,7 +25,7 @@ const CourierPage = () => {
   }, []);
 
   if (isLoading) {
-    return <Loading/>;
+    return <Loading />;
   }
 
   return (

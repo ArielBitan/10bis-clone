@@ -27,6 +27,7 @@ export interface IOrderItem {
 export interface IOrder {
   _id: string;
   user_id: IUser;
+  userAddress: string;
   restaurant_id: IRestaurant;
   courier_id: IUser;
   order_items: IOrderItem[];

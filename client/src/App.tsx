@@ -10,6 +10,8 @@ import MenuEdit from "./pages/MenuEdit/MenuEdit";
 import EditUser from "./pages/EditUser/EditUser";
 import RestaurantOrderManagement from "./pages/RestaurantOrderManagement/RestaurantOrderManagement";
 import OrderPage from "./pages/OrderPage/OrderPage";
+import CourierRegister from "./pages/CourierRegister/CourierRegister";
+import Charges from "./pages/Charges/Charges";
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -25,11 +27,13 @@ const App: React.FC = () => {
         <Route path="/courier" element={<CourierPage />} />
         <Route path="/menu-edit" element={<MenuEdit />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/charges-report" element={<Charges />} />
+
         <Route
           path="/restaurant-order-management"
           element={<RestaurantOrderManagement />}
         />
-        <Route path="/courier-register" element={<CourierPage />} />
+        <Route path="/courier-register" element={<CourierRegister />} />
       </Routes>
       {state?.backgroundLocation && (
         <Routes>

@@ -5,10 +5,16 @@ import { OrdersTable } from "../orders/Orders";
 import { IRestaurantOwner } from "@/types/userType";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../Loading";
+import { useEffect, useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { useSocket } from "../context/socketContext";
 
 const RestaurantOwnerDashboard = () => {
   const { user } = useUser();
   const ownedRestId = (user as IRestaurantOwner)?.owned_restaurants?.[0];
+  const { socket, connected, joinRoom, leaveRoom } = useSocket();
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const { toast } = useToast();
 
   const {
     data: restaurant,
@@ -19,6 +25,39 @@ const RestaurantOwnerDashboard = () => {
     queryFn: () => fetchRestaurantById(ownedRestId),
     enabled: !!ownedRestId,
   });
+
+  useEffect(() => {
+    if (!connected || !ownedRestId || !socket) {
+      return;
+    }
+    const handleOrderUpdate = (data: { message: string }) => {
+      console.log("Order update received:", data);
+
+      toast({ title: "הזמנה התקבלה", description: data.message });
+    };
+    const subscribeToUpdates = () => {
+      if (!isSubscribed) {
+        joinRoom(ownedRestId);
+        setIsSubscribed(true);
+      }
+    };
+
+    const unsubscribeFromUpdates = () => {
+      if (isSubscribed) {
+        leaveRoom(ownedRestId);
+        setIsSubscribed(false);
+      }
+    };
+
+    subscribeToUpdates();
+    console.log("subscribed to order-update");
+    socket.on("order-update", handleOrderUpdate);
+
+    return () => {
+      socket.off("order-update", handleOrderUpdate);
+      unsubscribeFromUpdates();
+    };
+  }, [socket, connected, ownedRestId, isSubscribed]);
 
   if (isRestaurantLoading) return <Loading />;
   if (isRestaurantError)

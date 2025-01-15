@@ -13,6 +13,10 @@ const orderSchema = new mongoose.Schema(
       ref: "Restaurant",
       required: true,
     },
+    userAddress: {
+      type: String,
+      required: true,
+    },
     courier_id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     order_items: [
       {

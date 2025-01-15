@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import RestaurantMenuCard from "@/components/restaurantOwner/RestaurantMenuCard";
+import RestaurantMenuCard from "@/components/restaurantowner/RestaurantMenuCard";
 import Navbar from "@/components/layout/Navbar";
 import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
@@ -12,15 +12,13 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useUser } from "@/components/context/userContext";
 import { IRestaurantOwner } from "@/types/userType";
 import Loading from "@/components/Loading";
-import AddItem from "@/components/restaurantOwner/AddItem";
+import AddItem from "@/components/restaurantowner/AddItem";
 
 const MenuEdit = () => {
   const { user } = useUser();
   const ownedRestId = (user as IRestaurantOwner)?.owned_restaurants?.[0];
-  console.log(ownedRestId);
 
   const queryClient = useQueryClient();
-  // const [menu, setMenu] = useState<IMenuItem[] | null | []>(null);
   const renderFunc = () => {
     queryClient.invalidateQueries({ queryKey: ["restaurant"] });
   };

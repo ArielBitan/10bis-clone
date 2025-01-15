@@ -11,10 +11,10 @@ import { useUser } from "../context/userContext";
 import UserIcon from "./UserIcon";
 import LogInModal from "../LandingPage/modals/LoginModal";
 import { Link, useLocation } from "react-router-dom";
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
 
 const UserMenu = () => {
-  const { user, fetchUser } = useUser();
+  const { user, fetchUser, logout } = useUser();
   const location = useLocation();
   const role = user?.role;
 
@@ -23,7 +23,7 @@ const UserMenu = () => {
   }, []);
 
   const handleLogOut = () => {
-    Cookies.remove("jwt");
+    logout();
     window.location.href = "/";
   };
 
@@ -45,16 +45,18 @@ const UserMenu = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-72">
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Link to="/edit-user" state={{ backgroundLocation: location }}>
-                  <div>פרטים אישיים</div>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>דו"ח חיובים</DropdownMenuItem>
-              {!role && (
+              <Link to="/edit-user" state={{ backgroundLocation: location }}>
                 <DropdownMenuItem>
-                  <Link to="/courier-register">
+                  <div>פרטים אישיים</div>
+                </DropdownMenuItem>
+              </Link>
+              <DropdownMenuSeparator />
+              <Link to="/charges-report">
+                <DropdownMenuItem>דו"ח חיובים</DropdownMenuItem>
+              </Link>
+              {!role && (
+                <Link to="/courier-register">
+                  <DropdownMenuItem>
                     <div className="flex gap-2">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -171,20 +173,20 @@ const UserMenu = () => {
                       </svg>
                       <div> הצטרפו לצוות שלחי תן ביס</div>
                     </div>
-                  </Link>
-                  <DropdownMenuSeparator />
-                </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                  </DropdownMenuItem>
+                </Link>
               )}
               <DropdownMenuSeparator />
               {role === "restaurant_owner" && (
-                <DropdownMenuItem>
-                  <Link
-                    to="/edit-restaurant"
-                    state={{ backgroundLocation: location }}
-                  >
+                <Link
+                  to="/edit-restaurant"
+                  state={{ backgroundLocation: location }}
+                >
+                  <DropdownMenuItem>
                     <div>עריכת פרטי מסעדה</div>
-                  </Link>
-                </DropdownMenuItem>
+                  </DropdownMenuItem>
+                </Link>
               )}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />

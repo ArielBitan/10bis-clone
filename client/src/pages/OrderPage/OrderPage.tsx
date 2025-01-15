@@ -20,10 +20,23 @@ import Footer from "@/components/layout/footer";
 import { useQuery } from "@tanstack/react-query";
 import { fetchOrderById } from "@/services/orderService";
 import Loading from "@/components/Loading";
+import OrderMap from "@/components/OrderPage/OrderMap";
+import { useEffect, useState } from "react";
+import { useSocket } from "@/components/context/socketContext";
+import { useToast } from "@/hooks/use-toast";
+
+// Define types for order updates
+interface OrderUpdate {
+  message: string;
+  timestamp: string;
+  status: "Pending" | "Open" | "Accepted" | "Picked Up" | "Delivered";
+}
 
 const OrderPage = () => {
   const { id: orderId } = useParams();
-  const userAddress = localStorage.getItem("userAddress");
+  const { socket, connected, joinRoom, leaveRoom } = useSocket();
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const { toast } = useToast();
 
   const {
     data: order,
@@ -35,6 +48,61 @@ const OrderPage = () => {
     enabled: !!orderId,
   });
 
+  useEffect(() => {
+    if (!connected || !orderId || !socket) {
+      return;
+    }
+    const handleOrderUpdate = (data: OrderUpdate) => {
+      console.log("Order update received:", data);
+
+      let statusMessage = "";
+
+      switch (data.status) {
+        case "Pending":
+          statusMessage = "ההזמנה שלך ממתינה לעיבוד.";
+          break;
+        case "Open":
+          statusMessage = "ההזמנה שלך נפתחה והועברה לטיפול.";
+          break;
+        case "Accepted":
+          statusMessage = "ההזמנה שלך התקבלה ונמצאת בעבודה.";
+          break;
+        case "Picked Up":
+          statusMessage = "השליח לקח את ההזמנה שלך.";
+          break;
+        case "Delivered":
+          statusMessage = "ההזמנה שלך נמסרה בהצלחה.";
+          break;
+        default:
+          statusMessage = "הסטטוס של ההזמנה לא זמין.";
+      }
+
+      toast({ title: "הזמנתך עודכנה", description: statusMessage });
+    };
+    const subscribeToUpdates = () => {
+      if (!isSubscribed) {
+        joinRoom(orderId);
+        setIsSubscribed(true);
+      }
+    };
+
+    const unsubscribeFromUpdates = () => {
+      if (isSubscribed) {
+        leaveRoom(orderId);
+        setIsSubscribed(false);
+      }
+    };
+
+    subscribeToUpdates();
+    console.log("subscribed to order-update");
+    socket.on("order-update", handleOrderUpdate);
+
+    return () => {
+      socket.off("order-update", handleOrderUpdate);
+      unsubscribeFromUpdates();
+    };
+  }, [socket, connected, orderId, isSubscribed]);
+
   if (isLoading)
     return (
       <div>
@@ -45,8 +113,8 @@ const OrderPage = () => {
   if (!order) return <div>No data available</div>;
 
   const dateObj = new Date(order.createdAt);
+  sessionStorage.removeItem(`cartDetails_${order.restaurant_id}`);
 
-  // Define status-specific styles or messages
   const statusDetails: Record<string, { color: string; message: string }> = {
     "Awaiting Payment": { color: "text-red-500", message: "ממתין לתשלום" },
     Pending: { color: "text-orange-500", message: "ממתין לאישור" },
@@ -65,11 +133,13 @@ const OrderPage = () => {
     <div>
       <Navbar />
       <div className="mt-10 mr-10">
+        {/* Existing order header content */}
         <Link to={`/restaurant/${order.restaurant_id._id}`}>
           <h1 className="text-3xl font-bold">
-            {order.restaurant_id.name} | {userAddress || ""}
+            {order.restaurant_id.name} | {order.userAddress || ""}
           </h1>
         </Link>
+
         <div>
           <p className="text-textBlackSecondary">
             {"מספר ההזמנה: " + order._id}
@@ -78,19 +148,18 @@ const OrderPage = () => {
             {"טלפון לבירורים: " + order.restaurant_id.phone}
           </p>
         </div>
-        <Separator className="my-2" />
         <div className="flex items-center h-5 space-x-3 text-sm">
           <div className="ml-2">{dateObj.toTimeString().slice(0, 5)}</div>
           <Separator orientation="vertical" />
           <div>{dateObj.toISOString().split("T")[0]}</div>
         </div>
         <div className="flex flex-col gap-4 mt-10 text-xl">
-          <div className="flex flex-col gap-10 lg:gap-40 lg:flex-row">
+          <div className="relative flex flex-col gap-10 lg:flex-row">
             <div>
               <div className="flex ">
                 <MapPin size={24} />
                 <p className="text-xl text-textBlackSecondary">
-                  {"נשלח אל: " + userAddress || " "}
+                  {"נשלח אל: " + order.userAddress || " "}
                 </p>
               </div>
               <div className="flex gap-2">
@@ -115,8 +184,14 @@ const OrderPage = () => {
                 <p>טלפון: {order.user_id.phone}</p>
               </div>
             </div>
+            <div className="sm:absolute sm:left-5 sm:-top-24">
+              <OrderMap
+                userLocation={order.userAddress}
+                restaurantLocation={order.restaurant_id.location?.coordinates}
+              />
+            </div>
           </div>
-          <div className="flex gap-2 mt-10">
+          <div className="flex gap-2 mt-20">
             <ShoppingCart size={24} />
             <p>ההזמנה האישית שלך</p>
           </div>
@@ -132,8 +207,8 @@ const OrderPage = () => {
             </CardHeader>
           </Card>
         </div>
+        <Footer />
       </div>
-      <Footer />
     </div>
   );
 };

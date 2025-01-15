@@ -1,8 +1,6 @@
 import { Link } from "react-router-dom";
 import { MdPlace } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
-import { FiSearch } from "react-icons/fi";
-import { Input } from "../ui/input";
 import UserMenu from "./UserMenu";
 import { useUser } from "../context/userContext";
 import Search from "./Search";
@@ -69,7 +67,7 @@ const Navbar = () => {
       {role === "restaurant_owner" ? (
         <div></div>
       ) : (
-        <div className="px-6 mb-4 bg-white shadow-lg sm:px-6 md:px-6 lg:px-24">
+        <div className="px-6 bg-white shadow-lg sm:px-6 md:px-6 lg:px-24">
           <div className="flex flex-wrap items-center justify-between gap-2 sm:px-6 md:px-6 lg:px-10">
             <button className="flex items-center h-8 gap-1 px-3 my-2 border border-gray-300 hover:border-gray-500 sm:w-full md:w-full lg:w-auto">
               <MdPlace />

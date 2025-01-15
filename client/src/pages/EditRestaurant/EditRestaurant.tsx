@@ -402,7 +402,7 @@ const EditRestaurant: React.FC = () => {
             className="w-full bg-green-600 hover:bg-green-700"
             disabled={loading}
           >
-            {loading ? <Loading/> : <div>שמור שינויים</div>}
+            {loading ? <Loading /> : <div>שמור שינויים</div>}
           </Button>
         </form>
       </div>

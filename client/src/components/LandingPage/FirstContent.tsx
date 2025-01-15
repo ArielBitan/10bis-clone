@@ -1,12 +1,19 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import PlacesAutocomplete from "./PlacesAutocomplete";
+import { useNavigate } from "react-router-dom";
 
 const FirstContent = () => {
   const [selectedOption, setSelectedOption] = useState<"delivery" | "pickup">(
     "delivery"
   );
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const existingAddress = localStorage.getItem("userAddress");
+    if (existingAddress) {
+      navigate("/home");
+    }
+  }, []);
   return (
     <div className="flex flex-col items-center justify-center w-[90%] mx-auto bg-black/60 rounded-lg py-16 relative max-w-[1170px]">
       <div>
@@ -45,15 +52,6 @@ const FirstContent = () => {
 
         <div className="relative flex justify-center w-full mb-6">
           <PlacesAutocomplete />
-        </div>
-
-        <div className="flex justify-center">
-          <button
-            className="h-12 text-lg font-bold text-white bg-blueButton w-full max-w-[90%] hover:bg-blue-600"
-            onClick={() => navigate("/home")}
-          >
-            לכל המסעדות והמבצעים
-          </button>
         </div>
       </div>
 

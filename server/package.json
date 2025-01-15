@@ -23,6 +23,7 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "puppeteer": "^23.11.1",
+    "socket.io": "^4.8.1",
     "stripe": "^17.5.0"
   }
 }

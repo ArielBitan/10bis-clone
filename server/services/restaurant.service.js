@@ -18,7 +18,7 @@ exports.getRestaurantById = async (id) => {
 
 exports.getNearbyRestaurants = async (
   coordinates,
-  maxDistanceInMeters = 15000
+  maxDistanceInMeters = 5000
 ) => {
   try {
     // Perform a geo query to find restaurants near the user's coordinates
@@ -54,11 +54,10 @@ exports.deleteRestaurant = async (id) => {
   return await Restaurant.findByIdAndDelete(id);
 };
 
-
 exports.searchRestaurantsByName = async (nameInput) => {
   try {
-    const regex = new RegExp(nameInput, 'i'); 
-    const restaurants = await Restaurant.find({ name: regex }); 
+    const regex = new RegExp(nameInput, "i");
+    const restaurants = await Restaurant.find({ name: regex });
     return restaurants;
   } catch (error) {
     throw new Error(`Error searching restaurants: ${error.message}`);

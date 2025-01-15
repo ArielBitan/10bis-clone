@@ -80,12 +80,13 @@ export const fetchOrdersByUser = async (userId: string): Promise<IOrder[]> => {
 
 export const createCheckoutSession = async (
   restaurantId: string,
-  cartItems: CartItem[]
+  cartItems: CartItem[],
+  userAddress: string
 ) => {
   try {
     const { data } = await api.post(
       "/orders/checkout/create-checkout-session",
-      { restaurantId, cartItems }
+      { restaurantId, cartItems, userAddress }
     );
     return data;
   } catch (error) {

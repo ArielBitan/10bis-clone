@@ -40,7 +40,6 @@ const restaurantSchema = new mongoose.Schema(
 restaurantSchema.pre("save", async function (next) {
   if (this.location.address) {
     try {
-      console.log(this.location);
       const apiKey = process.env.GEOCODING_API_KEY;
       const response = await axios.get(
         `https://maps.googleapis.com/maps/api/geocode/json`,
@@ -72,7 +71,6 @@ restaurantSchema.pre("findOneAndUpdate", async function (next) {
   const update = this.getUpdate();
   if (update && update["location.address"]) {
     try {
-      console.log(this.location);
       const apiKey = process.env.GEOCODING_API_KEY;
       const response = await axios.get(
         `https://maps.googleapis.com/maps/api/geocode/json`,

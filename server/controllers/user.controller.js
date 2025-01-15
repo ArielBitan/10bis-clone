@@ -1,3 +1,4 @@
+const { User } = require("../models/user.model");
 const userService = require("../services/user.service");
 
 // User Login
@@ -5,7 +6,6 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const { token, user } = await userService.login(email, password);
-    console.log(user);
     res
       .cookie("jwt", token, {
         httpOnly: false,
@@ -61,26 +61,54 @@ exports.updateProfile = async (req, res) => {
 };
 
 // Create Courier user
+// exports.createCourier = async (req, res) => {
+//   try {
+//     const {
+//       email,
+//       password,
+//       first_name,
+//       last_name,
+//       phone,
+//       current_location,
+//       active_orders,
+//     } = req.body;
+//     const newCourier = await userService.createCourier({
+//       email,
+//       password,
+//       first_name,
+//       last_name,
+//       phone,
+//       current_location,
+//       active_orders,
+//     });
+//     res.status(201).json(newCourier);
+//   } catch (error) {
+//     res.status(400).json({ message: error.message });
+//   }
+// };
 exports.createCourier = async (req, res) => {
   try {
-    const {
-      email,
-      password,
-      first_name,
-      last_name,
-      phone,
-      current_location,
-      active_orders,
-    } = req.body;
-    const newCourier = await userService.createCourier({
-      email,
-      password,
-      first_name,
-      last_name,
-      phone,
-      current_location,
-      active_orders,
-    });
+    const { userId } = req.body;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const userData = {
+      email: user.email,
+      password: user.password,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      phone: user.phone,
+      role: "courier",
+    };
+
+    await User.findByIdAndDelete(userId);
+
+    const newCourier = await userService.createCourier(userData);
+
     res.status(201).json(newCourier);
   } catch (error) {
     res.status(400).json({ message: error.message });

@@ -4,7 +4,10 @@ import { IRestaurant, IRestaurantForm } from "@/types/restaurantTypes";
 // Function to fetch all restaurants
 export const fetchAllRestaurants = async (): Promise<IRestaurant[]> => {
   try {
-    const { data } = await api.get<IRestaurant[]>(`/restaurants`);
+    const address = localStorage.getItem("userAddress");
+    const { data } = await api.post<IRestaurant[]>(`/restaurants/nearby`, {
+      address,
+    });
     return data;
   } catch (error) {
     console.error("Error fetching restaurants:", error);
@@ -82,17 +85,20 @@ export const deleteRestaurant = async (restaurantId: string): Promise<void> => {
   }
 };
 
-
-
 // Function to search for restaurants by name
 export const searchRestaurantsByName = async (
   nameInput: string
 ): Promise<IRestaurant[]> => {
   try {
-    const { data } = await api.get<IRestaurant[]>(`/restaurants/search/${nameInput}`); 
+    const { data } = await api.get<IRestaurant[]>(
+      `/restaurants/search/${nameInput}`
+    );
     return data;
   } catch (error) {
-    console.error(`Error searching restaurants with name "${nameInput}":`, error);
+    console.error(
+      `Error searching restaurants with name "${nameInput}":`,
+      error
+    );
     throw error;
   }
 };
