@@ -105,11 +105,15 @@ const MenuCard: React.FC<MenuItemCardProps> = ({
       </div>
 
       <div className="w-[150px] h-[150px]">
-        <img
-          src={item.image}
-          alt={item.name}
-          className="h-full object-cover sm:min-w-24 "
-        />
+        {item.image ? (
+          <img
+            src={item.image}
+            alt={item.name}
+            className="h-full object-cover sm:min-w-24 "
+          />
+        ) : (
+          <img src="https://d25t2285lxl5rf.cloudfront.net/images/dishes/681c4b09-9120-4735-8089-ae5f52089f03.jpg" />
+        )}
       </div>
     </div>
   );
