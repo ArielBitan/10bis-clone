@@ -17,101 +17,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-const data: Order[] = [
-  {
-    _id: "64d1f5b6a80b5f0012345678",
-    order_items: ["64d1f5b6a80b5f0012345682", "64d1f5b6a80b5f0012345683"],
-    status: "Picked Up",
-    createdAt: "2024-01-06T12:00:00.000Z",
-    total_amount: 95.5,
-  },
-  {
-    _id: "64d1f5b6a80b5f0012345678",
-    order_items: ["64d1f5b6a80b5f0012345682", "64d1f5b6a80b5f0012345683"],
-    status: "Picked Up",
-    createdAt: "2024-01-06T12:00:00.000Z",
-    total_amount: 95.5,
-  },
-  {
-    _id: "64d1f5b6a80b5f0012345678",
-    order_items: ["64d1f5b6a80b5f0012345682", "64d1f5b6a80b5f0012345683"],
-    status: "Picked Up",
-    createdAt: "2024-01-06T12:00:00.000Z",
-    total_amount: 95.5,
-  },
-  {
-    _id: "64d1f5b6a80b5f0012345678",
-    order_items: ["64d1f5b6a80b5f0012345682", "64d1f5b6a80b5f0012345683"],
-    status: "Picked Up",
-    createdAt: "2024-01-06T12:00:00.000Z",
-    total_amount: 95.5,
-  },
-  {
-    _id: "64d1f5b6a80b5f0012345678",
-    order_items: ["64d1f5b6a80b5f0012345682", "64d1f5b6a80b5f0012345683"],
-    status: "Picked Up",
-    createdAt: "2024-01-06T12:00:00.000Z",
-    total_amount: 95.5,
-  },
-  {
-    _id: "64d1f5b6a80b5f0012345678",
-    order_items: ["64d1f5b6a80b5f0012345682", "64d1f5b6a80b5f0012345683"],
-    status: "Picked Up",
-    createdAt: "2024-01-06T12:00:00.000Z",
-    total_amount: 95.5,
-  },
-  {
-    _id: "64d1f5b6a80b5f0012345678",
-    order_items: ["64d1f5b6a80b5f0012345682", "64d1f5b6a80b5f0012345683"],
-    status: "Picked Up",
-    createdAt: "2024-01-06T12:00:00.000Z",
-    total_amount: 95.5,
-  },
-  {
-    _id: "64d1f5b6a80b5f0012345678",
-    order_items: ["64d1f5b6a80b5f0012345682", "64d1f5b6a80b5f0012345683"],
-    status: "Picked Up",
-    createdAt: "2024-01-06T12:00:00.000Z",
-    total_amount: 95.5,
-  },
-  {
-    _id: "64d1f5b6a80b5f0012345678",
-    order_items: ["64d1f5b6a80b5f0012345682", "64d1f5b6a80b5f0012345683"],
-    status: "Picked Up",
-    createdAt: "2024-01-06T12:00:00.000Z",
-    total_amount: 95.5,
-  },
-  {
-    _id: "64d1f5b6a80b5f0012345678",
-    order_items: ["64d1f5b6a80b5f0012345682", "64d1f5b6a80b5f0012345683"],
-    status: "Picked Up",
-    createdAt: "2024-01-06T12:00:00.000Z",
-    total_amount: 95.5,
-  },
-  {
-    _id: "64d1f5b6a80b5f0012345678",
-    order_items: ["64d1f5b6a80b5f0012345682", "64d1f5b6a80b5f0012345683"],
-    status: "Picked Up",
-    createdAt: "2024-01-06T12:00:00.000Z",
-    total_amount: 95.5,
-  },
-  {
-    _id: "64d1f5b6a80b5f0012345678",
-    order_items: ["64d1f5b6a80b5f0012345682", "64d1f5b6a80b5f0012345683"],
-    status: "Picked Up",
-    createdAt: "2024-01-06T12:00:00.000Z",
-    total_amount: 95.5,
-  },
-
-  {
-    _id: "64d1f5b6a80b5f0012345679",
-    order_items: ["64d1f5b6a80b5f0012345684"],
-    status: "Delivered",
-    createdAt: "2024-01-05T15:00:00.000Z",
-    total_amount: 45.0,
-  },
-];
+import { useQuery } from "@tanstack/react-query";
+import { fetchOrdersByRestaurant } from "@/services/orderService";
+import Loading from "../Loading";
+import { IOrder } from "@/types/orderTypes";
+import { Link } from "react-router-dom";
 
 export type Order = {
   _id: string;
@@ -121,11 +31,18 @@ export type Order = {
   total_amount: number;
 };
 
-export const columns: ColumnDef<Order>[] = [
+export const columns: ColumnDef<IOrder>[] = [
   {
     accessorKey: "_id",
     header: " מספר הזמנה",
-    cell: ({ row }) => <div>{row.getValue("_id")}</div>,
+    cell: ({ row }) => (
+      <Link
+        to={`/order/${row.getValue("_id")}`}
+        className="text-blue-500 hover:underline"
+      >
+        <div>{row.getValue("_id")}</div>
+      </Link>
+    ),
   },
   {
     accessorKey: "order_items",
@@ -156,7 +73,7 @@ export const columns: ColumnDef<Order>[] = [
       const amount = parseFloat(row.getValue("total_amount"));
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
-        currency: "USD",
+        currency: "ILS",
       }).format(amount);
 
       return <div className="font-medium text-right">{formatted}</div>;
@@ -165,11 +82,39 @@ export const columns: ColumnDef<Order>[] = [
   },
 ];
 
-export function OrdersTable() {
+interface OrdersTableProps {
+  restId: string;
+}
+
+export const OrdersTable: React.FC<OrdersTableProps> = ({ restId }) => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["ordersByRestaurant", restId],
+    queryFn: () => fetchOrdersByRestaurant(restId),
+    enabled: !!restId,
+  });
+
+  React.useEffect(() => {
+    if (data) {
+      console.log("Fetched data:", data);
+    }
+  }, [data]);
+
+  if (isLoading) return <Loading />;
+
+  if (isError)
+    return (
+      <div>
+        Error loading
+        <Loading />
+      </div>
+    );
+
+  if (!data) return <div>No data available</div>;
+
   const table = useReactTable({
-    data,
+    data: data || [],
     columns,
     state: { sorting },
     onSortingChange: setSorting,
@@ -243,7 +188,6 @@ export function OrdersTable() {
 
       <div className="flex items-center justify-center py-4 space-x-2">
         <Button
-          //   variant="outline"
           size="sm"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
@@ -251,7 +195,6 @@ export function OrdersTable() {
           הקודם
         </Button>
         <Button
-          //   variant="outline"
           size="sm"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
@@ -261,4 +204,4 @@ export function OrdersTable() {
       </div>
     </div>
   );
-}
+};
