@@ -73,7 +73,7 @@ const CourierRegister = () => {
             </div>
             <div className="flex items-center justify-center gap-2">
               <Briefcase size={24} />
-              <div>עבודה בתאים שלך</div>
+              <div>עבודה בתנאים שלך</div>
             </div>
             <div className="flex items-center justify-center gap-2">
               <DollarSign size={24} />
