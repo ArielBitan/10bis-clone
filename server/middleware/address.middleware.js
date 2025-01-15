@@ -33,7 +33,6 @@ const createCoordinatesFromAddress = async (req, res, next) => {
 
   try {
     const coordinates = await geocodeAddress(address);
-    console.log(coordinates);
     req.body.coordinates = coordinates;
     next();
   } catch (error) {

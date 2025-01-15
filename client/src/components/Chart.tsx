@@ -121,8 +121,6 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 const Chart = ({ id }: { id: string }) => {
-  console.log(id);
-
   const [activeChart, setActiveChart] =
     React.useState<keyof typeof chartConfig>("desktop");
   const total = React.useMemo(
