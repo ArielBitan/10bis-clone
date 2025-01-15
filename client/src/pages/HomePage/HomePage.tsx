@@ -6,15 +6,36 @@ import CategoriesSection from "@/components/HomePage/CategoriesSection/Categorie
 import RestaurantOwnerDashboard from "@/components/restaurantOwner/RestaurantOwnerDashboard";
 
 import { useUser } from "@/components/context/userContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import Loading from "@/components/Loading";
+import { fetchAllRestaurants } from "@/services/restaurantService";
+import { useQuery } from "@tanstack/react-query";
 
 const HomePage = () => {
   const { user, fetchUser } = useUser();
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["restaurants"],
+    queryFn: fetchAllRestaurants,
+  });
 
   useEffect(() => {
     fetchUser();
   }, []);
 
+  const handleFilterChange = (filters: string[]) => {
+    setSelectedFilters(filters);
+  };
+
+  if (isLoading)
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
+  if (isError) return <div>Error loading</div>;
+  if (!data) return <div>No data available</div>;
   const role = user?.role;
 
   return role ? (
@@ -27,13 +48,13 @@ const HomePage = () => {
     ) : role === "courier" ? (
       <CourierPage />
     ) : (
-      <div className="bg-gray-100 ">
+      <div className="bg-gray-100">
         <Navbar />
         <div className="flex justify-center gap-4">
-          <CategoriesSection />
+          <CategoriesSection onFilterChange={handleFilterChange} />
           <div className="flex flex-col gap-4 lg:max-w-[955px] ">
             <HeroSection />
-            <AllRestaurants />
+            <AllRestaurants selectedFilters={selectedFilters} />
           </div>
         </div>
       </div>
@@ -42,10 +63,10 @@ const HomePage = () => {
     <div className="bg-gray-100 ">
       <Navbar />
       <div className="flex justify-center gap-4">
-        <CategoriesSection />
+        <CategoriesSection onFilterChange={handleFilterChange} />
         <div className="flex flex-col gap-4 lg:max-w-[955px] md:max-w-[699px]">
           <HeroSection />
-          <AllRestaurants />
+          <AllRestaurants selectedFilters={selectedFilters} />
         </div>
       </div>
     </div>

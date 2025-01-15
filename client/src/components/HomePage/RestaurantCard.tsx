@@ -21,7 +21,7 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({ item }) => {
       <img
         src={item.background_image as string}
         alt="background_image"
-        className="w-max"
+        className="object-cover w-full"
       />
       <div className="px-4 pt-4">
         <div className="mb-2">
