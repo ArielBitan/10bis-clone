@@ -89,7 +89,7 @@ const CourierRegister = () => {
             </div>
           </div>
           <div className="flex flex-col items-center gap-10 my-20">
-            <div className="bg-[rgba(242,166,176,1)] rounded-xl p-4 w-[60%] flex gap-10 justify-center">
+            <div className="bg-[rgba(242,166,176,1)] rounded-xl p-4 w-[60%] flex gap-10 ">
               <img
                 alt="checked"
                 src="https://takeaway-recruitment-api.k.elnino-production.com/assets/checked-CGge6zgO.svg"
@@ -97,7 +97,7 @@ const CourierRegister = () => {
               />
               <p>להיות מעל גיל 18 אם טרם מלאו לך 18 נשמח שתגיש מועמדות בהמשך</p>
             </div>
-            <div className="bg-[rgba(193,218,222,1)] rounded-xl p-4 w-[60%] flex gap-10 justify-center">
+            <div className="bg-[rgba(193,218,222,1)] rounded-xl p-4 w-[60%] flex gap-10 ">
               <img
                 alt="checked"
                 src="https://takeaway-recruitment-api.k.elnino-production.com/assets/checked-CGge6zgO.svg"
@@ -108,7 +108,7 @@ const CourierRegister = () => {
                 רכב פרטי)
               </p>
             </div>
-            <div className="bg-[rgba(239,237,234,1)] rounded-xl p-4 w-[60%] flex gap-10 justify-center">
+            <div className="bg-[rgba(239,237,234,1)] rounded-xl p-4 w-[60%] flex gap-10 ">
               <img
                 alt="checked"
                 src="https://takeaway-recruitment-api.k.elnino-production.com/assets/checked-CGge6zgO.svg"
@@ -116,7 +116,7 @@ const CourierRegister = () => {
               />
               <p>להיות בעל.ת תושייה עם גישה חיובית ונכונות להתמודד עם בעיות</p>
             </div>
-            <div className="bg-[rgba(246,194,67)] rounded-xl p-4 w-[60%] flex gap-10 justify-center">
+            <div className="bg-[rgba(246,194,67)] rounded-xl p-4 w-[60%] flex gap-10 ">
               <img
                 alt="checked"
                 src="https://takeaway-recruitment-api.k.elnino-production.com/assets/checked-CGge6zgO.svg"
