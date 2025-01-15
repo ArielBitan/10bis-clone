@@ -2,11 +2,24 @@ import { useState } from "react";
 import { categories } from "../../../../data/categories.json";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 
-const FoodTypes = () => {
+interface FoodTypesProps {
+  onFilterClick: (name: string) => void;
+  setSelectedFilters: (filters: string[]) => void;
+}
+
+const FoodTypes: React.FC<FoodTypesProps> = ({
+  onFilterClick,
+  setSelectedFilters,
+}) => {
   const [showOverflow, setShowOverflow] = useState(false);
 
   const toggleOverflow = () => {
     setShowOverflow(!showOverflow);
+  };
+
+  const handleOnclick = (name: string) => {
+    onFilterClick(name);
+    setSelectedFilters([name]);
   };
   return (
     <div
@@ -16,12 +29,12 @@ const FoodTypes = () => {
     >
       <div className="flex justify-between px-4 py-2">
         <h3 className="font-bold">סוגי אוכל</h3>
-        <h4 className="font-extralight text-sm">איפוס</h4>
       </div>
       <div className="grid grid-cols-3 gap-4 mb-8 max-w-[300px] ">
         {categories.map((category) => (
           <div
             key={category.id}
+            onClick={() => handleOnclick(category.name)}
             className="flex flex-col items-center text-center hover:cursor-pointer group"
           >
             <img
