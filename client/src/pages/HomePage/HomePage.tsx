@@ -11,7 +11,6 @@ import UserPage from "../UserPage/UserPage";
 
 const HomePage = () => {
   const { user, fetchUser } = useUser();
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["restaurants"],
@@ -21,10 +20,6 @@ const HomePage = () => {
   useEffect(() => {
     fetchUser();
   }, []);
-
-  const handleFilterChange = (filters: string[]) => {
-    setSelectedFilters(filters);
-  };
 
   if (isLoading)
     return (
