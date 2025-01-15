@@ -63,8 +63,6 @@ const AllRestaurants: React.FC<AllRestaurantsProps> = ({ selectedFilters }) => {
     );
   if (!data) return <div>No data available</div>;
 
-  console.log(filteredRestaurants);
-
   return (
     <div className="w-max col-span-4 row-start-2">
       {selectedFilters.length > 0 ? (
