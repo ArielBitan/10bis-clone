@@ -7,11 +7,12 @@ import { fetchRestaurantById } from "@/services/restaurantService";
 import { useQuery } from "@tanstack/react-query";
 import { FaStar } from "react-icons/fa6";
 import { FiSearch } from "react-icons/fi";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Cart from "@/components/Cart/Cart";
 import { IMenuItem } from "@/types/restaurantTypes";
 import RestaurantHeader from "@/components/DetailPage/RestaurantHeader";
 import Loading from "@/components/Loading";
+import AllReviews from "@/components/DetailPage/AllReviews";
 
 export interface CartItem extends IMenuItem {
   id: string;
@@ -98,16 +99,16 @@ const DetailPage = () => {
     <div className="relative bg-gray-100">
       <Navbar />
       <RestaurantHeader data={data} />
-      <div className="px-4 bg-white shadow-md pt-8 sm:pt-0">
-        <h1 className="text-2xl sm:block hidden font-semibold pt-8">
+      <div className="px-4 pt-8 bg-white shadow-md sm:pt-0">
+        <h1 className="hidden pt-8 text-2xl font-semibold sm:block">
           {data.name}
         </h1>
-        <h3 className="py-2 text-sm text-gray-600 sm:block hidden">
+        <h3 className="hidden py-2 text-sm text-gray-600 sm:block">
           <span>{data.cuisine_types.join(", ")}</span>
         </h3>
         <div className="flex gap-1 text-sm text-gray-600">
           <div className="flex gap-1">
-            <FaStar className="text-yellow-500 mb-1" />
+            <FaStar className="mb-1 text-yellow-500" />
             <span>0</span>
           </div>
           <span>•</span>
@@ -129,8 +130,18 @@ const DetailPage = () => {
         {data.description && (
           <div className="m-3 font-bold ">{`*${data.description}`}</div>
         )}
-        <InfoRestaurant item={data} />
-        <div className="lg:flex gap-4 lg:items-center pb-2">
+        <div className="flex ">
+          <InfoRestaurant item={data} />
+          <AllReviews id={id} />{" "}
+          <Link
+            to={`/restaurant/${id}/review`}
+            state={{ backgroundLocation: location.pathname }}
+          >
+            
+          <div className="mt-4 text-blue-700 cursor-pointer">| הוסף ביקורת</div>
+          </Link>
+        </div>
+        <div className="gap-4 pb-2 lg:flex lg:items-center">
           <div className="flex items-center mt-4 lg:min-w-72 lg:order-2 ">
             <div className="border bg-gray-100 flex items-center gap-2  px-2 w-[95%] h-12 border-gray-300 hover:border-gray-500 rounded-3xl">
               <FiSearch className="hover:cursor-pointer text-backgroundOrange" />
@@ -142,12 +153,12 @@ const DetailPage = () => {
                   setSearchQuery(e.target.value);
                   setSelectedCategory("");
                 }}
-                className="border-none h-4 text-sm bg-gray-100"
+                className="h-4 text-sm bg-gray-100 border-none"
               />
             </div>
           </div>
 
-          <div className="flex gap-4 overflow-x-auto categories-scroll mt-4 lg:order-1">
+          <div className="flex gap-4 mt-4 overflow-x-auto categories-scroll lg:order-1">
             {uniqueCategories.map((category) => (
               <div
                 key={category}
@@ -196,7 +207,7 @@ const DetailPage = () => {
       <div className="h-[72px]"></div>
       {hasItemsInCart && (
         <>
-          <footer className="fixed bottom-0 w-full bg-blue-600 p-4 text-white hover:bg-blue-700 cursor-pointer">
+          <footer className="fixed bottom-0 w-full p-4 text-white bg-blue-600 cursor-pointer hover:bg-blue-700">
             <div className="flex justify-center">
               {
                 <Cart

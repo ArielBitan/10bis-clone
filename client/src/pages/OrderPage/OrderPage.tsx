@@ -24,6 +24,7 @@ import OrderMap from "@/components/OrderPage/OrderMap";
 import { useEffect, useState } from "react";
 import { useSocket } from "@/components/context/socketContext";
 import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 
 // Define types for order updates
 interface OrderUpdate {
@@ -102,6 +103,7 @@ const OrderPage = () => {
       unsubscribeFromUpdates();
     };
   }, [socket, connected, orderId, isSubscribed]);
+  console.log();
 
   if (isLoading)
     return (
@@ -111,6 +113,7 @@ const OrderPage = () => {
     );
   if (isError) return <div>Error loading</div>;
   if (!order) return <div>No data available</div>;
+  console.log(order);
 
   const dateObj = new Date(order.createdAt);
   sessionStorage.removeItem(`cartDetails_${order.restaurant_id}`);
@@ -128,6 +131,8 @@ const OrderPage = () => {
     color: "text-gray-500",
     message: "סטטוס לא ידוע",
   };
+  const restId = order.restaurant_id._id;
+  console.log(restId);
 
   return (
     <div>
@@ -153,6 +158,12 @@ const OrderPage = () => {
           <Separator orientation="vertical" />
           <div>{dateObj.toISOString().split("T")[0]}</div>
         </div>
+        <Link
+          to={`/restaurant/${restId}/review`}
+          state={{ backgroundLocation: location.pathname }}
+        >
+          <Button className="mt-4">הוסף ביקורת</Button>
+        </Link>
         <div className="flex flex-col gap-4 mt-10 text-xl">
           <div className="relative flex flex-col gap-10 lg:flex-row">
             <div>
