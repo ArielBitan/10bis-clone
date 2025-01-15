@@ -101,18 +101,6 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({ restId }) => {
     }
   }, [data]);
 
-  if (isLoading) return <Loading />;
-
-  if (isError)
-    return (
-      <div>
-        Error loading
-        <Loading />
-      </div>
-    );
-
-  if (!data) return <div>No data available</div>;
-
   const table = useReactTable({
     data: data || [],
     columns,
@@ -128,6 +116,17 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({ restId }) => {
     },
   });
 
+  if (isLoading) return <Loading />;
+
+  if (isError)
+    return (
+      <div>
+        Error loading
+        <Loading />
+      </div>
+    );
+
+  if (!data) return <div>No data available</div>;
   return (
     <div className="w-full">
       <div className="overflow-hidden border rounded-md">

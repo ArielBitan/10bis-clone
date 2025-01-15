@@ -14,6 +14,9 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import Loading from "./Loading";
+import { useQuery } from "@tanstack/react-query";
+import { fetchOrdersByRestaurant } from "@/services/orderService";
 const chartData = [
   { date: "2024-04-01", desktop: 222, mobile: 150 },
   { date: "2024-04-02", desktop: 97, mobile: 180 },
@@ -123,6 +126,20 @@ const chartConfig = {
 const Chart = ({ id }: { id: string }) => {
   const [activeChart, setActiveChart] =
     React.useState<keyof typeof chartConfig>("desktop");
+
+    const { data, isLoading, isError } = useQuery({
+      queryKey: ["ordersByRestaurant", id],
+      queryFn: () => fetchOrdersByRestaurant(id),
+      enabled: !!id,
+    });
+  console.log(data);
+  
+    React.useEffect(() => {
+      if (data) {
+        console.log("Fetched data:", data);
+      }
+    }, [data]);
+    
   const total = React.useMemo(
     () => ({
       desktop: chartData.reduce((acc, curr) => acc + curr.desktop, 0),
@@ -130,6 +147,19 @@ const Chart = ({ id }: { id: string }) => {
     }),
     []
   );
+
+
+  if (isLoading) return <Loading />;
+
+  if (isError)
+    return (
+      <div>
+        Error loading
+        <Loading />
+      </div>
+    );
+
+  if (!data) return <div>No data available</div>;
   return (
     <Card>
       <CardHeader className="flex flex-col items-stretch p-0 space-y-0 border-b sm:flex-row">
