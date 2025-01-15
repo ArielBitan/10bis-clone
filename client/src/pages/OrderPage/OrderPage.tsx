@@ -84,7 +84,7 @@ const OrderPage = () => {
           <div>{dateObj.toISOString().split("T")[0]}</div>
         </div>
         <div className="flex flex-col gap-4 mt-10 text-xl">
-          <div className="flex flex-col gap-10 relative lg:flex-row">
+          <div className="relative flex flex-col gap-10 lg:flex-row">
             <div>
               <div className="flex ">
                 <MapPin size={24} />

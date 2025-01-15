@@ -19,7 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useState } from "react";
-import { ItemDialog } from "./ItemDialog";
+import { IOrder } from "@/types/orderTypes";
 
 interface User {
   _id: string;
@@ -59,7 +59,7 @@ interface Order {
   total_amount: number;
 }
 
-export const columns: ColumnDef<Order>[] = [
+export const columns: ColumnDef<IOrder>[] = [
   {
     accessorKey: "_id",
     header: "מספר הזמנה",
@@ -102,11 +102,7 @@ export const columns: ColumnDef<Order>[] = [
     header: "מוצרים",
     cell: ({ row }) => {
       const items = row.getValue("order_items") as OrderItem[];
-      return (
-        <div className="text-center">
-          {items.length} 
-        </div>
-      );
+      return <div className="text-center">{items.length}</div>;
     },
   },
   {
