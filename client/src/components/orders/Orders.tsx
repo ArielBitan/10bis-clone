@@ -49,13 +49,38 @@ export const columns: ColumnDef<IOrder>[] = [
     header: "מוצרים",
     cell: ({ row }) => {
       const items = row.getValue("order_items") as string[];
-      return <div className="text-center">{items.length}</div>;
+      return <div className="">{items.length}</div>;
     },
   },
   {
     accessorKey: "status",
     header: "סטטוס",
-    cell: ({ row }) => <div>{row.getValue("status")}</div>,
+    cell: ({ row }) => {
+      const status:
+        | "Awaiting Payment"
+        | "Pending"
+        | "Open"
+        | "Accepted"
+        | "Picked Up"
+        | "Delivered" = row.getValue("status");
+      const statusMapping: {
+        [key in
+          | "Awaiting Payment"
+          | "Pending"
+          | "Open"
+          | "Accepted"
+          | "Picked Up"
+          | "Delivered"]: string;
+      } = {
+        "Awaiting Payment": "ממתין לתשלום",
+        Pending: "ממתין",
+        Open: "פתוח",
+        Accepted: "התקבל",
+        "Picked Up": "נלקח",
+        Delivered: "נמסר",
+      };
+      return <div className="text-orangePrimary">{statusMapping[status]}</div>;
+    },
   },
   {
     accessorKey: "createdAt",
