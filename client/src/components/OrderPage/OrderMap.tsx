@@ -80,7 +80,7 @@ const OrderMap: React.FC<OrderMapProps> = ({
     return <div>API key not found</div>;
   }
 
-  const mapWidth = screenWidth < 1360 ? "85vw" : "40vw";
+  const mapWidth = screenWidth < 660 ? "85vw" : "40vw";
 
   return (
     <APIProvider apiKey={API_KEY}>
