@@ -18,7 +18,10 @@ app.use(morgan("dev"));
 app.use(express.json({ extended: true, charset: "utf-8" }));
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin:
+      process.env.NODE_ENV === "production"
+        ? process.env.FRONTEND_URL
+        : "http://localhost:5173",
     credentials: true,
   })
 );
