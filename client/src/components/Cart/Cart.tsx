@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { IRestaurant } from "@/types/restaurantTypes";
 import CartCard from "./CartCard";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CartItem } from "@/pages/DetailPage/DetailPage";
 import { createCheckoutSession } from "@/services/orderService";
 import { Loader } from "lucide-react";

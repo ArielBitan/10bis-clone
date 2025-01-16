@@ -16,7 +16,6 @@ const OrderCard: React.FC<IOrderCardProps> = ({
   const [showDetails, setShowDetails] = useState(false);
   const [isAccepting, setIsAccepting] = useState(false);
   const restaurant = order.restaurant_id;
-  const user = order.user_id;
 
   const handleAcceptOrder = async () => {
     setIsAccepting(true);

@@ -21,44 +21,6 @@ import {
 import { useState } from "react";
 import { IOrder } from "@/types/orderTypes";
 
-interface User {
-  _id: string;
-  email: string;
-  full_name: string;
-  id: string;
-}
-
-interface Restaurant {
-  _id: string;
-  name: string;
-  phone: string;
-  avgRating: Record<string, unknown>;
-  id: string;
-}
-
-interface OrderItem {
-  _id: string;
-  quantity: number;
-}
-
-interface PaymentDetails {
-  method: string;
-  amount: number;
-}
-
-interface Order {
-  _id: string;
-  user_id: User;
-  restaurant_id: Restaurant;
-  userAddress: string;
-  order_items: OrderItem[];
-  status: string;
-  special_instructions: string[];
-  payment_details: PaymentDetails;
-  createdAt: string;
-  total_amount: number;
-}
-
 export const columns: ColumnDef<IOrder>[] = [
   {
     accessorKey: "_id",
@@ -161,7 +123,7 @@ export const columns: ColumnDef<IOrder>[] = [
 ];
 
 interface UserTableProps {
-  orders: Order[];
+  orders: IOrder[];
 }
 
 export function UserTable({ orders }: UserTableProps) {
