@@ -4,31 +4,14 @@ import RestaurantOwnerDashboard from "@/components/restaurantowner/RestaurantOwn
 
 import { useUser } from "@/components/context/userContext";
 import { useEffect } from "react";
-import Loading from "@/components/Loading";
-import { fetchAllRestaurants } from "@/services/restaurantService";
-import { useQuery } from "@tanstack/react-query";
 import UserPage from "../UserPage/UserPage";
 
 const HomePage = () => {
   const { user, fetchUser } = useUser();
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["restaurants"],
-    queryFn: fetchAllRestaurants,
-  });
-
   useEffect(() => {
     fetchUser();
   }, []);
-
-  if (isLoading)
-    return (
-      <div>
-        <Loading />
-      </div>
-    );
-  if (isError) return <div>Error loading</div>;
-  if (!data) return <div>No data available</div>;
   const role = user?.role;
 
   return role ? (

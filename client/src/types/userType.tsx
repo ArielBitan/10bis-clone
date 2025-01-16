@@ -23,6 +23,7 @@ export interface IRestaurantOwnerForm {
 
 export interface IRestaurantOwner extends IUser {
   owned_restaurants: [string];
+  role: "restaurant_owner";
 }
 
 export const isRestaurantOwner = (
