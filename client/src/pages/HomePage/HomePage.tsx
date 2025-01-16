@@ -3,7 +3,7 @@ import CourierPage from "../CourierPage/CourierPage";
 import RestaurantOwnerDashboard from "@/components/restaurantowner/RestaurantOwnerDashboard";
 
 import { useUser } from "@/components/context/userContext";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Loading from "@/components/Loading";
 import { fetchAllRestaurants } from "@/services/restaurantService";
 import { useQuery } from "@tanstack/react-query";

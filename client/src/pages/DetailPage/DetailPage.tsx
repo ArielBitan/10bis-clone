@@ -29,15 +29,9 @@ const DetailPage = () => {
     queryFn: () => fetchRestaurantById(id),
   });
 
-  const [footerTotal, setFooterTotal] = useState<number>(0);
-
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [cartDetails, setCartDetails] = useState<CartItem[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
-
-  const handleUpdateFooter = (price: number) => {
-    setFooterTotal(price);
-  };
 
   const totalPrice = cartDetails.reduce(
     (sum, item) => sum + item.quantity * item.price,
@@ -137,8 +131,9 @@ const DetailPage = () => {
             to={`/restaurant/${id}/review`}
             state={{ backgroundLocation: location.pathname }}
           >
-            
-          <div className="mt-4 text-blue-700 cursor-pointer">| הוסף ביקורת</div>
+            <div className="mt-4 text-blue-700 cursor-pointer">
+              | הוסף ביקורת
+            </div>
           </Link>
         </div>
         <div className="gap-4 pb-2 lg:flex lg:items-center">
@@ -189,7 +184,6 @@ const DetailPage = () => {
                 key={item._id}
                 item={item}
                 initialQuantity={initialQuantity}
-                onUpdateFooter={handleUpdateFooter}
                 setCartDetails={setCartDetails}
                 cartDetails={cartDetails}
               />

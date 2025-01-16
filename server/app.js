@@ -15,7 +15,7 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(morgan("dev"));
-app.use(express.json({ extended: true, charset: 'utf-8' }));
+app.use(express.json({ extended: true, charset: "utf-8" }));
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -30,5 +30,15 @@ app.use("/reviews", reviewRoutes);
 app.use("/restaurants", restaurantRoutes);
 app.use("/users", userRoutes);
 // app.use("/api", webhookRoutes);
+
+const path = require("path");
+
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, "public")));
+
+// Handle React routing by serving index.html for all non-API routes
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
 module.exports = app;
