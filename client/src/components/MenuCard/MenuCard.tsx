@@ -5,14 +5,12 @@ import { useEffect, useState } from "react";
 interface MenuItemCardProps {
   item: IMenuItem;
   initialQuantity?: number;
-  onUpdateFooter: (price: number, meal: IMenuItem, quantity: number) => void;
   setCartDetails: React.Dispatch<React.SetStateAction<CartItem[]>>;
   cartDetails: CartItem[];
 }
 
 const MenuCard: React.FC<MenuItemCardProps> = ({
   item,
-  onUpdateFooter,
   initialQuantity = 0,
   setCartDetails,
   cartDetails,
@@ -46,7 +44,6 @@ const MenuCard: React.FC<MenuItemCardProps> = ({
     }
 
     setQuantity((prevQuantity) => prevQuantity + 1);
-    onUpdateFooter(item.price, item, quantity + 1);
   };
 
   const handleDecrement = () => {
@@ -60,13 +57,11 @@ const MenuCard: React.FC<MenuItemCardProps> = ({
         )
       );
       setQuantity(updatedQuantity);
-      onUpdateFooter(item.price, item, updatedQuantity);
     } else if (quantity === 1) {
       setCartDetails((prev) =>
         prev.filter((cartItem) => cartItem.id !== item._id)
       );
       setQuantity(0);
-      onUpdateFooter(item.price, item, 0);
     }
   };
 
@@ -105,11 +100,15 @@ const MenuCard: React.FC<MenuItemCardProps> = ({
       </div>
 
       <div className="w-[150px] h-[150px]">
-        <img
-          src={item.image}
-          alt={item.name}
-          className="h-full object-cover sm:min-w-24 "
-        />
+        {item.image ? (
+          <img
+            src={item.image}
+            alt={item.name}
+            className="h-full object-cover sm:min-w-24 "
+          />
+        ) : (
+          <img src="https://d25t2285lxl5rf.cloudfront.net/images/dishes/681c4b09-9120-4735-8089-ae5f52089f03.jpg" />
+        )}
       </div>
     </div>
   );

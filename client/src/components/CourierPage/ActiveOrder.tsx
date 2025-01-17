@@ -3,7 +3,6 @@ import { Card, CardContent } from "../ui/card";
 import { IOrder } from "@/types/orderTypes";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getActiveOrder, updateOrderStatus } from "@/services/orderService";
-import { useState } from "react";
 import NextLocationCard from "./NextLocationCard";
 import Loading from "../Loading";
 
@@ -13,7 +12,7 @@ interface ActiveOrderProps {
 
 const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
   const queryClient = useQueryClient();
-  const [status, setStatus] = useState("");
+  const userAddress = localStorage.getItem("userAddress");
   const {
     data: activeOrder,
     isLoading,
@@ -22,7 +21,6 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
     queryKey: ["activeOrder"],
     queryFn: () => getActiveOrder(),
   });
-
   const mutation = useMutation({
     mutationFn: async ({
       orderId,
@@ -49,7 +47,6 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
             setIsDelivering(false);
             return;
           }
-          setStatus("Pick Up");
         },
         onSettled: () => {
           queryClient.refetchQueries({ queryKey: ["activeOrder"] });
@@ -97,7 +94,7 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
             ) : (
               <NextLocationCard
                 name={`${activeOrder.user_id.first_name}  ${activeOrder.user_id.last_name}`}
-                address={activeOrder.user_id.location?.address}
+                address={userAddress as string}
                 phone={activeOrder.user_id.phone}
                 icon={User}
               />

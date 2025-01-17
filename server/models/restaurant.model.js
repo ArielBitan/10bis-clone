@@ -105,5 +105,7 @@ restaurantSchema.virtual("avgRating").get(async function () {
   return total / reviews.length;
 });
 
+restaurantSchema.index({ name: 1 });
+
 const Restaurant = mongoose.model("Restaurant", restaurantSchema);
 module.exports = Restaurant;

@@ -82,7 +82,10 @@ export const loginUser = async (
 
 // Function for user registration
 export const registerUser = async (
-  userData: Omit<IUser, "_id" | "createdAt" | "updatedAt" | "role">
+  userData: Omit<
+    IUser,
+    "_id" | "createdAt" | "updatedAt" | "role" | "full_name"
+  >
 ): Promise<IUser> => {
   try {
     const { data } = await api.post<IUser>("/users/register", userData);
@@ -95,13 +98,17 @@ export const registerUser = async (
 
 //register as a deliver
 
-export const registerCourier = async (userId: string): Promise<IUser | undefined> => {
+export const registerCourier = async (
+  userId: string
+): Promise<IUser | undefined> => {
   try {
-    const response = await api.post<IUser>("/users/register/courier", { userId });
+    const response = await api.post<IUser>("/users/register/courier", {
+      userId,
+    });
     console.log("Courier created:", response.data);
     return response.data;
   } catch (error) {
     console.error("Error registering user:", error);
-    return undefined; 
+    return undefined;
   }
-}
+};

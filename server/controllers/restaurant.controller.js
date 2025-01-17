@@ -135,8 +135,6 @@ exports.deleteRestaurant = async (req, res) => {
 exports.searchRestaurants = async (req, res) => {
   try {
     const { name } = req.params;
-    console.log("Received name input:", name);
-
     if (!name) {
       return res
         .status(400)

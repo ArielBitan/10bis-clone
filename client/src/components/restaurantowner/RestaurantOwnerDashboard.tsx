@@ -98,7 +98,11 @@ const RestaurantOwnerDashboard = () => {
       <h2 className="text-xl text-center">{restaurant.description}</h2>
       <div className="px-4 mt-[100px] flex flex-col items-center justify-center">
         <div className="mb-2 text-xl">כל ההזמנות</div>
-        <OrdersTable />
+        {restaurant._id ? (
+          <OrdersTable restId={restaurant._id} />
+        ) : (
+          <div>No restaurant ID available</div>
+        )}{" "}
         {restaurant?._id ? <Chart id={restaurant._id} /> : <div>xxx</div>}
       </div>
     </div>

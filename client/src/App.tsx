@@ -12,6 +12,7 @@ import RestaurantOrderManagement from "./pages/RestaurantOrderManagement/Restaur
 import OrderPage from "./pages/OrderPage/OrderPage";
 import CourierRegister from "./pages/CourierRegister/CourierRegister";
 import Charges from "./pages/Charges/Charges";
+import Review from "./pages/Review/Review";
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -39,7 +40,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/edit-restaurant" element={<EditRestaurant />} />
           <Route path="/edit-user" element={<EditUser />} />
-          {/* <Route path="/active-orders" element={<ActiveOrders />} /> */}
+          <Route path="/restaurant/:id/review" element={<Review />} />
         </Routes>
       )}
     </div>

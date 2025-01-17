@@ -21,44 +21,6 @@ import {
 import { useState } from "react";
 import { IOrder } from "@/types/orderTypes";
 
-interface User {
-  _id: string;
-  email: string;
-  full_name: string;
-  id: string;
-}
-
-interface Restaurant {
-  _id: string;
-  name: string;
-  phone: string;
-  avgRating: Record<string, unknown>;
-  id: string;
-}
-
-interface OrderItem {
-  _id: string;
-  quantity: number;
-}
-
-interface PaymentDetails {
-  method: string;
-  amount: number;
-}
-
-interface Order {
-  _id: string;
-  user_id: User;
-  restaurant_id: Restaurant;
-  userAddress: string;
-  order_items: OrderItem[];
-  status: string;
-  special_instructions: string[];
-  payment_details: PaymentDetails;
-  createdAt: string;
-  total_amount: number;
-}
-
 export const columns: ColumnDef<IOrder>[] = [
   {
     accessorKey: "_id",
@@ -101,14 +63,39 @@ export const columns: ColumnDef<IOrder>[] = [
     accessorKey: "order_items",
     header: "מוצרים",
     cell: ({ row }) => {
-      const items = row.getValue("order_items") as OrderItem[];
-      return <div className="text-center">{items.length}</div>;
+      const items = row.getValue("order_items") as string[];
+      return <div className="">{items.length}</div>;
     },
   },
   {
     accessorKey: "status",
     header: "סטטוס",
-    cell: ({ row }) => <div>{row.getValue("status")}</div>,
+    cell: ({ row }) => {
+      const status:
+        | "Awaiting Payment"
+        | "Pending"
+        | "Open"
+        | "Accepted"
+        | "Picked Up"
+        | "Delivered" = row.getValue("status");
+      const statusMapping: {
+        [key in
+          | "Awaiting Payment"
+          | "Pending"
+          | "Open"
+          | "Accepted"
+          | "Picked Up"
+          | "Delivered"]: string;
+      } = {
+        "Awaiting Payment": "ממתין לתשלום",
+        Pending: "ממתין",
+        Open: "פתוח",
+        Accepted: "התקבל",
+        "Picked Up": "נלקח",
+        Delivered: "נמסר",
+      };
+      return <div className="text-orangePrimary">{statusMapping[status]}</div>;
+    },
   },
   {
     accessorKey: "createdAt",
@@ -136,7 +123,7 @@ export const columns: ColumnDef<IOrder>[] = [
 ];
 
 interface UserTableProps {
-  orders: Order[];
+  orders: IOrder[];
 }
 
 export function UserTable({ orders }: UserTableProps) {

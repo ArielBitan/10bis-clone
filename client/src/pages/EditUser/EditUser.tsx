@@ -6,10 +6,10 @@ import { IUser } from "@/types/userType";
 import { updateUserProfile } from "@/services/userService";
 import { useUser } from "@/components/context/userContext";
 
-type UserForm = Omit<IUser, "password" | "location">;
+type UserForm = Omit<IUser, "password" | "location" | "full_name">;
 
 const EditUser: React.FC = () => {
-  const { user, setUser } = useUser();
+  const { user } = useUser();
   const navigate = useNavigate();
   const INITIAL_FORM_STATE: UserForm = {
     first_name: user?.first_name ?? "",
@@ -35,15 +35,14 @@ const EditUser: React.FC = () => {
     try {
       const response = await updateUserProfile(formData);
       console.log(response);
-      setUser({
-        ...user,
-        email: response.email,
-        phone: response.phone,
-        first_name: response.first_name,
-        last_name: response.last_name,
-        location: user?.location || {},
-        role: user?.role || undefined,
-      });
+      // setUser({
+      //   ...user,
+      //   email: response.email,
+      //   phone: response.phone,
+      //   first_name: response.first_name,
+      //   last_name: response.last_name,
+      //   role: user?.role,
+      // });
 
       if (!response) {
         throw new Error("Failed to update user");

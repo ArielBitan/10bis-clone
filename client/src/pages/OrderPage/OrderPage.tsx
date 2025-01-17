@@ -24,12 +24,18 @@ import OrderMap from "@/components/OrderPage/OrderMap";
 import { useEffect, useState } from "react";
 import { useSocket } from "@/components/context/socketContext";
 import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 
 // Define types for order updates
 interface OrderUpdate {
   message: string;
   timestamp: string;
   status: "Pending" | "Open" | "Accepted" | "Picked Up" | "Delivered";
+}
+
+interface OrderStatus {
+  code: string;
+  message: string;
 }
 
 const OrderPage = () => {
@@ -48,13 +54,15 @@ const OrderPage = () => {
     enabled: !!orderId,
   });
 
+  const [orderStatus, setOrderStatus] = useState<OrderStatus>({
+    code: order?.status || "",
+    message: "",
+  });
   useEffect(() => {
     if (!connected || !orderId || !socket) {
       return;
     }
     const handleOrderUpdate = (data: OrderUpdate) => {
-      console.log("Order update received:", data);
-
       let statusMessage = "";
 
       switch (data.status) {
@@ -76,7 +84,10 @@ const OrderPage = () => {
         default:
           statusMessage = "הסטטוס של ההזמנה לא זמין.";
       }
-
+      setOrderStatus({
+        code: data.status,
+        message: statusMessage,
+      });
       toast({ title: "הזמנתך עודכנה", description: statusMessage });
     };
     const subscribeToUpdates = () => {
@@ -94,7 +105,6 @@ const OrderPage = () => {
     };
 
     subscribeToUpdates();
-    console.log("subscribed to order-update");
     socket.on("order-update", handleOrderUpdate);
 
     return () => {
@@ -102,6 +112,15 @@ const OrderPage = () => {
       unsubscribeFromUpdates();
     };
   }, [socket, connected, orderId, isSubscribed]);
+
+  useEffect(() => {
+    if (order?.status) {
+      setOrderStatus({
+        code: order.status,
+        message: statusDetails[order.status].message,
+      });
+    }
+  }, [order]);
 
   if (isLoading)
     return (
@@ -124,21 +143,28 @@ const OrderPage = () => {
     Delivered: { color: "text-green-700", message: "נמסר" },
   };
 
-  const statusInfo = statusDetails[order.status] || {
+  const statusInfo = statusDetails[orderStatus.code] || {
     color: "text-gray-500",
     message: "סטטוס לא ידוע",
   };
 
+  const restId = order.restaurant_id._id;
+
   return (
     <div>
       <Navbar />
+
       <div className="mt-10 mr-10">
+        <div className="float-end ml-10 mb-10">
+          <OrderMap
+            userLocation={order.userAddress}
+            restaurantLocation={order.restaurant_id.location?.coordinates}
+          />
+        </div>
         {/* Existing order header content */}
-        <Link to={`/restaurant/${order.restaurant_id._id}`}>
-          <h1 className="text-3xl font-bold">
-            {order.restaurant_id.name} | {order.userAddress || ""}
-          </h1>
-        </Link>
+        <h1 className="text-3xl font-bold">
+          {order.restaurant_id.name} | {order.userAddress || ""}
+        </h1>
 
         <div>
           <p className="text-textBlackSecondary">
@@ -148,11 +174,18 @@ const OrderPage = () => {
             {"טלפון לבירורים: " + order.restaurant_id.phone}
           </p>
         </div>
+
         <div className="flex items-center h-5 space-x-3 text-sm">
           <div className="ml-2">{dateObj.toTimeString().slice(0, 5)}</div>
           <Separator orientation="vertical" />
           <div>{dateObj.toISOString().split("T")[0]}</div>
         </div>
+        <Link
+          to={`/restaurant/${restId}/review`}
+          state={{ backgroundLocation: location.pathname }}
+        >
+          <Button className="mt-4">הוסף ביקורת</Button>
+        </Link>
         <div className="flex flex-col gap-4 mt-10 text-xl">
           <div className="relative flex flex-col gap-10 lg:flex-row">
             <div>
@@ -183,12 +216,6 @@ const OrderPage = () => {
                 <Phone size={24} />
                 <p>טלפון: {order.user_id.phone}</p>
               </div>
-            </div>
-            <div className="sm:absolute sm:left-5 sm:-top-24">
-              <OrderMap
-                userLocation={order.userAddress}
-                restaurantLocation={order.restaurant_id.location?.coordinates}
-              />
             </div>
           </div>
           <div className="flex gap-2 mt-20">

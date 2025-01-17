@@ -16,7 +16,10 @@ const OrderMap: React.FC<OrderMapProps> = ({
     lng: number;
     lat: number;
   } | null>(null);
-
+  const [restaurantIcon, setRestaurantIcon] = useState<google.maps.Icon | null>(
+    null
+  );
+  const [userIcon, setUserIcon] = useState<google.maps.Icon | null>(null);
   const [screenWidth, setScreenWidth] = useState<number>(window.innerWidth);
 
   // Dynamically adjust the screen size based on window width
@@ -52,6 +55,17 @@ const OrderMap: React.FC<OrderMapProps> = ({
             });
           }
         });
+        setRestaurantIcon({
+          url: "/restaurant (1).png",
+          scaledSize: new google.maps.Size(40, 40),
+          anchor: new google.maps.Point(20, 40),
+        });
+
+        setUserIcon({
+          url: "/home.png",
+          scaledSize: new google.maps.Size(40, 40),
+          anchor: new google.maps.Point(20, 40),
+        });
       } catch (error) {
         console.error("Error loading Google Maps:", error);
       }
@@ -60,38 +74,24 @@ const OrderMap: React.FC<OrderMapProps> = ({
     loadGeocode();
   }, [userLocation, API_KEY]);
 
-  if (typeof google === "undefined") {
-    return <div>Loading Google Maps...</div>;
-  }
-
-  const restaurantIcon = {
-    url: "../../../data/restaurant (1).png",
-    scaledSize: new google.maps.Size(40, 40),
-    anchor: new google.maps.Point(20, 40),
-  };
-
-  const userIcon = {
-    url: "../../../data/home.png",
-    scaledSize: new google.maps.Size(40, 40),
-    anchor: new google.maps.Point(20, 40),
-  };
-
   if (!API_KEY) {
     return <div>API key not found</div>;
   }
 
   const mapWidth = screenWidth < 660 ? "85vw" : "40vw";
+  const mapHeight = screenWidth < 660 ? "40vh" : "80vh";
 
   return (
     <APIProvider apiKey={API_KEY}>
       <Map
-        style={{ width: mapWidth, height: "40vh" }}
+        style={{ width: mapWidth, height: mapHeight }}
         defaultCenter={{ lat, lng }}
         defaultZoom={16}
         gestureHandling={"greedy"}
         disableDefaultUI={true}
         colorScheme="DARK"
         clickableIcons={false}
+        mapId={import.meta.env.VITE_CUSTOM_MAP_ID}
       >
         {/* Restaurant marker */}
         <Marker icon={restaurantIcon} position={{ lat, lng }} />

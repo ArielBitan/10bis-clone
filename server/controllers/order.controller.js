@@ -5,8 +5,10 @@ const MenuItem = require("../models/menu-item.model");
 const { getIO } = require("../socketManager");
 
 const STRIPE = new Stripe(process.env.STRIPE_API_KEY);
-const FRONTEND_URL = process.env.FRONTEND_URL;
-
+const FRONTEND_URL =
+  process.env.NODE_ENV === "production"
+    ? process.env.FRONTEND_URL
+    : "http://localhost:5173";
 exports.createOrder = async (req, res) => {
   try {
     const order = await orderService.createOrder(req.body);

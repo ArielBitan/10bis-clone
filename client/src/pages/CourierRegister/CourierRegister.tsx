@@ -93,7 +93,7 @@ const CourierRegister = () => {
               <img
                 alt="checked"
                 src="https://takeaway-recruitment-api.k.elnino-production.com/assets/checked-CGge6zgO.svg"
-                className="rounded-[100%] p-2 bg-white border-black border border-4 w-16 h-16"
+                className="rounded-[100%] p-2 bg-white border-black  w-16 h-16"
               />
               <p>להיות מעל גיל 18 אם טרם מלאו לך 18 נשמח שתגיש מועמדות בהמשך</p>
             </div>
@@ -101,7 +101,7 @@ const CourierRegister = () => {
               <img
                 alt="checked"
                 src="https://takeaway-recruitment-api.k.elnino-production.com/assets/checked-CGge6zgO.svg"
-                className="rounded-[100%] p-2 bg-white border-black border border-4 w-16 h-16"
+                className="rounded-[100%] p-2 bg-white border-black  w-16 h-16"
               />
               <p>
                 רישיון רכב וביטוח חובה בתוקף (במידה וברצונך לעבוד על אופנוע /
@@ -112,7 +112,7 @@ const CourierRegister = () => {
               <img
                 alt="checked"
                 src="https://takeaway-recruitment-api.k.elnino-production.com/assets/checked-CGge6zgO.svg"
-                className="rounded-[100%] p-2 bg-white border-black border border-4 w-16 h-16"
+                className="rounded-[100%] p-2 bg-white border-black  w-16 h-16"
               />
               <p>להיות בעל.ת תושייה עם גישה חיובית ונכונות להתמודד עם בעיות</p>
             </div>
@@ -120,7 +120,7 @@ const CourierRegister = () => {
               <img
                 alt="checked"
                 src="https://takeaway-recruitment-api.k.elnino-production.com/assets/checked-CGge6zgO.svg"
-                className="rounded-[100%] p-2 bg-white border-black border border-4 w-16 h-16"
+                className="rounded-[100%] p-2 bg-white border-black  w-16 h-16"
               />
               <p>
                 תעודת זהות, ספח פתוח ורישיון נהיגה (במידה וברצונך לעבוד על
