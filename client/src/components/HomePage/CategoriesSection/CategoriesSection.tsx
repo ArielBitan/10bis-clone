@@ -25,7 +25,7 @@ const CategoriesSection: React.FC<CategoriesSectionProps> = ({
   };
 
   return (
-    <div className="bg-white border border-gray-300 lg:sticky lg:top-0 lg:max-h-[calc(98vh-80px)] lg:overflow-y-auto px-2 scrollbar-hide  ">
+    <div className="bg-white border border-gray-300 lg:max-h-[calc(98vh-80px)] lg:overflow-y-auto px-2 scrollbar-hide">
       <div className="col-start-1 row-start-1 row-span-3  ">
         <div className="text-left mx-4">
           <button

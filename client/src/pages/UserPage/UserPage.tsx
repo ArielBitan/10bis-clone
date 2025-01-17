@@ -24,7 +24,7 @@ const UserPage = () => {
     <div className="bg-gray-100">
       <Navbar />
       <div className="flex lg:justify-center items-center lg:items-start lg:flex-row gap-4 pt-4 flex-col">
-        <div>
+        <div className="lg:sticky lg:top-20 ">
           <CategoriesSection onFilterChange={handleFilterChange} />
         </div>
         <div className="flex flex-col  gap-4 lg:max-w-[955px] ">
