@@ -16,7 +16,10 @@ const OrderMap: React.FC<OrderMapProps> = ({
     lng: number;
     lat: number;
   } | null>(null);
-
+  const [restaurantIcon, setRestaurantIcon] = useState<google.maps.Icon | null>(
+    null
+  );
+  const [userIcon, setUserIcon] = useState<google.maps.Icon | null>(null);
   const [screenWidth, setScreenWidth] = useState<number>(window.innerWidth);
 
   // Dynamically adjust the screen size based on window width
@@ -52,6 +55,17 @@ const OrderMap: React.FC<OrderMapProps> = ({
             });
           }
         });
+        setRestaurantIcon({
+          url: "/restaurant (1).png",
+          scaledSize: new google.maps.Size(40, 40),
+          anchor: new google.maps.Point(20, 40),
+        });
+
+        setUserIcon({
+          url: "/home.png",
+          scaledSize: new google.maps.Size(40, 40),
+          anchor: new google.maps.Point(20, 40),
+        });
       } catch (error) {
         console.error("Error loading Google Maps:", error);
       }
@@ -59,22 +73,6 @@ const OrderMap: React.FC<OrderMapProps> = ({
 
     loadGeocode();
   }, [userLocation, API_KEY]);
-
-  if (typeof google === "undefined") {
-    return <div>Loading Google Maps...</div>;
-  }
-
-  const restaurantIcon = {
-    url: "/restaurant (1).png",
-    scaledSize: new google.maps.Size(40, 40),
-    anchor: new google.maps.Point(20, 40),
-  };
-
-  const userIcon = {
-    url: "/home.png",
-    scaledSize: new google.maps.Size(40, 40),
-    anchor: new google.maps.Point(20, 40),
-  };
 
   if (!API_KEY) {
     return <div>API key not found</div>;
