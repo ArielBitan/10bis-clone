@@ -65,13 +65,13 @@ const OrderMap: React.FC<OrderMapProps> = ({
   }
 
   const restaurantIcon = {
-    url: "../../../data/restaurant (1).png",
+    url: "/restaurant (1).png",
     scaledSize: new google.maps.Size(40, 40),
     anchor: new google.maps.Point(20, 40),
   };
 
   const userIcon = {
-    url: "../../../data/home.png",
+    url: "/home.png",
     scaledSize: new google.maps.Size(40, 40),
     anchor: new google.maps.Point(20, 40),
   };
