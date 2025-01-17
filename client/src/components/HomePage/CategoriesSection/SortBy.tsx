@@ -10,7 +10,7 @@ const SortBy = () => {
   };
 
   return (
-    <div className="px-4 max-w-[300px]">
+    <div className="px-4 max-w-[300px] hidden lg:block">
       <div className="flex justify-between items-center mb-4">
         <h3 className="font-bold text-gray-800">סידור רשימה לפי</h3>
         <button

@@ -23,14 +23,15 @@ const FoodTypes: React.FC<FoodTypesProps> = ({
   };
   return (
     <div
-      className={`ml-4 overflow-hidden transition-[max-height] duration-500 ${
-        showOverflow ? "max-h-[1000px]" : "max-h-[270px]"
-      }`}
+      className={` lg:ml-4 lg:overflow-hidden overflow-x-auto  transition-[max-height] duration-500 ${
+        showOverflow ? "lg:max-h-[1000px]" : "lg:max-h-[290px]"
+      }
+      `}
     >
-      <div className="flex justify-between px-4 py-2">
-        <h3 className="font-bold">סוגי אוכל</h3>
+      <div className="flex justify-between px-4 lg:py-2  ">
+        <h3 className="font-bold hidden lg:block">סוגי אוכל</h3>
       </div>
-      <div className="grid grid-cols-3 gap-4 mb-8 max-w-[300px] ">
+      <div className="flex gap-6 overflow-x-auto categories-scroll mt-4 w-screen lg:grid lg:grid-cols-3 lg:gap-4 lg:mb-8 lg:max-w-[300px] lg:overflow-y-auto ">
         {categories.map((category) => (
           <div
             key={category.id}
@@ -46,7 +47,7 @@ const FoodTypes: React.FC<FoodTypesProps> = ({
           </div>
         ))}
       </div>
-      <div className="sticky bottom-0 flex items-center justify-center">
+      <div className="sticky bottom-0 lg:flex items-center justify-center hidden">
         <button
           onClick={toggleOverflow}
           className=" hover:bg-gray-100 rounded-full transition-colors duration-200"

@@ -19,7 +19,7 @@ const FilterPills: React.FC<FilterPillsProps> = ({
   ];
 
   return (
-    <div className="p-4 max-w-[300px]">
+    <div className="p-4 max-w-[300px] hidden lg:block">
       <h3 className="font-bold mb-4 text-gray-800">סינון</h3>
       <div className="flex flex-wrap gap-2">
         {filters.map((filter, index) => (

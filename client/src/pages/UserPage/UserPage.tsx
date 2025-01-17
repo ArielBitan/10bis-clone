@@ -23,11 +23,17 @@ const UserPage = () => {
   return (
     <div className="bg-gray-100">
       <Navbar />
-      <div className="flex justify-center gap-4 pt-4">
-        <CategoriesSection onFilterChange={handleFilterChange} />
-        <div className="flex flex-col gap-4 lg:max-w-[955px] ">
+      <div className="flex lg:justify-center items-center lg:items-start lg:flex-row gap-4 pt-4 flex-col">
+        <div>
+          <CategoriesSection onFilterChange={handleFilterChange} />
+        </div>
+        <div className="flex flex-col  gap-4 lg:max-w-[955px] ">
           <HeroSection />
-          <AllRestaurants selectedFilters={selectedFilters} />
+          <AllRestaurants
+            selectedFilters={selectedFilters}
+            setSelectedFilters={setSelectedFilters}
+            onFilterChange={handleFilterChange}
+          />
         </div>
       </div>
     </div>
