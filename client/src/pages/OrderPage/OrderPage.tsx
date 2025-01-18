@@ -25,6 +25,7 @@ import { useEffect, useState } from "react";
 import { useSocket } from "@/components/context/socketContext";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
+import Chat from "@/components/chats/chat";
 
 // Define types for order updates
 interface OrderUpdate {
@@ -158,7 +159,7 @@ const OrderPage = () => {
       <Navbar />
 
       <div className="mt-10 mr-10">
-        <div className="float-end ml-10 mb-10">
+        <div className="mb-10 ml-10 float-end">
           <OrderMap
             userLocation={order.userAddress}
             restaurantLocation={order.restaurant_id.location?.coordinates}
@@ -183,12 +184,17 @@ const OrderPage = () => {
           <Separator orientation="vertical" />
           <div>{dateObj.toISOString().split("T")[0]}</div>
         </div>
+        <div className="flex gap-8 mt-6">
+          
         <Link
           to={`/restaurant/${restId}/review`}
           state={{ backgroundLocation: location.pathname }}
-        >
-          <Button className="mt-4">הוסף ביקורת</Button>
+          >
+          <Button className="">הוסף ביקורת</Button>
         </Link>
+        <Chat order={order}/>
+
+          </div>
         <div className="flex flex-col gap-4 mt-10 text-xl">
           <div className="relative flex flex-col gap-10 lg:flex-row">
             <div>

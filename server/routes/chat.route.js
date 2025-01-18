@@ -1,10 +1,11 @@
 const express = require("express");
+const { joinRoom, sendMessage } = require("../controllers/chat.controller");
+
 const router = express.Router();
-const chatController = require("../controllers/chat.controller");
+//new msg
+router.post("/messages", sendMessage);
 
-
-router.post("/:orderId/message", chatController.sendMessage);
-
-router.get("/:orderId/messages", chatController.getMessagesByOrder);
+//msgs of room  
+router.get("/messages/:room", joinRoom);
 
 module.exports = router;
