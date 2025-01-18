@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSocket } from "../context/socketContext";
 import { useUser } from "../context/userContext";
+import { Button } from "../ui/button";
 
 interface MessagesProps {
   order: { _id: string };
@@ -55,7 +56,7 @@ const Messages = ({ order }: MessagesProps) => {
         room: roomId,
         sender: userId,
         text: newMessage,
-        createdAt: new Date().toISOString(), 
+        createdAt: new Date().toISOString(),
       };
       socket.emit("message", messageData);
       setNewMessage("");
@@ -68,40 +69,60 @@ const Messages = ({ order }: MessagesProps) => {
     }
   };
 
-  return (
-    <div className="">
-      <div className="">
-        {messages.map((message) => (
-          <div
-            key={message._id}
-            style={{
-              borderBottom: "1px solid #ddd",
-              padding: "10px",
-              marginBottom: "10px"
-            }}
-          >
-            <strong>
-              {message.sender === userId ? "את/ה" : message.sender}: 
-            </strong>
-            <span>{message.text}</span>
-            <div style={{ fontSize: "0.8em", color: "#888" }}>
-              {new Date(message.createdAt).toLocaleString()}
-            </div>
-          </div>
-        ))}
+  const getSenderLabel = (sender: string) => {
+    if (sender === userId) {
+      return "את/ה";
+    }
 
-        {typingUser && <div>{typingUser} is typing...</div>}
+    const senderRole = user?.role ? "לקוח" : "נציג";
+    return senderRole;
+  };
+
+  return (
+    <div className="w-full p-4">
+      <div className="flex flex-col gap-4">
+        {messages.length === 0 ? (
+          <div className="font-semibold text-center text-orangePrimary">
+            אין עדיין הודעות, אנא המתן...
+          </div>
+        ) : (
+          messages.map((message) => (
+            <div
+              key={message._id}
+              className="flex flex-row-reverse gap-4 p-2 mb-2 border-b"
+            >
+              <div className="flex flex-col gap-2">
+                <strong
+                  className={
+                    message.sender === user?._id ? "" : "text-orangePrimary"
+                  }
+                >
+                  :{getSenderLabel(message.sender)}
+                </strong>
+                <div className="text-sm text-textBlackSecondary">
+                  {new Date(message.createdAt).toLocaleString()}
+                </div>
+              </div>
+              <span className="text-base">{message.text}</span>
+            </div>
+          ))
+        )}
+
+        {typingUser && <div className="text-sm text-gray-500">הקלד...</div>}
       </div>
 
-      <div className="">
+      <div className="flex gap-2 mt-4">
+        <Button onClick={sendMessage} className="p-6 mt-1">
+          שלח
+        </Button>
         <input
           type="text"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           onKeyUp={handleTyping}
-          placeholder="Type a message..."
+          placeholder="...הקלד"
+          className="w-full px-4 py-2 text-right border rounded-md"
         />
-        <button onClick={sendMessage}>Send</button>
       </div>
     </div>
   );

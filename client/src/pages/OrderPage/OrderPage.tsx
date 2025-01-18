@@ -25,7 +25,7 @@ import { useEffect, useState } from "react";
 import { useSocket } from "@/components/context/socketContext";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import Chat from "@/components/chats/chat";
+import Chat from "@/components/chats/Chat";
 
 // Define types for order updates
 interface OrderUpdate {

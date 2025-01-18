@@ -17,8 +17,8 @@ const Chat: React.FC<ChatProps> = ({ order }) => {
       <DialogTrigger asChild>
         <Button>לצ'אט עם נציג המסעדה</Button>
       </DialogTrigger>
-      <DialogContent className="border-none sm:max-w-[700px] dialog-slide w-full max-h-[80vh] overflow-y-auto text-3xl text-center">
-        <div className="pb-1 bg-backgroundOrange">
+      <DialogContent className="border-none sm:max-w-[700px] dialog-slide w-full max-h-[80vh] overflow-y-auto text-3xl text-center ">
+        <div className="sticky top-0 z-10 bg-backgroundOrange ">
           <div className="flex items-center justify-end gap-4 p-3 pb-0 text-white ">
             <h1 className="text-base font-bold text-end">
               {order.restaurant_id.name}
