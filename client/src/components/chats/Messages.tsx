@@ -10,7 +10,8 @@ interface MessagesProps {
 interface Message {
   _id: string;
   room: string;
-  sender: string;
+  sender?: string;
+  by?: string;
   text: string;
   createdAt: string;
   timestamp: string;
@@ -31,11 +32,19 @@ const Messages = ({ order }: MessagesProps) => {
     socket.emit("join-chat", { userId, room: roomId });
 
     socket.on("previous-messages", (messages: Message[]) => {
-      setMessages(messages);
+      setMessages(messages.filter((message) => message.by !== "System"));
     });
 
     socket.on("message", (message: Message) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
+      if (message.by !== "System") {
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            ...message,
+            createdAt: message.createdAt,
+          },
+        ]);
+      }
     });
 
     socket.on("user-typing-message", (userId: string) => {
@@ -60,6 +69,7 @@ const Messages = ({ order }: MessagesProps) => {
       };
       socket.emit("message", messageData);
       setNewMessage("");
+      console.log(messageData);
     }
   };
 
@@ -69,8 +79,9 @@ const Messages = ({ order }: MessagesProps) => {
     }
   };
 
-  const getSenderLabel = (sender: string) => {
-    if (sender === userId) {
+  const getSenderLabel = (message: Message) => {
+    const messageSender = message.sender || message.by;
+    if (messageSender === userId) {
       return "את/ה";
     }
 
@@ -79,7 +90,7 @@ const Messages = ({ order }: MessagesProps) => {
   };
 
   return (
-    <div className="w-full p-4">
+    <div className="w-full p-4 pb-10">
       <div className="flex flex-col gap-4">
         {messages.length === 0 ? (
           <div className="font-semibold text-center text-orangePrimary">
@@ -87,24 +98,30 @@ const Messages = ({ order }: MessagesProps) => {
           </div>
         ) : (
           messages.map((message) => (
-            <div
-              key={message._id}
-              className="flex flex-row-reverse gap-4 p-2 mb-2 border-b"
-            >
-              <div className="flex flex-col gap-2">
-                <strong
-                  className={
-                    message.sender === user?._id ? "" : "text-orangePrimary"
-                  }
-                >
-                  :{getSenderLabel(message.sender)}
-                </strong>
-                <div className="text-sm text-textBlackSecondary">
-                  {new Date(message.createdAt).toLocaleString()}
+            message.by !== "System" && (
+              <div
+                key={message._id}
+                className="flex flex-row-reverse gap-4 p-2 mb-2 border-b"
+              >
+                <div className="flex flex-col gap-2">
+                  <strong
+                    className={
+                      message.sender === userId || message.by === userId
+                        ? ""
+                        : "text-orangePrimary"
+                    }
+                  >
+                    :{getSenderLabel(message)}
+                  </strong>
+                  <div className="text-sm text-textBlackSecondary">
+                    {message.createdAt
+                      ? new Date(message.createdAt).toLocaleString()
+                      : new Date().toLocaleString()}{" "}
+                  </div>
                 </div>
+                <span className="text-base">{message.text}</span>
               </div>
-              <span className="text-base">{message.text}</span>
-            </div>
+            )
           ))
         )}
 

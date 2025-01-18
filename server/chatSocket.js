@@ -10,7 +10,7 @@ const setupChatSocket = (io) => {
       currentRoom = room; // Store room name
 
       socket.join(room); // Join the room in Socket.IO
-      console.log(`${username} joined chat in room ${room}`);
+      // console.log(`${username} joined chat in room ${room}`);
 
       const messages = await getMessagesForRoom(room); // Get previous messages
 
@@ -33,19 +33,26 @@ const setupChatSocket = (io) => {
 
       const message = await saveMessage(room, sender, text); // Save message to the database
 
+      // io.to(room).emit("message", {
+      //   // Broadcast the new message to the room
+      //   by: sender,
+      //   text,
       io.to(room).emit("message", {
-        // Broadcast the new message to the room
-        by: sender,
+        room,
+        sender,
         text,
+        createdAt: new Date().toISOString(),
       });
+      
+      // });
     });
 
     // Notify others that a user is typing
-    socket.on("user-typing-message", () => {
-      socket.broadcast
-        .to(currentRoom)
-        .emit("user-typing-message", socket.username);
-    });
+    // socket.on("user-typing-message", () => {
+    //   socket.broadcast
+    //     .to(currentRoom)
+    //     .emit("user-typing-message", socket.username);
+    // });
 
     // Handle disconnection
     socket.on("disconnect", () => {
