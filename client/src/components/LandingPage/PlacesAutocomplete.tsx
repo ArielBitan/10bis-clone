@@ -4,7 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { FaSearch } from "react-icons/fa";
 
-const PlacesAutocomplete = () => {
+interface PlacesAutocompleteProps {
+  onSelect?: () => void;
+}
+
+const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
+  onSelect,
+}) => {
   const inputRef = useRef<google.maps.places.SearchBox | null>(null);
   const navigate = useNavigate();
   const { isLoaded } = useJsApiLoader({
@@ -34,7 +40,9 @@ const PlacesAutocomplete = () => {
       const address = places[0].formatted_address;
       if (address) {
         localStorage.setItem("userAddress", address);
-        console.log("Address saved:", address);
+        if (onSelect) {
+          onSelect();
+        }
         navigate("/home");
       } else {
         console.error("No address found in selected place.");
