@@ -5,14 +5,18 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getActiveOrder, updateOrderStatus } from "@/services/orderService";
 import NextLocationCard from "./NextLocationCard";
 import Loading from "../Loading";
+import { useSocket } from "../context/socketContext";
+import { useEffect } from "react";
 
 interface ActiveOrderProps {
   setIsDelivering: React.Dispatch<React.SetStateAction<Boolean>>;
 }
 
 const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
+  const { socket, connected, joinRoom, leaveRoom } = useSocket();
   const queryClient = useQueryClient();
   const userAddress = localStorage.getItem("userAddress");
+
   const {
     data: activeOrder,
     isLoading,
@@ -68,6 +72,38 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
     );
   if (!activeOrder) return <Loading />;
 
+  // Watch the user's location and get updates
+  const courierPosition = navigator.geolocation.watchPosition(
+    (position) => {
+      console.log("Latitude: " + position.coords.latitude);
+      console.log("Longitude: " + position.coords.longitude);
+    },
+    (error) => {
+      console.error("Error getting location: ", error);
+    }
+  );
+
+  useEffect(() => {
+    if (!socket || !connected || !courierPosition) {
+      return;
+    }
+    joinRoom(activeOrder._id);
+
+    return () => leaveRoom(activeOrder._id);
+  }, [socket, connected]);
+
+  // Second useEffect just emits to that room
+  useEffect(() => {
+    if (!socket || !connected || !courierPosition) {
+      return;
+    }
+
+    socket.emit("courierLocation", {
+      orderId: activeOrder._id,
+      location: courierPosition,
+    });
+  }, [courierPosition, socket, connected, activeOrder._id]);
+
   return (
     <div className="p-4 space-y-4">
       <Card>
@@ -104,8 +140,8 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
             <div className="space-y-2">
               <h3 className="font-medium">פריטי הזמנה:</h3>
               <ul className="text-sm text-gray-600">
-                {activeOrder.order_items.map((item) => (
-                  <li key={item._id._id} className="flex items-center gap-2">
+                {activeOrder.order_items.map((item, index) => (
+                  <li key={index} className="flex items-center gap-2">
                     <Package className="w-4 h-4" />
                     {item._id.name} - {item._id.price} ₪
                   </li>

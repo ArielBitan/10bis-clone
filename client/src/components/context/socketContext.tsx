@@ -18,6 +18,11 @@ interface OrderUpdate {
   type: "status" | "location" | "info";
 }
 
+interface CourierLocation {
+  orderId: string;
+  location: { lat: number; lng: number };
+}
+
 interface SocketProviderProps {
   children: ReactNode;
 }
@@ -30,6 +35,7 @@ interface SocketContextValue {
   leaveRoom: (roomId: string) => void;
   orderUpdates: Record<string, OrderUpdate[]>;
   clearOrderUpdates: (orderId: string) => void;
+  courierLocation: { lat: number; lng: number } | null;
 }
 
 const SocketContext = createContext<SocketContextValue | null>(null);
@@ -43,6 +49,11 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const [orderUpdates, setOrderUpdates] = useState<
     Record<string, OrderUpdate[]>
   >({});
+
+  const [courierLocation, setCourierLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
 
   // Initialize socket connection
   useEffect(() => {
@@ -89,12 +100,6 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     const handleConnect = () => {
       console.log("Connected to server:", socket.id);
       setConnected(true);
-
-      // Rejoin room if previously connected
-      const orderRoom = localStorage.getItem("orderRoom");
-      if (orderRoom) {
-        joinRoom(orderRoom);
-      }
     };
 
     const handleDisconnect = (reason: string) => {
@@ -131,27 +136,21 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   useEffect(() => {
     if (!socket) return;
 
-    const handleOrderUpdate = (data: OrderUpdate & { orderId: string }) => {
-      console.log("Order update received:", data);
-      const { orderId, ...updateData } = data;
+    // Rejoin rooms from localStorage
+    const orderRoom = localStorage.getItem("orderRoom");
+    if (orderRoom) {
+      joinRoom(orderRoom);
+    }
 
-      setOrderUpdates((prev) => ({
-        ...prev,
-        [orderId]: [
-          {
-            message: updateData.message,
-            timestamp: updateData.timestamp || new Date().toISOString(),
-            type: updateData.type || "info",
-          },
-          ...(prev[orderId] || []),
-        ],
-      }));
+    // Handle courier location updates globally
+    const handleCourierLocation = (data: CourierLocation) => {
+      setCourierLocation(data.location);
     };
 
-    socket.on("order-update", handleOrderUpdate);
+    socket.on("courierLocation", handleCourierLocation);
 
     return () => {
-      socket.off("order-update", handleOrderUpdate);
+      socket.off("courierLocation", handleCourierLocation);
     };
   }, [socket]);
 
@@ -205,6 +204,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     clearOrderUpdates,
     orderUpdates,
     newOrderReceived,
+    courierLocation,
   };
 
   return (
