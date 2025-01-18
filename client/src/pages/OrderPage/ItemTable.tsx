@@ -13,13 +13,14 @@ interface TableDemoProps {
 }
 
 export const TableDemo: React.FC<TableDemoProps> = ({ items }) => {
+  console.log(items);
   return (
     <div className="overflow-x-auto">
-      <Table>
+      <Table style={{ direction: "rtl" }}>
         <TableHeader>
           <TableRow>
-            <TableCell colSpan={5} className="text-center">
-              הפריטים שהזמנת
+            <TableCell colSpan={5} className="text-center text-3xl">
+              פריטי ההזמנה
             </TableCell>
           </TableRow>
           <TableRow>
@@ -35,7 +36,7 @@ export const TableDemo: React.FC<TableDemoProps> = ({ items }) => {
             <TableRow key={item._id.name}>
               <TableCell className="font-medium">{item._id.name}</TableCell>
               <TableCell>{item._id.description}</TableCell>
-              <TableCell className="text-center">
+              <TableCell className="flex justify-center">
                 <img
                   src={item._id.image}
                   alt={item._id.name}

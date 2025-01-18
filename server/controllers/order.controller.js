@@ -9,6 +9,7 @@ const FRONTEND_URL =
   process.env.NODE_ENV === "production"
     ? process.env.FRONTEND_URL
     : "http://localhost:5173";
+
 exports.createOrder = async (req, res) => {
   try {
     const order = await orderService.createOrder(req.body);
@@ -60,15 +61,15 @@ exports.createCheckoutSession = async (req, res) => {
     }
     order.payment_details.amount = session.amount_total;
     const io = getIO();
-    console.log(`emitting order-update to ${order._id}`);
-    io.to(order._id).emit("order-update", {
+    io.to(order._id.toString()).emit("order-update", {
       message: `Your order #${order._id} is now Pending.`,
       status: order.status,
       orderId: order._id,
     });
 
-    io.to(restaurant._id).emit("order-received", {
-      message: `Order received from ${req.user._id}`,
+    io.to(restaurant._id.toString()).emit("order-received", {
+      title: "הזמנה חדשה",
+      message: `הזמנה התקבלה ממשתמש - ${req.user._id}`,
     });
     res.json({ url: session.url });
   } catch (error) {
@@ -111,7 +112,6 @@ exports.acceptOrder = async (req, res) => {
       status: order.status,
       orderId: order._id,
     });
-    console.log(`event emitted to ${orderId}`);
     res.status(200).json(order);
   } catch (error) {
     res.status(400).json({ message: error.message });

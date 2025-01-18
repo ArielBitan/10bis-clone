@@ -93,6 +93,8 @@ const OrderPage = () => {
     const subscribeToUpdates = () => {
       if (!isSubscribed) {
         joinRoom(orderId);
+        localStorage.setItem("orderRoom", orderId);
+
         setIsSubscribed(true);
       }
     };
@@ -100,6 +102,7 @@ const OrderPage = () => {
     const unsubscribeFromUpdates = () => {
       if (isSubscribed) {
         leaveRoom(orderId);
+        localStorage.removeItem("orderRoom");
         setIsSubscribed(false);
       }
     };

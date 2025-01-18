@@ -1,3 +1,4 @@
+import { toast } from "@/hooks/use-toast";
 import {
   createContext,
   ReactNode,
@@ -7,6 +8,8 @@ import {
   useCallback,
 } from "react";
 import { io, Socket } from "socket.io-client";
+import { useUser } from "./userContext";
+import { IRestaurantOwner } from "@/types/userType";
 
 // Define types for order updates
 interface OrderUpdate {
@@ -21,6 +24,7 @@ interface SocketProviderProps {
 
 interface SocketContextValue {
   connected: boolean;
+  newOrderReceived: boolean;
   socket: Socket | null;
   joinRoom: (roomId: string) => void;
   leaveRoom: (roomId: string) => void;
@@ -32,10 +36,14 @@ const SocketContext = createContext<SocketContextValue | null>(null);
 
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
+  const { user } = useUser();
+  const ownedRestId = (user as IRestaurantOwner)?.owned_restaurants?.[0];
+  const [newOrderReceived, setNewOrderReceived] = useState(false);
   const [connected, setConnected] = useState(false);
   const [orderUpdates, setOrderUpdates] = useState<
     Record<string, OrderUpdate[]>
   >({});
+
   // Initialize socket connection
   useEffect(() => {
     const URL =
@@ -59,49 +67,65 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     };
   }, []);
 
-  // Room management functions with proper error handling
-  const joinRoom = useCallback(
-    (roomId: string) => {
-      if (!socket || !connected) {
-        console.warn("Cannot join room: Socket not connected");
-        return;
+  useEffect(() => {
+    if (!ownedRestId || !socket) return;
+    joinRoom(ownedRestId);
+    const handleOrderUpdate = (data: { message: string; title: string }) => {
+      setNewOrderReceived(true);
+      toast({ title: data.title, description: data.message });
+    };
+
+    socket.on("order-received", handleOrderUpdate);
+
+    return () => {
+      socket.off("order-received", handleOrderUpdate);
+    };
+  }, [socket, connected, ownedRestId]);
+
+  // Socket event handlers
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleConnect = () => {
+      console.log("Connected to server:", socket.id);
+      setConnected(true);
+
+      // Rejoin room if previously connected
+      const orderRoom = localStorage.getItem("orderRoom");
+      if (orderRoom) {
+        joinRoom(orderRoom);
+      }
+    };
+
+    const handleDisconnect = (reason: string) => {
+      console.log("Disconnected from server:", reason);
+      setConnected(false);
+    };
+
+    const handleError = (error: Error) => {
+      console.error("Socket error:", error);
+      setConnected(false);
+    };
+
+    // Add event listeners
+    socket.on("connect", handleConnect);
+    socket.on("disconnect", handleDisconnect);
+    socket.on("connect_error", handleError);
+    socket.on("error", handleError);
+
+    // Cleanup event listeners
+    return () => {
+      const orderRoom = localStorage.getItem("orderRoom");
+      if (orderRoom) {
+        leaveRoom(orderRoom);
       }
 
-      socket.emit("join-room", { roomId }, (error: Error | null) => {
-        if (error) {
-          console.error("Error joining room:", error);
-          return;
-        }
-        localStorage.setItem("orderRoom", roomId);
-        console.log(`Joined room: ${roomId}`);
-      });
-    },
-    [socket, connected]
-  );
-
-  const leaveRoom = useCallback(
-    (roomId: string) => {
-      if (!socket) return;
-
-      socket.emit("leave-room", { roomId }, (error: Error | null) => {
-        if (error) {
-          console.error("Error leaving room:", error);
-          return;
-        }
-        localStorage.removeItem("orderRoom");
-        console.log(`Left room: ${roomId}`);
-      });
-    },
-    [socket]
-  );
-
-  const clearOrderUpdates = useCallback((orderId: string) => {
-    setOrderUpdates((prev) => {
-      const newUpdates = { ...prev };
-      delete newUpdates[orderId];
-      return newUpdates;
-    });
-  }, []);
+      socket.off("connect", handleConnect);
+      socket.off("disconnect", handleDisconnect);
+      socket.off("connect_error", handleError);
+      socket.off("error", handleError);
+    };
+  }, [socket]);
 
   // Handle order updates
   useEffect(() => {
@@ -131,63 +155,47 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     };
   }, [socket]);
 
-  // Socket event handlers
-  useEffect(() => {
-    if (!socket) return;
-
-    const handleConnect = () => {
-      console.log("Connected to server:", socket.id);
-      setConnected(true);
-
-      // Rejoin room if previously connected
-      const orderRoom = localStorage.getItem("orderRoom");
-      if (orderRoom) {
-        joinRoom(orderRoom);
-      }
-    };
-
-    const handleDisconnect = (reason: string) => {
-      console.log("Disconnected from server:", reason);
-      setConnected(false);
-    };
-
-    const handleError = (error: Error) => {
-      console.error("Socket error:", error);
-      setConnected(false);
-    };
-
-    const handleReconnect = (attemptNumber: number) => {
-      console.log(`Reconnection attempt ${attemptNumber}`);
-    };
-
-    const handleReconnectError = (error: Error) => {
-      console.error("Reconnection error:", error);
-      setConnected(false);
-    };
-
-    // Add event listeners
-    socket.on("connect", handleConnect);
-    socket.on("disconnect", handleDisconnect);
-    socket.on("connect_error", handleError);
-    socket.on("error", handleError);
-    socket.on("reconnect", handleReconnect);
-    socket.on("reconnect_error", handleReconnectError);
-
-    // Cleanup event listeners
-    return () => {
-      const orderRoom = localStorage.getItem("orderRoom");
-      if (orderRoom) {
-        leaveRoom(orderRoom);
+  // Room management functions with proper error handling
+  const joinRoom = useCallback(
+    (roomId: string) => {
+      if (!socket || !connected) {
+        console.warn("Cannot join room: Socket not connected");
+        return;
       }
 
-      socket.off("connect", handleConnect);
-      socket.off("disconnect", handleDisconnect);
-      socket.off("connect_error", handleError);
-      socket.off("error", handleError);
-      socket.off("reconnect", handleReconnect);
-      socket.off("reconnect_error", handleReconnectError);
-    };
-  }, [socket, joinRoom, leaveRoom]);
+      socket.emit("join-room", { roomId }, (error: Error | null) => {
+        if (error) {
+          console.error("Error joining room:", error);
+          return;
+        }
+        console.log(`Joined room: ${roomId}`);
+      });
+    },
+    [socket, connected]
+  );
+
+  const leaveRoom = useCallback(
+    (roomId: string) => {
+      if (!socket) return;
+
+      socket.emit("leave-room", { roomId }, (error: Error | null) => {
+        if (error) {
+          console.error("Error leaving room:", error);
+          return;
+        }
+        console.log(`Left room: ${roomId}`);
+      });
+    },
+    [socket]
+  );
+
+  const clearOrderUpdates = useCallback((orderId: string) => {
+    setOrderUpdates((prev) => {
+      const newUpdates = { ...prev };
+      delete newUpdates[orderId];
+      return newUpdates;
+    });
+  }, []);
 
   const contextValue: SocketContextValue = {
     socket,
@@ -196,6 +204,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     leaveRoom,
     clearOrderUpdates,
     orderUpdates,
+    newOrderReceived,
   };
 
   return (

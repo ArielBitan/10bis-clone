@@ -1,3 +1,4 @@
+import { useSocket } from "@/components/context/socketContext";
 import { useUser } from "@/components/context/userContext";
 import Navbar from "@/components/layout/Navbar";
 import Loading from "@/components/Loading";
@@ -10,6 +11,7 @@ import { useEffect, useState } from "react";
 const RestaurantOrderManagement = () => {
   const { user } = useUser();
   const [ownedRestId, setOwnedRestId] = useState<string | undefined>(undefined);
+  const { newOrderReceived } = useSocket();
 
   // Update ownedRestId when user data is available
   useEffect(() => {
@@ -18,11 +20,21 @@ const RestaurantOrderManagement = () => {
     }
   }, [user]);
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["ordersByRestaurant", ownedRestId],
     queryFn: () => fetchOrdersByRestaurant(ownedRestId as string),
     enabled: !!ownedRestId,
   });
+
+  useEffect(() => {
+    if (newOrderReceived) {
+      refetch();
+    }
+  }, [newOrderReceived]);
+
+  const refetchOrders = () => {
+    refetch();
+  };
 
   if (isLoading) return <Loading />;
   if (isError)
@@ -33,16 +45,28 @@ const RestaurantOrderManagement = () => {
       </div>
     );
   if (!data) return <div>No data available</div>;
+
+  const undeliveredOrders = data
+    .filter((order) => order.status !== "Delivered")
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+
   return (
     <div className="relative">
       <Navbar />
       <div className="flex flex-col items-center">
-        <h1 className="mt-10 text-5xl text-textBlackSecondary">הזמנות חדשות</h1>
+        <h1 className="my-10 text-5xl text-textBlackSecondary">הזמנות חדשות</h1>
 
-        {data.length > 0 ? (
+        {undeliveredOrders.length > 0 ? (
           <div>
-            {data.map((order) => (
-              <OrderRest order={order} key={order._id} />
+            {undeliveredOrders.map((order) => (
+              <OrderRest
+                order={order}
+                key={order._id}
+                refetchOrders={refetchOrders}
+              />
             ))}
           </div>
         ) : (
