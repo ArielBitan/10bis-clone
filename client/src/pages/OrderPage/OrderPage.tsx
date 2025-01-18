@@ -25,7 +25,7 @@ import { useEffect, useState } from "react";
 import { useSocket } from "@/components/context/socketContext";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import Chat from "@/components/chats/chat";
+import Chat from "@/components/chats/Chat";
 
 // Define types for order updates
 interface OrderUpdate {
@@ -185,16 +185,14 @@ const OrderPage = () => {
           <div>{dateObj.toISOString().split("T")[0]}</div>
         </div>
         <div className="flex gap-8 mt-6">
-          
-        <Link
-          to={`/restaurant/${restId}/review`}
-          state={{ backgroundLocation: location.pathname }}
+          <Link
+            to={`/restaurant/${restId}/review`}
+            state={{ backgroundLocation: location.pathname }}
           >
-          <Button className="">הוסף ביקורת</Button>
-        </Link>
-        <Chat order={order}/>
-
-          </div>
+            <Button className="">הוסף ביקורת</Button>
+          </Link>
+          <Chat order={order} />
+        </div>
         <div className="flex flex-col gap-4 mt-10 text-xl">
           <div className="relative flex flex-col gap-10 lg:flex-row">
             <div>
