@@ -1,5 +1,5 @@
-// socketManager.js
 const { Server } = require("socket.io");
+const setupChatSocket = require("./chatSocket"); // Import chatSocket
 
 let io;
 
@@ -15,6 +15,9 @@ const initializeSocket = (server) => {
     pingTimeout: 60000,
     pingInterval: 25000,
   });
+
+  // Pass io as argument to setupChatSocket
+  setupChatSocket(io); // Pass the io instance directly to chatSocket
 
   // Socket connection handler with room management
   const handleSocket = (socket) => {

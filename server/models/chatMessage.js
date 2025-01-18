@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const chatMessageSchema = new mongoose.Schema(
   {
-    orderId: {
+    room: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Order",
       required: true,
@@ -12,7 +12,7 @@ const chatMessageSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    message: {
+    text: {
       type: String,
       required: true,
     },
