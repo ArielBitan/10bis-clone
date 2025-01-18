@@ -6,6 +6,8 @@ import { CartItem } from "@/pages/DetailPage/DetailPage";
 import { createCheckoutSession } from "@/services/orderService";
 import { Loader } from "lucide-react";
 import { DialogTitle } from "@radix-ui/react-dialog";
+import { useUser } from "../context/userContext";
+import LogInModal from "../LandingPage/modals/LoginModal";
 
 interface InfoCartProps {
   item: IRestaurant;
@@ -18,13 +20,14 @@ const Cart: React.FC<InfoCartProps> = ({
   cartDetails,
   setCartDetails,
 }) => {
+  const { user } = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const userAddress = localStorage.getItem("userAddress");
   const handlePayment = async () => {
-    setIsLoading(true);
     if (!item._id) {
       return;
     }
+    setIsLoading(true);
     const response = await createCheckoutSession(
       item._id,
       cartDetails,
@@ -145,12 +148,15 @@ const Cart: React.FC<InfoCartProps> = ({
               : "bg-blue-600 hover:bg-blue-700"
           }`}
           onClick={handlePayment}
-          disabled={isLoading}
         >
-          {isLoading ? (
-            <Loader className="motion-preset-spin motion-duration-2000" />
+          {user ? (
+            isLoading ? (
+              <Loader className="motion-preset-spin motion-duration-2000" />
+            ) : (
+              "לעמוד התשלום"
+            )
           ) : (
-            "לעמוד התשלום"
+            <LogInModal rolee="signup" isHomePage={true} />
           )}
         </button>
       </DialogContent>

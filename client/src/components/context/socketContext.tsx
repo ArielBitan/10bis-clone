@@ -1,3 +1,4 @@
+import { toast } from "@/hooks/use-toast";
 import {
   createContext,
   ReactNode,
@@ -7,6 +8,8 @@ import {
   useCallback,
 } from "react";
 import { io, Socket } from "socket.io-client";
+import { useUser } from "./userContext";
+import { IRestaurantOwner } from "@/types/userType";
 
 // Define types for order updates
 interface OrderUpdate {
@@ -15,27 +18,43 @@ interface OrderUpdate {
   type: "status" | "location" | "info";
 }
 
+interface CourierLocation {
+  orderId: string;
+  location: { lat: number; lng: number };
+}
+
 interface SocketProviderProps {
   children: ReactNode;
 }
 
 interface SocketContextValue {
   connected: boolean;
+  newOrderReceived: boolean;
   socket: Socket | null;
   joinRoom: (roomId: string) => void;
   leaveRoom: (roomId: string) => void;
   orderUpdates: Record<string, OrderUpdate[]>;
   clearOrderUpdates: (orderId: string) => void;
+  courierLocation: { lat: number; lng: number } | null;
 }
 
 const SocketContext = createContext<SocketContextValue | null>(null);
 
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
+  const { user } = useUser();
+  const ownedRestId = (user as IRestaurantOwner)?.owned_restaurants?.[0];
+  const [newOrderReceived, setNewOrderReceived] = useState(false);
   const [connected, setConnected] = useState(false);
   const [orderUpdates, setOrderUpdates] = useState<
     Record<string, OrderUpdate[]>
   >({});
+
+  const [courierLocation, setCourierLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
+
   // Initialize socket connection
   useEffect(() => {
     const URL =
@@ -59,6 +78,82 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (!ownedRestId || !socket) return;
+    joinRoom(ownedRestId);
+    const handleOrderUpdate = (data: { message: string; title: string }) => {
+      setNewOrderReceived(true);
+      toast({ title: data.title, description: data.message });
+    };
+
+    socket.on("order-received", handleOrderUpdate);
+
+    return () => {
+      socket.off("order-received", handleOrderUpdate);
+    };
+  }, [socket, connected, ownedRestId]);
+
+  // Socket event handlers
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleConnect = () => {
+      console.log("Connected to server:", socket.id);
+      setConnected(true);
+    };
+
+    const handleDisconnect = (reason: string) => {
+      console.log("Disconnected from server:", reason);
+      setConnected(false);
+    };
+
+    const handleError = (error: Error) => {
+      console.error("Socket error:", error);
+      setConnected(false);
+    };
+
+    // Add event listeners
+    socket.on("connect", handleConnect);
+    socket.on("disconnect", handleDisconnect);
+    socket.on("connect_error", handleError);
+    socket.on("error", handleError);
+
+    // Cleanup event listeners
+    return () => {
+      const orderRoom = localStorage.getItem("orderRoom");
+      if (orderRoom) {
+        leaveRoom(orderRoom);
+      }
+
+      socket.off("connect", handleConnect);
+      socket.off("disconnect", handleDisconnect);
+      socket.off("connect_error", handleError);
+      socket.off("error", handleError);
+    };
+  }, [socket]);
+
+  // Handle order updates
+  useEffect(() => {
+    if (!socket) return;
+
+    // Rejoin rooms from localStorage
+    const orderRoom = localStorage.getItem("orderRoom");
+    if (orderRoom) {
+      joinRoom(orderRoom);
+    }
+
+    // Handle courier location updates globally
+    const handleCourierLocation = (data: CourierLocation) => {
+      setCourierLocation(data.location);
+    };
+
+    socket.on("courierLocation", handleCourierLocation);
+
+    return () => {
+      socket.off("courierLocation", handleCourierLocation);
+    };
+  }, [socket]);
+
   // Room management functions with proper error handling
   const joinRoom = useCallback(
     (roomId: string) => {
@@ -72,7 +167,6 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
           console.error("Error joining room:", error);
           return;
         }
-        localStorage.setItem("orderRoom", roomId);
         console.log(`Joined room: ${roomId}`);
       });
     },
@@ -88,7 +182,6 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
           console.error("Error leaving room:", error);
           return;
         }
-        localStorage.removeItem("orderRoom");
         console.log(`Left room: ${roomId}`);
       });
     },
@@ -103,92 +196,6 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     });
   }, []);
 
-  // Handle order updates
-  useEffect(() => {
-    if (!socket) return;
-
-    const handleOrderUpdate = (data: OrderUpdate & { orderId: string }) => {
-      console.log("Order update received:", data);
-      const { orderId, ...updateData } = data;
-
-      setOrderUpdates((prev) => ({
-        ...prev,
-        [orderId]: [
-          {
-            message: updateData.message,
-            timestamp: updateData.timestamp || new Date().toISOString(),
-            type: updateData.type || "info",
-          },
-          ...(prev[orderId] || []),
-        ],
-      }));
-    };
-
-    socket.on("order-update", handleOrderUpdate);
-
-    return () => {
-      socket.off("order-update", handleOrderUpdate);
-    };
-  }, [socket]);
-
-  // Socket event handlers
-  useEffect(() => {
-    if (!socket) return;
-
-    const handleConnect = () => {
-      console.log("Connected to server:", socket.id);
-      setConnected(true);
-
-      // Rejoin room if previously connected
-      const orderRoom = localStorage.getItem("orderRoom");
-      if (orderRoom) {
-        joinRoom(orderRoom);
-      }
-    };
-
-    const handleDisconnect = (reason: string) => {
-      console.log("Disconnected from server:", reason);
-      setConnected(false);
-    };
-
-    const handleError = (error: Error) => {
-      console.error("Socket error:", error);
-      setConnected(false);
-    };
-
-    const handleReconnect = (attemptNumber: number) => {
-      console.log(`Reconnection attempt ${attemptNumber}`);
-    };
-
-    const handleReconnectError = (error: Error) => {
-      console.error("Reconnection error:", error);
-      setConnected(false);
-    };
-
-    // Add event listeners
-    socket.on("connect", handleConnect);
-    socket.on("disconnect", handleDisconnect);
-    socket.on("connect_error", handleError);
-    socket.on("error", handleError);
-    socket.on("reconnect", handleReconnect);
-    socket.on("reconnect_error", handleReconnectError);
-
-    // Cleanup event listeners
-    return () => {
-      const orderRoom = localStorage.getItem("orderRoom");
-      if (orderRoom) {
-        leaveRoom(orderRoom);
-      }
-
-      socket.off("connect", handleConnect);
-      socket.off("disconnect", handleDisconnect);
-      socket.off("connect_error", handleError);
-      socket.off("error", handleError);
-      socket.off("reconnect", handleReconnect);
-      socket.off("reconnect_error", handleReconnectError);
-    };
-  }, [socket, joinRoom, leaveRoom]);
-
   const contextValue: SocketContextValue = {
     socket,
     connected,
@@ -196,6 +203,8 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     leaveRoom,
     clearOrderUpdates,
     orderUpdates,
+    newOrderReceived,
+    courierLocation,
   };
 
   return (

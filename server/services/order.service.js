@@ -74,14 +74,24 @@ exports.getOrderById = async (id) => {
 
 exports.getOrdersByUser = async (userId) => {
   return await Order.find({ user_id: userId })
-    .populate("restaurant_id", "name address phone")
-    .populate("order_items");
+    .populate("user_id")
+    .populate("restaurant_id")
+    .populate("courier_id")
+    .populate({
+      path: "order_items._id",
+      model: "MenuItem",
+    });
 };
 
 exports.getOrdersByRestaurant = async (restaurantId) => {
   return await Order.find({ restaurant_id: restaurantId })
-    .populate("user_id", "name address phone")
-    .populate("order_items");
+    .populate("user_id")
+    .populate("restaurant_id")
+    .populate("courier_id")
+    .populate({
+      path: "order_items._id",
+      model: "MenuItem",
+    });
 };
 
 exports.updateOrderStatus = async (id, status) => {

@@ -34,7 +34,8 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 const Chart = ({ id }: { id: string }) => {
-  const [activeChart, setActiveChart] = React.useState<keyof typeof chartConfig>("desktop");
+  const [activeChart, setActiveChart] =
+    React.useState<keyof typeof chartConfig>("desktop");
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["ordersByRestaurant", id],
@@ -73,7 +74,7 @@ const Chart = ({ id }: { id: string }) => {
 
   const total = React.useMemo(
     () => ({
-      desktop: chartData.reduce((acc, curr) => acc + curr.incoming, 0),
+      desktop: `₪` + chartData.reduce((acc, curr) => acc + curr.incoming, 0),
       mobile: chartData.reduce((acc, curr) => acc + curr.orders, 0),
     }),
     [chartData]
@@ -84,7 +85,7 @@ const Chart = ({ id }: { id: string }) => {
   if (!data) return <div>No data available</div>;
 
   return (
-    <Card>
+    <Card className="mb-12">
       <CardHeader className="flex flex-col items-stretch p-0 space-y-0 border-b sm:flex-row">
         <div className="flex flex-col justify-center flex-1 gap-1 px-6 py-5 sm:py-6">
           <CardTitle>תרשים זרימה עסקי</CardTitle>

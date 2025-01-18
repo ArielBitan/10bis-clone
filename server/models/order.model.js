@@ -49,11 +49,22 @@ const orderSchema = new mongoose.Schema(
 
 orderSchema.index({ status: 1, courier_id: 1 });
 
-// Calculate total amount before saving
 orderSchema.pre("save", async function (next) {
   if (this.order_items && this.order_items.length > 0) {
-    const items = await MenuItem.find({ _id: { $in: this.order_items } });
-    this.total_amount = items.reduce((sum, item) => sum + item.price, 0);
+    // Populate menu items
+    const populatedItems = await MenuItem.find({
+      _id: { $in: this.order_items.map((item) => item._id) },
+    });
+    console.log(populatedItems);
+    // Calculate total amount
+    this.total_amount = this.order_items.reduce((sum, orderItem) => {
+      const menuItem = populatedItems.find((item) =>
+        item._id.equals(orderItem._id)
+      );
+      return menuItem ? sum + menuItem.price * orderItem.quantity : sum;
+    }, 0);
+  } else {
+    this.total_amount = 0;
   }
   next();
 });

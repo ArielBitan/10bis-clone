@@ -120,12 +120,6 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({ restId }) => {
     enabled: !!restId,
   });
 
-  React.useEffect(() => {
-    if (data) {
-      console.log("Fetched data:", data);
-    }
-  }, [data]);
-
   const table = useReactTable({
     data: data || [],
     columns,
@@ -202,7 +196,7 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({ restId }) => {
                   colSpan={columns.length}
                   className="h-24 text-center text-gray-500"
                 >
-                  No results.
+                  אין מידע להציג.
                 </TableCell>
               </TableRow>
             )}

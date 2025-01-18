@@ -5,20 +5,34 @@ import { useEffect, useState } from "react";
 import { useUser } from "@/components/context/userContext";
 import { fetchUserProfile } from "@/services/userService";
 import Loading from "@/components/Loading";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const CourierPage = () => {
-  const { setUser, user } = useUser();
-  console.log(user);
-
+  const { toast } = useToast();
+  const { setUser } = useUser();
+  const navigate = useNavigate();
   const [isDelivering, setIsDelivering] = useState<Boolean>(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      const updatedUser = await fetchUserProfile();
-      setUser(updatedUser);
-      setIsDelivering(updatedUser?.isDelivering || false);
-      setIsLoading(false);
+      setIsLoading(true);
+      try {
+        const updatedUser = await fetchUserProfile();
+        setUser(updatedUser);
+        setIsDelivering(updatedUser?.isDelivering || false);
+      } catch (error) {
+        console.log(error);
+        toast({
+          title: "שגיאה",
+          description: "אנא התחבר כשליח כדי לבצע משלוחים",
+          variant: "destructive",
+        });
+        navigate("/");
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchData();
