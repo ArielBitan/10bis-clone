@@ -50,7 +50,7 @@ const AllChats = () => {
     return <div>{error}</div>;
   }
 
-  if (!user) {
+  if (!user || user.role === "courier") {
     return null;
   }
 

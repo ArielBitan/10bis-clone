@@ -51,9 +51,17 @@ const UserMenu = () => {
                 </DropdownMenuItem>
               </Link>
               <DropdownMenuSeparator />
-              <Link to="/charges-report">
-                <DropdownMenuItem>דו"ח חיובים</DropdownMenuItem>
-              </Link>
+
+              {role === "courier" ? (
+                <Link to="/courier-salary">
+                  <DropdownMenuItem>תלוש משכורת</DropdownMenuItem>
+                </Link>
+              ) : (
+                <Link to="/charges-report">
+                  <DropdownMenuItem>דו"ח חיובים</DropdownMenuItem>
+                </Link>
+              )}
+
               {!role && (
                 <Link to="/courier-register">
                   <DropdownMenuItem>
@@ -177,12 +185,12 @@ const UserMenu = () => {
                   </DropdownMenuItem>
                 </Link>
               )}
-              <DropdownMenuSeparator />
               {role === "restaurant_owner" && (
                 <Link
                   to="/edit-restaurant"
                   state={{ backgroundLocation: location }}
                 >
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem>
                     <div>עריכת פרטי מסעדה</div>
                   </DropdownMenuItem>

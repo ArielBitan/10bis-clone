@@ -119,9 +119,21 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
           <div className="space-y-6">
             {/* Order Status */}
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold">
-                הזמנה נוכחית #{activeOrder._id}
-              </h2>
+              <div className="flex flex-col">
+                <h2 className="text-lg font-bold">
+                  הזמנה נוכחית #{activeOrder._id}
+                </h2>
+                <h3 className="text-textBlackSecondary">
+                  {new Date(activeOrder.createdAt).toLocaleString("he-IL", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "numeric",
+                    minute: "numeric",
+                  })}
+                </h3>
+              </div>
               <span className="px-3 py-1 text-sm text-blue-700 bg-blue-100 rounded-full">
                 {activeOrder.status === "Accepted" ? "איסוף" : "משלוח"}
               </span>
@@ -151,13 +163,13 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
                 {activeOrder.order_items.map((item, index) => (
                   <li
                     key={index}
-                    className="flex items-center justify-between p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                    className="flex items-center justify-between p-2 transition-colors rounded-lg bg-gray-50 hover:bg-gray-100"
                   >
                     <div className="flex items-center gap-3">
                       <Package className="w-5 h-5 text-gray-600" />
                       <div>
                         <span className="font-medium">{item._id.name}</span>
-                        <span className="text-gray-600 mr-2">
+                        <span className="mr-2 text-gray-600">
                           {item.quantity}x
                         </span>
                       </div>
