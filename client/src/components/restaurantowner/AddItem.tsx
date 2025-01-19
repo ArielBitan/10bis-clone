@@ -71,7 +71,7 @@ const AddItem: React.FC<AddItemProps> = ({ resId, onItemAdded }) => {
     setLoading(true);
     setSuccessMessage("");
     try {
-      const newItem = await createMenuItem(formData);
+      await createMenuItem(formData);
       onItemAdded();
       setSuccessMessage("הפריט נוצר בהצלחה!");
     } catch (error) {
