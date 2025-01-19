@@ -9,7 +9,7 @@ import {
   User,
 } from "lucide-react";
 import { TableDemo } from "./ItemTable";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   Card,
   CardDescription,
@@ -42,7 +42,7 @@ const OrderPage = () => {
   const { id: orderId } = useParams();
   const { socket, connected, joinRoom } = useSocket();
   const { toast } = useToast();
-
+  const navigate = useNavigate();
   const {
     data: order,
     isLoading,
@@ -103,10 +103,13 @@ const OrderPage = () => {
         message: statusDetails[order.status].message,
       });
       if (order.status === "Delivered") {
+        navigate(`/restaurant/${order.restaurant_id._id}/review`, {
+          state: { backgroundLocation: location.pathname },
+        });
         localStorage.removeItem("orderRoom");
       }
     }
-  }, [order]);
+  }, [order, navigate]);
 
   if (isLoading)
     return (
@@ -147,7 +150,6 @@ const OrderPage = () => {
             restaurantLocation={order.restaurant_id.location?.coordinates}
           />
         </div>
-        {/* Existing order header content */}
         <h1 className="text-3xl font-bold">
           {order.restaurant_id.name} | {order.userAddress || ""}
         </h1>

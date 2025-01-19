@@ -4,6 +4,7 @@ import { useUser } from "@/components/context/userContext";
 import { useEffect, useState } from "react";
 import { fetchOrdersByUser } from "@/services/orderService";
 import { IOrder } from "@/types/orderTypes";
+import Loading from "@/components/Loading";
 
 // interface User {
 //   _id: string;
@@ -133,7 +134,7 @@ const Charges = () => {
     getOrders();
   }, [userId]);
   if (loading) {
-    return <div>Loading...</div>;
+    return <div><Loading/></div>;
   }
 
   if (error) {
