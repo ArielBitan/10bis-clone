@@ -72,7 +72,6 @@ export const loginUser = async (
         password,
       }
     );
-    console.log(data.user);
     return data;
   } catch (error) {
     console.error("Error logging in user:", error);
@@ -105,7 +104,6 @@ export const registerCourier = async (
     const response = await api.post<IUser>("/users/register/courier", {
       userId,
     });
-    console.log("Courier created:", response.data);
     return response.data;
   } catch (error) {
     console.error("Error registering user:", error);

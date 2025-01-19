@@ -53,7 +53,6 @@ const Search = () => {
       console.error("Error searching:", error);
     }
   };
-  console.log(items[0]);
 
   return (
     <div className="relative flex flex-col w-full sm:w-full md:w-full lg:w-auto">
@@ -85,7 +84,6 @@ const Search = () => {
                   key={category.id}
                   className="px-4 py-2 text-sm cursor-pointer hover:bg-gray-100"
                   onClick={() => {
-                    console.log(`Selected category: ${category.name}`);
                     setSearchQuery(category.name);
                     setIsDropdownOpen(false);
                   }}

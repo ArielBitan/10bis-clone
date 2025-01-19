@@ -49,7 +49,6 @@ const UserLogin: React.FC<UserLoginProps> = ({ toggleRole, setDialogOpen }) => {
     try {
       const userData = await loginUser(fields.email, fields.password);
       setUser(userData.user);
-      console.log(user);
       clearFields();
       setDialogOpen(false);
       if (user?.role === "restaurant_owner" || user?.role === "courier") {

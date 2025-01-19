@@ -23,7 +23,6 @@ const CourierPage = () => {
         setUser(updatedUser);
         setIsDelivering(updatedUser?.isDelivering || false);
       } catch (error) {
-        console.log(error);
         toast({
           title: "שגיאה",
           description: "אנא התחבר כשליח כדי לבצע משלוחים",

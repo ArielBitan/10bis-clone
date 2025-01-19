@@ -21,15 +21,6 @@ const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
     region: "il",
   });
 
-  const handleOnPlacesChange = () => {
-    if (!inputRef.current) return;
-    const places = inputRef.current.getPlaces();
-    if (places && places.length > 0) {
-      const address = places[0].formatted_address;
-      console.log(address);
-    }
-  };
-
   const saveUserAddress = () => {
     if (!inputRef.current) {
       console.error("SearchBox not loaded yet.");
@@ -58,10 +49,7 @@ const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
         <>
           <FaSearch className="text-xl mr-4" />
           <div className="w-full">
-            <StandaloneSearchBox
-              onLoad={(ref) => (inputRef.current = ref)}
-              onPlacesChanged={handleOnPlacesChange}
-            >
+            <StandaloneSearchBox onLoad={(ref) => (inputRef.current = ref)}>
               <input
                 type="text"
                 placeholder="לאן לשלוח את האוכל?"

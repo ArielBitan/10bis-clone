@@ -18,7 +18,6 @@ const LandingPage = () => {
     fetchUser();
   }, []);
 
-  console.log(user);
   if (user?.role === "restaurant_owner" || user?.role === "courier") {
     navigate("/home", { state: { refresh: true } });
   }

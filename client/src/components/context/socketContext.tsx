@@ -54,7 +54,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     lat: number;
     lng: number;
   } | null>(null);
-  console.log(courierLocation);
+
   // Initialize socket connection
   useEffect(() => {
     const URL =
@@ -98,12 +98,10 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     if (!socket) return;
 
     const handleConnect = () => {
-      console.log("Connected to server:", socket.id);
       setConnected(true);
     };
 
-    const handleDisconnect = (reason: string) => {
-      console.log("Disconnected from server:", reason);
+    const handleDisconnect = () => {
       setConnected(false);
     };
 
@@ -153,7 +151,6 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
       setCourierLocation(formattedLocation);
     };
 
-    console.log("listening to courier location");
     socket.on("courierLocation", handleCourierLocation);
 
     return () => {
@@ -168,13 +165,11 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         console.warn("Cannot join room: Socket not connected");
         return;
       }
-      console.log("joining room " + roomId);
       socket.emit("join-room", { roomId }, (error: Error | null) => {
         if (error) {
           console.error("Error joining room:", error);
           return;
         }
-        console.log(`Joined room: ${roomId}`);
       });
     },
     [socket, connected]
@@ -189,7 +184,6 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
           console.error("Error leaving room:", error);
           return;
         }
-        console.log(`Left room: ${roomId}`);
       });
     },
     [socket]

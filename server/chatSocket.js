@@ -17,9 +17,9 @@ const setupChatSocket = (io) => {
       socket.emit("previous-messages", messages); // Send previous messages to the new user
 
       // socket.broadcast.to(room).emit("message", {
-        // Notify others that a user has joined
-        // by: "System",
-        // text: `${socket.username} has joined the chat`,
+      // Notify others that a user has joined
+      // by: "System",
+      // text: `${socket.username} has joined the chat`,
       // });
     });
 
@@ -43,7 +43,7 @@ const setupChatSocket = (io) => {
         text,
         createdAt: new Date().toISOString(),
       });
-      
+
       // });
     });
 
@@ -60,9 +60,9 @@ const setupChatSocket = (io) => {
       console.log(`${socket.username} left the chat`);
 
       // io.to(currentRoom).emit("message", {
-        // Notify others when a user leaves the chat
-        // by: "System",
-        // text: `${socket.username} has left the chat`,
+      // Notify others when a user leaves the chat
+      // by: "System",
+      // text: `${socket.username} has left the chat`,
       // });
     });
   });

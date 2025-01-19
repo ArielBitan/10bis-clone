@@ -85,7 +85,6 @@ const OrderMap: React.FC<OrderMapProps> = ({
   if (!API_KEY) {
     return <div>API key not found</div>;
   }
-  console.log(courierLocation);
   const mapWidth = screenWidth < 660 ? "85vw" : "40vw";
   const mapHeight = screenWidth < 660 ? "40vh" : "80vh";
   return (

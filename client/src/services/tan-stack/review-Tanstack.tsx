@@ -36,8 +36,7 @@ export const useCreateReview = () => {
         comment: newReview.comment,
       });
     },
-    onSuccess: (data, variables) => {
-      console.log(data);
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["reviews", variables.restaurantId],
       });

@@ -18,7 +18,6 @@ const EditUser: React.FC = () => {
     phone: user?.phone ?? "",
   };
   const [formData, setFormData] = useState<UserForm>(INITIAL_FORM_STATE);
-  console.log(user);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -34,15 +33,6 @@ const EditUser: React.FC = () => {
     e.preventDefault();
     try {
       const response = await updateUserProfile(formData);
-      console.log(response);
-      // setUser({
-      //   ...user,
-      //   email: response.email,
-      //   phone: response.phone,
-      //   first_name: response.first_name,
-      //   last_name: response.last_name,
-      //   role: user?.role,
-      // });
 
       if (!response) {
         throw new Error("Failed to update user");

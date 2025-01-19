@@ -69,8 +69,7 @@ const EditItem: React.FC<EditItemProps> = ({ item, renderFunc }) => {
     setSuccessMessage("");
     if (item._id)
       try {
-        const newItem = await updateMenuItem(item._id, formData);
-        console.log("New Menu Item:", newItem);
+        await updateMenuItem(item._id, formData);
         setSuccessMessage("העריכה התבצעה!");
         renderFunc();
       } catch (error) {

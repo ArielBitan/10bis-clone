@@ -43,8 +43,6 @@ export const columns: ColumnDef<IOrder>[] = [
         _id: string;
       };
 
-      console.log("Restaurant Data:", restaurant);
-
       if (!restaurant || !restaurant.name || !restaurant._id) {
         return <span>אין מידע על המסעדה</span>;
       }

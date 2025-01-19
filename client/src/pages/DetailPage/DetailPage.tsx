@@ -89,7 +89,6 @@ const DetailPage = () => {
   const filteredMenuItems = searchedMenuItems.filter((item) => {
     return selectedCategory ? item.category === selectedCategory : true;
   });
-  console.log(data);
 
   return (
     <div className="relative bg-gray-100">
