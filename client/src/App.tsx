@@ -13,6 +13,7 @@ import OrderPage from "./pages/OrderPage/OrderPage";
 import CourierRegister from "./pages/CourierRegister/CourierRegister";
 import Charges from "./pages/Charges/Charges";
 import Review from "./pages/Review/Review";
+import AllChats from "./components/AllChats/AllChats";
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -20,6 +21,7 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
+      <AllChats />
       <Routes location={state?.backgroundLocation || location}>
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<HomePage />} />

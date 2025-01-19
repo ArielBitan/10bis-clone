@@ -7,6 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 import { UserProvider } from "./components/context/userContext.tsx";
 import { Toaster } from "./components/ui/toaster.tsx";
 import { SocketProvider } from "./components/context/socketContext.tsx";
+// import AllChats from "./components/AllChats.tsx";
 
 const queryClient = new QueryClient();
 
@@ -18,6 +19,7 @@ createRoot(document.getElementById("root")!).render(
           <QueryClientProvider client={queryClient}>
             <App />
             <Toaster />
+            {/* <AllChats/> */}
           </QueryClientProvider>
         </BrowserRouter>
       </SocketProvider>
