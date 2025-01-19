@@ -34,7 +34,7 @@ const RestaurantOwnerDashboard = () => {
   return (
     <div className="bg-white">
       <RestaurantHeader data={restaurant} />
-      <div className="flex justify-center mt-8 mb-20">
+      <div className="flex flex-col justify-center mt-8 mb-20">
         <h1 className="text-4xl font-bold"> {restaurant?.name}</h1>
         <h2 className="text-xl text-center">{restaurant.description}</h2>
       </div>
