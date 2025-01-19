@@ -13,6 +13,7 @@ import { IMenuItem } from "@/types/restaurantTypes";
 import RestaurantHeader from "@/components/DetailPage/RestaurantHeader";
 import Loading from "@/components/Loading";
 import AllReviews from "@/components/DetailPage/AllReviews";
+import AvgRating from "@/components/DetailPage/AvgRating";
 
 export interface CartItem extends IMenuItem {
   id: string;
@@ -88,6 +89,7 @@ const DetailPage = () => {
   const filteredMenuItems = searchedMenuItems.filter((item) => {
     return selectedCategory ? item.category === selectedCategory : true;
   });
+  console.log(data);
 
   return (
     <div className="relative bg-gray-100">
@@ -103,7 +105,11 @@ const DetailPage = () => {
         <div className="flex gap-1 text-sm text-gray-600">
           <div className="flex gap-1">
             <FaStar className="mb-1 text-yellow-500" />
-            <span>0</span>
+            {data._id && (
+              <span>
+                <AvgRating id={data._id} />
+              </span>
+            )}
           </div>
           <span>•</span>
           <span>{`משלוח ₪${data.delivery_fee || 0}`}</span>

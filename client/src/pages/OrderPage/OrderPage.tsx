@@ -16,7 +16,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Footer from "@/components/layout/footer";
 import { useQuery } from "@tanstack/react-query";
 import { fetchOrderById } from "@/services/orderService";
 import Loading from "@/components/Loading";
@@ -241,7 +240,6 @@ const OrderPage = () => {
             </CardHeader>
           </Card>
         </div>
-        <Footer />
       </div>
     </div>
   );

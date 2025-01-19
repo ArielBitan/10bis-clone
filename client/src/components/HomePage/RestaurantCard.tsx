@@ -1,6 +1,7 @@
 import { IRestaurant } from "@/types/restaurantTypes";
 import { FaStar } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
+import AvgRating from "../DetailPage/AvgRating";
 
 interface RestaurantCardProps {
   item: IRestaurant;
@@ -25,13 +26,20 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({ item }) => {
       />
       <div className="px-4 pt-4">
         <div className="mb-2">
-          <h3 className="font-bold text-lg">{item.name}</h3>
+          <h3 className="text-lg font-bold">{item.name}</h3>
           <p className="text-sm">{item.cuisine_types.join(", ")}</p>
         </div>
-        <div className="flex gap-1 items-center text-sm">
+        <div className="flex items-center gap-1 text-sm">
           <div className="flex items-center gap-1">
-            <FaStar className="text-yellow-500 mb-1" />
-            <span>0</span>
+            <FaStar className="mb-1 text-yellow-500" />
+            <span>
+              {" "}
+              {item._id && (
+                <span>
+                  <AvgRating id={item._id} />
+                </span>
+              )}
+            </span>
           </div>
           <span>•</span>
           <span>{`משלוח ₪${item.delivery_fee || 0}`}</span>
