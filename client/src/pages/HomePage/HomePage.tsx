@@ -5,6 +5,7 @@ import RestaurantOwnerDashboard from "@/components/restaurantowner/RestaurantOwn
 import { useUser } from "@/components/context/userContext";
 import { useEffect } from "react";
 import UserPage from "../UserPage/UserPage";
+import AllChats from "@/components/AllChats/AllChats";
 
 const HomePage = () => {
   const { user, fetchUser } = useUser();
@@ -14,20 +15,24 @@ const HomePage = () => {
   }, []);
   const role = user?.role;
 
-  return role ? (
-    role === "restaurant_owner" ? (
-      <div className="bg-gray-100">
-        <Navbar />
-        <RestaurantOwnerDashboard />
-        {/* <div className="grid gap-4 mx-60 "></div> */}
-      </div>
-    ) : role === "courier" ? (
-      <CourierPage />
-    ) : (
-      <UserPage />
-    )
-  ) : (
-    <UserPage />
+  return (
+    <div className="bg-gray-100">
+      {role ? (
+        role === "restaurant_owner" ? (
+          <div>
+            <Navbar />
+            <RestaurantOwnerDashboard />
+          </div>
+        ) : role === "courier" ? (
+          <CourierPage />
+        ) : (
+          <UserPage />
+        )
+      ) : (
+        <UserPage />
+      )}
+      <AllChats />
+    </div>
   );
 };
 
