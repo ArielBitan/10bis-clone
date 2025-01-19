@@ -1,6 +1,7 @@
 import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
 import { useEffect, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
+import { useSocket } from "../context/socketContext";
 
 interface OrderMapProps {
   userLocation: string;
@@ -11,6 +12,7 @@ const OrderMap: React.FC<OrderMapProps> = ({
   userLocation,
   restaurantLocation,
 }) => {
+  const { courierLocation } = useSocket();
   const API_KEY = import.meta.env.VITE_MAPS_API_KEY;
   const [userCoords, setUserCoords] = useState<{
     lng: number;
@@ -20,6 +22,7 @@ const OrderMap: React.FC<OrderMapProps> = ({
     null
   );
   const [userIcon, setUserIcon] = useState<google.maps.Icon | null>(null);
+  const [courierIcon, setCourierIcon] = useState<google.maps.Icon | null>(null);
   const [screenWidth, setScreenWidth] = useState<number>(window.innerWidth);
 
   // Dynamically adjust the screen size based on window width
@@ -66,6 +69,11 @@ const OrderMap: React.FC<OrderMapProps> = ({
           scaledSize: new google.maps.Size(40, 40),
           anchor: new google.maps.Point(20, 40),
         });
+        setCourierIcon({
+          url: "/shipping-location.png",
+          scaledSize: new google.maps.Size(40, 40),
+          anchor: new google.maps.Point(20, 40),
+        });
       } catch (error) {
         console.error("Error loading Google Maps:", error);
       }
@@ -77,10 +85,9 @@ const OrderMap: React.FC<OrderMapProps> = ({
   if (!API_KEY) {
     return <div>API key not found</div>;
   }
-
+  console.log(courierLocation);
   const mapWidth = screenWidth < 660 ? "85vw" : "40vw";
   const mapHeight = screenWidth < 660 ? "40vh" : "80vh";
-
   return (
     <APIProvider apiKey={API_KEY}>
       <Map
@@ -98,6 +105,11 @@ const OrderMap: React.FC<OrderMapProps> = ({
 
         {/* User location marker */}
         {userCoords && <Marker icon={userIcon} position={userCoords} />}
+
+        {/* Courier location marker */}
+        {courierLocation && (
+          <Marker icon={courierIcon} position={courierLocation} />
+        )}
       </Map>
     </APIProvider>
   );

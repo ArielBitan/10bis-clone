@@ -34,6 +34,25 @@ const initializeSocket = (server) => {
       }
     });
 
+    // Handle courier location updates
+    socket.on("courierLocation", async (data) => {
+      try {
+        const { orderId, location } = data;
+        console.log(
+          `Received courier location for order ${orderId}:`,
+          location
+        );
+
+        // Broadcast to everyone in the room except the sender
+        socket.to(orderId.toString()).emit("courierLocation", {
+          orderId,
+          location,
+        });
+      } catch (error) {
+        console.error("Error handling courier location:", error);
+      }
+    });
+
     // Handle room leaving with cleanup
     socket.on("leave-room", async ({ roomId }) => {
       try {

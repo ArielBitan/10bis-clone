@@ -20,7 +20,7 @@ interface OrderUpdate {
 
 interface CourierLocation {
   orderId: string;
-  location: { lat: number; lng: number };
+  location: { latitude: number; longitude: number };
 }
 
 interface SocketProviderProps {
@@ -54,7 +54,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     lat: number;
     lng: number;
   } | null>(null);
-
+  console.log(courierLocation);
   // Initialize socket connection
   useEffect(() => {
     const URL =
@@ -134,25 +134,32 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 
   // Handle order updates
   useEffect(() => {
-    if (!socket) return;
+    if (!socket || !connected) return;
 
     // Rejoin rooms from localStorage
     const orderRoom = localStorage.getItem("orderRoom");
     if (orderRoom) {
-      joinRoom(orderRoom);
+      joinRoom(orderRoom.toString());
     }
 
     // Handle courier location updates globally
     const handleCourierLocation = (data: CourierLocation) => {
-      setCourierLocation(data.location);
+      // Convert to Google Maps LatLngLiteral format
+      const formattedLocation = {
+        lat: data.location.latitude,
+        lng: data.location.longitude,
+      };
+
+      setCourierLocation(formattedLocation);
     };
 
+    console.log("listening to courier location");
     socket.on("courierLocation", handleCourierLocation);
 
     return () => {
       socket.off("courierLocation", handleCourierLocation);
     };
-  }, [socket]);
+  }, [socket, connected]);
 
   // Room management functions with proper error handling
   const joinRoom = useCallback(
@@ -161,7 +168,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         console.warn("Cannot join room: Socket not connected");
         return;
       }
-
+      console.log("joining room " + roomId);
       socket.emit("join-room", { roomId }, (error: Error | null) => {
         if (error) {
           console.error("Error joining room:", error);

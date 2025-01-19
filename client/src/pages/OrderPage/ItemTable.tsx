@@ -13,7 +13,6 @@ interface TableDemoProps {
 }
 
 export const TableDemo: React.FC<TableDemoProps> = ({ items }) => {
-  console.log(items);
   return (
     <div className="overflow-x-auto">
       <Table style={{ direction: "rtl" }}>

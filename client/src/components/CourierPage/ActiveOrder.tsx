@@ -6,7 +6,7 @@ import { getActiveOrder, updateOrderStatus } from "@/services/orderService";
 import NextLocationCard from "./NextLocationCard";
 import Loading from "../Loading";
 import { useSocket } from "../context/socketContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface ActiveOrderProps {
   setIsDelivering: React.Dispatch<React.SetStateAction<Boolean>>;
@@ -25,6 +25,7 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
     queryKey: ["activeOrder"],
     queryFn: () => getActiveOrder(),
   });
+
   const mutation = useMutation({
     mutationFn: async ({
       orderId,
@@ -36,6 +37,11 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
       return await updateOrderStatus(orderId, status);
     },
   });
+
+  const [courierPosition, setCourierPosition] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
 
   const handleOrderStatusChange = (newStatus: string) => {
     if (!activeOrder) return;
@@ -62,6 +68,40 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
     );
   };
 
+  useEffect(() => {
+    const watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setCourierPosition({ latitude, longitude });
+      },
+      (error) => {
+        console.error("Error getting location: ", error);
+      }
+    );
+
+    return () => navigator.geolocation.clearWatch(watchId);
+  }, []);
+
+  useEffect(() => {
+    if (!socket || !connected || !courierPosition || !activeOrder) {
+      return;
+    }
+
+    joinRoom(activeOrder._id.toString());
+
+    return () => leaveRoom(activeOrder._id.toString());
+  }, [socket, connected, courierPosition, activeOrder]);
+
+  useEffect(() => {
+    if (!socket || !connected || !courierPosition || !activeOrder) {
+      return;
+    }
+    socket.emit("courierLocation", {
+      orderId: activeOrder._id,
+      location: courierPosition,
+    });
+  }, [courierPosition, socket, connected, activeOrder]);
+
   if (isLoading) return <Loading />;
   if (isError)
     return (
@@ -71,38 +111,6 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
       </div>
     );
   if (!activeOrder) return <Loading />;
-
-  // Watch the user's location and get updates
-  const courierPosition = navigator.geolocation.watchPosition(
-    (position) => {
-      console.log("Latitude: " + position.coords.latitude);
-      console.log("Longitude: " + position.coords.longitude);
-    },
-    (error) => {
-      console.error("Error getting location: ", error);
-    }
-  );
-
-  useEffect(() => {
-    if (!socket || !connected || !courierPosition) {
-      return;
-    }
-    joinRoom(activeOrder._id);
-
-    return () => leaveRoom(activeOrder._id);
-  }, [socket, connected]);
-
-  // Second useEffect just emits to that room
-  useEffect(() => {
-    if (!socket || !connected || !courierPosition) {
-      return;
-    }
-
-    socket.emit("courierLocation", {
-      orderId: activeOrder._id,
-      location: courierPosition,
-    });
-  }, [courierPosition, socket, connected, activeOrder._id]);
 
   return (
     <div className="p-4 space-y-4">
@@ -119,7 +127,7 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
               </span>
             </div>
 
-            {/* Next Location  */}
+            {/* Next Location */}
             {activeOrder.status === "Accepted" ? (
               <NextLocationCard
                 name={activeOrder.restaurant_id.name}
@@ -181,5 +189,4 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
     </div>
   );
 };
-
 export default ActiveOrder;
