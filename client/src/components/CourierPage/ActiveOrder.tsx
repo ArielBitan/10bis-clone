@@ -111,7 +111,6 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
       </div>
     );
   if (!activeOrder) return <Loading />;
-  console.log(activeOrder.order_items);
   return (
     <div className="p-4 space-y-4">
       <Card>

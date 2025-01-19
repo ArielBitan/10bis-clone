@@ -69,7 +69,6 @@ const Messages = ({ order }: MessagesProps) => {
       };
       socket.emit("message", messageData);
       setNewMessage("");
-      console.log(messageData);
     }
   };
 

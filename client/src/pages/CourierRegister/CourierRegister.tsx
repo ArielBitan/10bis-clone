@@ -15,7 +15,6 @@ const CourierRegister = () => {
     fetchUser();
   }, []);
   const navigate = useNavigate();
-  console.log(user);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,14 +22,6 @@ const CourierRegister = () => {
     if (user?._id)
       try {
         const response = await registerCourier(user?._id);
-        console.log(response);
-        // console.log(response?.response);
-
-        // if (response)
-        // setUser({
-        // response,
-        // });
-
         if (!response) {
           throw new Error("Failed to update user");
         }

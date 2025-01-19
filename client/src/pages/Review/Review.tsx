@@ -7,7 +7,6 @@ import { useUser } from "@/components/context/userContext";
 
 const Review = () => {
   const { id } = useParams<{ id: string }>();
-  console.log(id);
 
   const { user } = useUser();
   const userId = user?._id;
@@ -35,8 +34,6 @@ const Review = () => {
         rating: rating || 1,
         comment: formData.description,
       };
-
-      console.log(form);
 
       try {
         await createReview(form);

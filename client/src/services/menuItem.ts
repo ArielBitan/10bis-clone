@@ -5,7 +5,6 @@ export const createMenuItem = async (
   menuItem: IMenuItem
 ): Promise<IMenuItem> => {
   try {
-    console.log(menuItem);
     const { data } = await api.post<IMenuItem>("/items", menuItem, {
       headers: {
         "Content-Type": "multipart/form-data",

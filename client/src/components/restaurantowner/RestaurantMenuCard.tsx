@@ -18,14 +18,9 @@ const RestaurantMenuCard: React.FC<MenuItemCardProps> = ({
   let isRestOwner = false;
   if (user) {
     if ("owned_restaurants" in user) {
-      // console.log(user.owned_restaurants);
-      // console.log(item.restaurant_id);
-
       isRestOwner = user.owned_restaurants.some(
         (res) => res === item.restaurant_id
       );
-
-      // console.log("owner?" + isRestOwner);
     }
   }
 

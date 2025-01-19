@@ -10,12 +10,11 @@ interface ChatProps {
 
 const Chat: React.FC<ChatProps> = ({ order }) => {
   const { user } = useUser();
-  console.log(order);
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>{user?.role?("שוחח עם הלקוח"):("לצ'אט עם בית העסק")}</Button>
+        <Button>{user?.role ? "שוחח עם הלקוח" : "לצ'אט עם בית העסק"}</Button>
       </DialogTrigger>
       <DialogContent className="border-none sm:max-w-[700px] dialog-slide w-full max-h-[80vh] overflow-y-auto text-3xl text-center ">
         <div className="sticky top-0 z-10 bg-backgroundOrange ">

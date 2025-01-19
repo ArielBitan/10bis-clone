@@ -103,7 +103,6 @@ const EditRestaurant: React.FC = () => {
   ) => {
     setFormData((prev) => {
       const updatedHours = prev.weekly_hours.map((hour) => {
-        console.log(value);
         if (hour.day === day) {
           const [openTime, closeTime] = hour.time_ranges[0]?.split(" - ") || [
             "",
@@ -179,7 +178,6 @@ const EditRestaurant: React.FC = () => {
           time_ranges: hour.time_ranges.join(", "),
         })),
       };
-      console.log(submissionData.weekly_hours);
       const response = await updateRestaurant(ownedRestId, submissionData);
 
       if (!response) {
