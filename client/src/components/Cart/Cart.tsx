@@ -22,22 +22,30 @@ const Cart: React.FC<InfoCartProps> = ({
 }) => {
   const { user } = useUser();
   const [isLoading, setIsLoading] = useState(false);
+  const [specialInstructions, setSpecialInstructions] = useState<string>("");
   const userAddress = localStorage.getItem("userAddress");
+
   const handlePayment = async () => {
     if (!item._id) {
       return;
     }
     setIsLoading(true);
+
+    const specialInstructionsArray = specialInstructions
+      .split(",")
+      .map((str) => str.trim());
+    console.log(specialInstructions);
+
     const response = await createCheckoutSession(
       item._id,
       cartDetails,
-      userAddress as string
+      userAddress as string,
+      specialInstructionsArray
     );
     setIsLoading(false);
     window.location.href = response.url;
   };
 
-  // Calculate total price
   const totalPrice = cartDetails.reduce(
     (total, cartItem) => total + cartItem.price * cartItem.quantity,
     0
@@ -45,7 +53,6 @@ const Cart: React.FC<InfoCartProps> = ({
   const deliveryFee = parseFloat(item.delivery_fee as string) || 0;
   const totalSum = totalPrice + deliveryFee;
 
-  // Handle incrementing the quantity of an item
   const handleIncrement = (itemId: string) => {
     const updatedCart = cartDetails.map((cartItem) =>
       cartItem.id === itemId
@@ -59,7 +66,6 @@ const Cart: React.FC<InfoCartProps> = ({
     );
   };
 
-  // Handle decrementing the quantity of an item
   const handleDecrement = (itemId: string) => {
     const updatedCart = cartDetails
       .map((cartItem) =>
@@ -78,7 +84,6 @@ const Cart: React.FC<InfoCartProps> = ({
     );
   };
 
-  // Handle removing an item from the cart
   const handleRemoveItem = (itemId: string) => {
     const updatedCart = cartDetails.filter(
       (cartItem) => cartItem.id !== itemId
@@ -90,21 +95,14 @@ const Cart: React.FC<InfoCartProps> = ({
     );
   };
 
-  // useEffect(() => {
-  //   sessionStorage.setItem(
-  //     `cartDetails_${item._id}`,
-  //     JSON.stringify(cartDetails)
-  //   );
-  // }, [cartDetails]);
-
   return (
     <Dialog>
       <DialogTrigger className="font-bold bg-transparent">
-        <DialogTitle> מעבר לעגלה</DialogTitle>
+        <DialogTitle>מעבר לעגלה</DialogTitle>
       </DialogTrigger>
       <DialogContent className="border-none sm:max-w-[700px] dialog-slide w-full max-h-[80vh] overflow-y-auto text-3xl text-center">
-        <div className="p-3 flex justify-end items-center gap-4 bg-backgroundOrange text-white">
-          <h1 className="font-bold text-end text-base">{item.name}</h1>
+        <div className="flex items-center justify-end gap-4 p-3 text-white bg-backgroundOrange">
+          <h1 className="text-base font-bold text-end">{item.name}</h1>
           <img
             src={item.image as string}
             alt="logo"
@@ -125,7 +123,7 @@ const Cart: React.FC<InfoCartProps> = ({
             </div>
           ))}
 
-          <div className="text-lg mb-2">
+          <div className="mb-2 text-lg">
             <div className="flex justify-between">
               <span>{`₪${(Math.round(totalPrice * 10) / 10).toFixed(2)}`}</span>
               <div>סך מחיר הפריטים</div>
@@ -140,7 +138,27 @@ const Cart: React.FC<InfoCartProps> = ({
               <div>סך כל ההזמנה</div>
             </div>
           </div>
+
+          <div className="mb-4">
+            <label
+              htmlFor="specialInstructions"
+              className="block mb-2 text-sm font-medium text-gray-700"
+            >
+              הוראות מיוחדות
+            </label>
+            <textarea
+              id="specialInstructions"
+              name="specialInstructions"
+              rows={4}
+              value={specialInstructions}
+              onChange={(e) => setSpecialInstructions(e.target.value)}
+              className="w-full px-4 py-2 border rounded-md"
+              placeholder="הוראות מיוחדות..."
+              dir="rtl"
+            />
+          </div>
         </div>
+
         <button
           className={`w-full flex justify-center p-4 text-white font-bold text-lg cursor-pointer ${
             isLoading

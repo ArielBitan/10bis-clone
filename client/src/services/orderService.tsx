@@ -81,17 +81,14 @@ export const fetchOrdersByUser = async (userId: string): Promise<IOrder[]> => {
 export const createCheckoutSession = async (
   restaurantId: string,
   cartItems: CartItem[],
-  userAddress: string
+  userAddress: string,
+  specialInstructions: string[] 
 ) => {
-  try {
-    const { data } = await api.post(
-      "/orders/checkout/create-checkout-session",
-      { restaurantId, cartItems, userAddress }
-    );
-    return data;
-  } catch (error) {
-    throw error;
-  }
+  const { data } = await api.post(
+    "/orders/checkout/create-checkout-session",
+    { restaurantId, cartItems, userAddress, specialInstructions } 
+  );
+  return data;
 };
 
 // Function to fetch orders by rest

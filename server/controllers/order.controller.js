@@ -21,7 +21,10 @@ exports.createOrder = async (req, res) => {
 
 exports.createCheckoutSession = async (req, res) => {
   try {
+    console.log(req.body);
+    
     const checkoutSessionRequest = req.body;
+    
 
     const restaurant = await Restaurant.findById(
       checkoutSessionRequest.restaurantId
@@ -30,7 +33,7 @@ exports.createCheckoutSession = async (req, res) => {
     if (!restaurant) {
       throw new Error("Restaurant not found");
     }
-    // Create the order in your database after the session is created
+
     const orderData = {
       user_id: req.user._id,
       restaurant_id: restaurant._id,
@@ -42,7 +45,10 @@ exports.createCheckoutSession = async (req, res) => {
       status: "Pending",
       delivery_fee: restaurant.delivery_fee,
       payment_details: { method: "Card", amount: 0 },
+      special_instructions: checkoutSessionRequest.specialInstructions,
     };
+    // console.log(orderData);
+    
 
     const order = await orderService.createOrder(orderData);
 
@@ -71,6 +77,7 @@ exports.createCheckoutSession = async (req, res) => {
       title: "הזמנה חדשה",
       message: `הזמנה התקבלה ממשתמש - ${req.user._id}`,
     });
+
     res.json({ url: session.url });
   } catch (error) {
     res.status(500).json({ message: error.message });
