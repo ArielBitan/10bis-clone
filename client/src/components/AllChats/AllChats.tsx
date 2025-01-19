@@ -2,10 +2,14 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { IOrder } from "@/types/orderTypes";
 import { useEffect, useState } from "react";
 import { useUser } from "../context/userContext";
-import { fetchOrdersByUser } from "@/services/orderService";
+import {
+  fetchOrdersByRestaurant,
+  fetchOrdersByUser,
+} from "@/services/orderService";
 import Loading from "../Loading";
 import OneChat from "./OneChat";
-// import { IOrder } from "@/types/orderTypes";
+import { IRestaurantOwner } from "@/types/userType";
+
 const AllChats = () => {
   const { user } = useUser();
   const userId = user?._id;
@@ -16,9 +20,16 @@ const AllChats = () => {
   useEffect(() => {
     const getOrders = async () => {
       try {
-        if (userId) {
-          const fetchedOrders = await fetchOrdersByUser(userId);
+        if (user?.role === "restaurant_owner") {
+          const fetchedOrders = await fetchOrdersByRestaurant(
+            (user as IRestaurantOwner)?.owned_restaurants?.[0]
+          );
           setOrders(fetchedOrders);
+        } else {
+          if (userId) {
+            const fetchedOrders = await fetchOrdersByUser(userId);
+            setOrders(fetchedOrders);
+          }
         }
         setLoading(false);
       } catch (err: unknown) {
@@ -29,21 +40,20 @@ const AllChats = () => {
     };
 
     getOrders();
-  }, [userId]);
+  }, [userId, user]);
+
   if (loading) {
-    return (
-      <div>
-        <Loading />
-      </div>
-    );
+    return <Loading />;
   }
 
   if (error) {
     return <div>{error}</div>;
   }
 
-  console.log(orders);
-  
+  if (!user) {
+    return null;
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -60,16 +70,16 @@ const AllChats = () => {
           />
         </div>
       </DialogTrigger>
-      <DialogContent className="border-none sm:max-w-[400px] dialog-slide w-full max-h-[80vh] overflow-y-auto  ">
-        <div className="sticky top-0 z-10 bg-backgroundOrange ">
-          <div className="flex items-center justify-end gap-4 p-3 pb-0 text-white ">
+      <DialogContent className="border-none sm:max-w-[400px] dialog-slide w-full max-h-[80vh] overflow-y-auto">
+        <div className="sticky top-0 z-10 bg-backgroundOrange">
+          <div className="flex items-center justify-end gap-4 p-3 pb-0 text-white">
             <h1 className="p-4 text-3xl font-bold">כל הצ'אטים</h1>
           </div>
         </div>
         {orders.map((order) => (
-          <OneChat order={order} />
+          <OneChat key={order._id} order={order} />
         ))}
-      </DialogContent>{" "}
+      </DialogContent>
     </Dialog>
   );
 };

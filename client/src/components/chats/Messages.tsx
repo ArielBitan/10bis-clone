@@ -94,35 +94,36 @@ const Messages = ({ order }: MessagesProps) => {
       <div className="flex flex-col gap-4">
         {messages.length === 0 ? (
           <div className="font-semibold text-center text-orangePrimary">
-            אין עדיין הודעות, אנא המתן...
+            ...אין הודעות, שלח הודעה חדשה
           </div>
         ) : (
-          messages.map((message) => (
-            message.by !== "System" && (
-              <div
-                key={message._id}
-                className="flex flex-row-reverse gap-4 p-2 mb-2 border-b"
-              >
-                <div className="flex flex-col gap-2">
-                  <strong
-                    className={
-                      message.sender === userId || message.by === userId
-                        ? ""
-                        : "text-orangePrimary"
-                    }
-                  >
-                    :{getSenderLabel(message)}
-                  </strong>
-                  <div className="text-sm text-textBlackSecondary">
-                    {message.createdAt
-                      ? new Date(message.createdAt).toLocaleString()
-                      : new Date().toLocaleString()}{" "}
+          messages.map(
+            (message) =>
+              message.by !== "System" && (
+                <div
+                  key={message._id}
+                  className="flex flex-row-reverse gap-4 p-2 mb-2 border-b"
+                >
+                  <div className="flex flex-col gap-2">
+                    <strong
+                      className={
+                        message.sender === userId || message.by === userId
+                          ? ""
+                          : "text-orangePrimary"
+                      }
+                    >
+                      :{getSenderLabel(message)}
+                    </strong>
+                    <div className="text-sm text-textBlackSecondary">
+                      {message.createdAt
+                        ? new Date(message.createdAt).toLocaleString()
+                        : new Date().toLocaleString()}{" "}
+                    </div>
                   </div>
+                  <span className="text-base">{message.text}</span>
                 </div>
-                <span className="text-base">{message.text}</span>
-              </div>
-            )
-          ))
+              )
+          )
         )}
 
         {typingUser && <div className="text-sm text-gray-500">הקלד...</div>}
