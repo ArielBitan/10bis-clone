@@ -38,7 +38,11 @@ exports.getActiveOrder = async (courierId) => {
     })
       .populate("user_id")
       .populate("restaurant_id")
-      .populate("order_items");
+      .populate("courier_id")
+      .populate({
+        path: "order_items._id",
+        model: "MenuItem",
+      });
     return order;
   } catch (error) {
     throw new Error(`Error finding order: ${error.message}`);
@@ -52,7 +56,11 @@ exports.getOrdersByStatus = async (status) => {
     })
       .populate("user_id")
       .populate("restaurant_id")
-      .populate("order_items");
+      .populate("courier_id")
+      .populate({
+        path: "order_items._id",
+        model: "MenuItem",
+      });
     return orders;
   } catch (error) {
     throw new Error(

@@ -21,11 +21,7 @@ exports.createOrder = async (req, res) => {
 
 exports.createCheckoutSession = async (req, res) => {
   try {
-    console.log(req.body);
-    
     const checkoutSessionRequest = req.body;
-    
-
     const restaurant = await Restaurant.findById(
       checkoutSessionRequest.restaurantId
     );
@@ -47,8 +43,6 @@ exports.createCheckoutSession = async (req, res) => {
       payment_details: { method: "Card", amount: 0 },
       special_instructions: checkoutSessionRequest.specialInstructions,
     };
-    // console.log(orderData);
-    
 
     const order = await orderService.createOrder(orderData);
 
