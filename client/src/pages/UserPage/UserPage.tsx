@@ -1,3 +1,4 @@
+import ActiveOrderLink from "@/components/HomePage/ActiveOrderLink";
 import AllRestaurants from "@/components/HomePage/AllRestaurants";
 import CategoriesSection from "@/components/HomePage/CategoriesSection/CategoriesSection";
 import HeroSection from "@/components/HomePage/HeroSection";
@@ -8,7 +9,8 @@ import { useNavigate } from "react-router-dom";
 const UserPage = () => {
   const navigate = useNavigate();
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
-
+  const activeOrderId = localStorage.getItem("orderRoom");
+  console.log(activeOrderId);
   useEffect(() => {
     const userAddress = localStorage.getItem("userAddress");
     if (!userAddress) {
@@ -35,6 +37,7 @@ const UserPage = () => {
             onFilterChange={handleFilterChange}
           />
         </div>
+        {activeOrderId && <ActiveOrderLink orderId={activeOrderId} />}
       </div>
     </div>
   );

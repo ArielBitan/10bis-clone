@@ -111,7 +111,7 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
       </div>
     );
   if (!activeOrder) return <Loading />;
-
+  console.log(activeOrder.order_items);
   return (
     <div className="p-4 space-y-4">
       <Card>
@@ -149,9 +149,22 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
               <h3 className="font-medium">פריטי הזמנה:</h3>
               <ul className="text-sm text-gray-600">
                 {activeOrder.order_items.map((item, index) => (
-                  <li key={index} className="flex items-center gap-2">
-                    <Package className="w-4 h-4" />
-                    {item._id.name} - {item._id.price} ₪
+                  <li
+                    key={index}
+                    className="flex items-center justify-between p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Package className="w-5 h-5 text-gray-600" />
+                      <div>
+                        <span className="font-medium">{item._id.name}</span>
+                        <span className="text-gray-600 mr-2">
+                          {item.quantity}x
+                        </span>
+                      </div>
+                    </div>
+                    <div className="font-medium text-right">
+                      {(item._id.price * item.quantity).toFixed(2)} ₪
+                    </div>
                   </li>
                 ))}
               </ul>

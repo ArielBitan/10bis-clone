@@ -40,8 +40,7 @@ interface OrderStatus {
 
 const OrderPage = () => {
   const { id: orderId } = useParams();
-  const { socket, connected, joinRoom, leaveRoom } = useSocket();
-  const [isSubscribed, setIsSubscribed] = useState(false);
+  const { socket, connected, joinRoom } = useSocket();
   const { toast } = useToast();
 
   const {
@@ -90,31 +89,12 @@ const OrderPage = () => {
       });
       toast({ title: "הזמנתך עודכנה", description: statusMessage });
     };
-    const subscribeToUpdates = () => {
-      if (!isSubscribed) {
-        joinRoom(orderId);
-        localStorage.setItem("orderRoom", orderId);
 
-        setIsSubscribed(true);
-      }
-    };
+    joinRoom(orderId);
+    localStorage.setItem("orderRoom", orderId);
 
-    const unsubscribeFromUpdates = () => {
-      if (isSubscribed) {
-        leaveRoom(orderId);
-        localStorage.removeItem("orderRoom");
-        setIsSubscribed(false);
-      }
-    };
-
-    subscribeToUpdates();
     socket.on("order-update", handleOrderUpdate);
-
-    return () => {
-      socket.off("order-update", handleOrderUpdate);
-      unsubscribeFromUpdates();
-    };
-  }, [socket, connected, orderId, isSubscribed]);
+  }, [socket, connected, orderId]);
 
   useEffect(() => {
     if (order?.status) {
@@ -122,6 +102,9 @@ const OrderPage = () => {
         code: order.status,
         message: statusDetails[order.status].message,
       });
+      if (order.status === "Delivered") {
+        localStorage.removeItem("orderRoom");
+      }
     }
   }, [order]);
 

@@ -48,10 +48,6 @@ const AllRestaurants: React.FC<AllRestaurantsProps> = ({
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("cartDetail", JSON.stringify([]));
-  }, []);
-
-  useEffect(() => {
     if (data) {
       if (selectedFilters.length > 0) {
         const filtered = data.filter((restaurant: any) =>
