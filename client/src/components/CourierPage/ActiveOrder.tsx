@@ -15,8 +15,6 @@ interface ActiveOrderProps {
 const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
   const { socket, connected, joinRoom, leaveRoom } = useSocket();
   const queryClient = useQueryClient();
-  const userAddress = localStorage.getItem("userAddress");
-
   const {
     data: activeOrder,
     isLoading,
@@ -149,7 +147,7 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
             ) : (
               <NextLocationCard
                 name={`${activeOrder.user_id.first_name}  ${activeOrder.user_id.last_name}`}
-                address={userAddress as string}
+                address={activeOrder.userAddress}
                 phone={activeOrder.user_id.phone}
                 icon={User}
               />

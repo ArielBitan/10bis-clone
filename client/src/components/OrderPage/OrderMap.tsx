@@ -87,12 +87,13 @@ const OrderMap: React.FC<OrderMapProps> = ({
   }
   const mapWidth = screenWidth < 660 ? "85vw" : "40vw";
   const mapHeight = screenWidth < 660 ? "40vh" : "80vh";
+
   return (
     <APIProvider apiKey={API_KEY}>
       <Map
         style={{ width: mapWidth, height: mapHeight }}
         defaultCenter={{ lat, lng }}
-        defaultZoom={16}
+        defaultZoom={13}
         gestureHandling={"greedy"}
         disableDefaultUI={true}
         colorScheme="DARK"

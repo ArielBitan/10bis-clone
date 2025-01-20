@@ -125,11 +125,26 @@ const OrderPage = () => {
 
   const statusDetails: Record<string, { color: string; message: string }> = {
     "Awaiting Payment": { color: "text-red-500", message: "ממתין לתשלום" },
-    Pending: { color: "text-orange-500", message: "ממתין לאישור" },
-    Open: { color: "text-blue-500", message: "פתוח" },
-    Accepted: { color: "text-green-500", message: "התקבל" },
-    "Picked Up": { color: "text-purple-500", message: "נאסף" },
-    Delivered: { color: "text-green-700", message: "נמסר" },
+    Pending: {
+      color: "text-orange-500",
+      message: "הזמנתך נוצרה בהצלחה, אנא המתן לאישור המסעדה...",
+    },
+    Open: {
+      color: "text-blue-500",
+      message: "הזמנתך אושרה על ידי המסעדה. מחפשים שליח...",
+    },
+    Accepted: {
+      color: "text-green-500",
+      message: "השליח בדרך לאסוף את הזמנך...",
+    },
+    "Picked Up": {
+      color: "text-purple-500",
+      message: "הזמנתך נאספה ובדרך אליך",
+    },
+    Delivered: {
+      color: "text-green-700",
+      message: "ההזמנה נמסרה בהצלחה, בתאבון!",
+    },
   };
 
   const statusInfo = statusDetails[orderStatus.code] || {
