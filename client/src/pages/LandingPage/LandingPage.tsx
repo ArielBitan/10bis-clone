@@ -3,7 +3,6 @@ import FirstContent from "../../components/LandingPage/FirstContent";
 import ThirdContent from "@/components/LandingPage/ThirdContent";
 import Fourth from "@/components/LandingPage/Fourth";
 import LogInModal from "@/components/LandingPage/modals/LoginModal.tsx";
-import Footer from "@/components/layout/footer";
 import { useUser } from "@/components/context/userContext";
 import { useEffect } from "react";
 import { UserIcon } from "lucide-react";
@@ -104,7 +103,6 @@ const LandingPage = () => {
         </div>
       </div>
       <Fourth />
-      <Footer />
     </div>
   );
 };
