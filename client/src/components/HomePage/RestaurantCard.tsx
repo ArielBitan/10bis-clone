@@ -16,7 +16,7 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({ item }) => {
   return (
     <div
       onClick={() => navigateToDetails(item._id as string)}
-      className="sm:w-[302px] max-w-[525px] w-full mb-4 border shadow-lg flex flex-col rounded-xl overflow-hidden"
+      className="sm:w-[302px] max-w-[525px] w-full mb-4 border shadow-lg flex flex-col rounded-xl overflow-hidden hover:cursor-pointer"
     >
       <div className="h-[165px] w-full">
         <img

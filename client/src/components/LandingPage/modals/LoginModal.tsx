@@ -24,7 +24,7 @@ const LogInModal = ({ rolee, isHomePage }: LogInModalProps) => {
         onClick={() => setDialogOpen(true)}
       >
         {isHomePage ? (
-          <div>כניסה</div>
+          <div className="text-white">כניסה</div>
         ) : rolee === "signup" ? (
           <Button className="w-[100%] max-w-[700px] text-3xl my-10 p-7 md:text-3xl lg:text-4xl">
             לפרטים נוספים

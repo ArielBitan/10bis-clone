@@ -1,20 +1,22 @@
 import { useState } from "react";
 import { categories } from "../../../../data/categories.json";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import { useRestaurantContext } from "@/components/context/restaurantContext";
+import Loading from "@/components/Loading";
 
-interface FoodTypesProps {
-  onFilterClick: (name: string) => void;
-  setSelectedCategory: (category: string) => void;
-}
-
-const FoodTypes: React.FC<FoodTypesProps> = ({
-  onFilterClick,
-  setSelectedCategory,
-}) => {
+const FoodTypes = () => {
   const [showOverflow, setShowOverflow] = useState(false);
-  const [selectedCategory, setLocalSelectedCategory] = useState<
-    string | undefined
-  >(undefined);
+
+  const {
+    filterRestaurants,
+    restaurants,
+    setFilteredRestaurants,
+    availableCategories,
+    selectedCategory,
+    setSelectedCategory,
+    isLoading,
+    isError,
+  } = useRestaurantContext();
 
   const toggleOverflow = () => {
     setShowOverflow(!showOverflow);
@@ -22,11 +24,17 @@ const FoodTypes: React.FC<FoodTypesProps> = ({
 
   const handleOnclick = (name: string) => {
     const newCategory = selectedCategory === name ? undefined : name;
-
-    setLocalSelectedCategory(newCategory);
-    setSelectedCategory(newCategory || "");
-    onFilterClick(newCategory || "");
+    if (!newCategory) {
+      setSelectedCategory(undefined);
+      setFilteredRestaurants(restaurants);
+      return;
+    }
+    setSelectedCategory(newCategory);
+    filterRestaurants(newCategory);
   };
+
+  if (isLoading) return <Loading />;
+  if (isError) return <div>Error loading data.</div>;
 
   return (
     <>
@@ -40,7 +48,6 @@ const FoodTypes: React.FC<FoodTypesProps> = ({
           <button
             onClick={() => {
               setSelectedCategory("");
-              setLocalSelectedCategory("");
             }}
             className={`text-sm ${
               selectedCategory
@@ -52,35 +59,41 @@ const FoodTypes: React.FC<FoodTypesProps> = ({
           </button>
         </div>
         <div className="flex overflow-x-auto categories-scroll w-screen lg:grid lg:grid-cols-3  lg:mb-8 lg:max-w-[300px] lg:overflow-y-auto">
-          {categories.map((category) => (
-            <div
-              key={category.id}
-              onClick={() => handleOnclick(category.name)}
-              className={`flex flex-col items-center text-center hover:cursor-pointer group p-2
-             ${
-               selectedCategory === category.name
-                 ? "opacity-100"
-                 : selectedCategory
-                 ? "opacity-50"
-                 : ""
-             }`}
-            >
-              <img
-                src={category.imageSrc}
-                alt={category.name}
-                className="w-10 h-10 group-hover:bg-gray-200/95 rounded-full transition-colors duration-500"
-              />
-              <span
-                className={`text-sm mt-1.5 ${
-                  selectedCategory === category.name
-                    ? "text-orange-500 font-bold"
-                    : ""
-                }`}
+          {categories.map((category) => {
+            const isAvailable = availableCategories.includes(category.name);
+            return (
+              <div
+                key={category.id}
+                onClick={() => isAvailable && handleOnclick(category.name)}
+                className={`flex flex-col items-center text-center hover:cursor-pointer group p-2
+               ${
+                 selectedCategory === category.name
+                   ? "opacity-100"
+                   : selectedCategory
+                   ? "opacity-50"
+                   : ""
+               }
+               ${isAvailable ? "" : "opacity-30 hover:cursor-default"}`}
               >
-                {category.name}
-              </span>
-            </div>
-          ))}
+                <img
+                  src={category.imageSrc}
+                  alt={category.name}
+                  className={`w-10 h-10 rounded-full transition-colors duration-500 ${
+                    isAvailable ? "group-hover:bg-gray-200/95" : "grayscale"
+                  }`}
+                />
+                <span
+                  className={`text-sm mt-1.5 ${
+                    selectedCategory === category.name
+                      ? "text-orange-500 font-bold"
+                      : ""
+                  } ${isAvailable ? "" : "text-gray-400"}`}
+                >
+                  {category.name}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
       <div className="sticky pt-4 lg:flex items-center justify-center hidden">

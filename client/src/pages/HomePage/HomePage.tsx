@@ -6,6 +6,7 @@ import { useUser } from "@/components/context/userContext";
 import { useEffect } from "react";
 import UserPage from "../UserPage/UserPage";
 import AllChats from "@/components/AllChats/AllChats";
+import { RestaurantProvider } from "@/components/context/restaurantContext";
 
 const HomePage = () => {
   const { user, fetchUser } = useUser();
@@ -26,10 +27,14 @@ const HomePage = () => {
         ) : role === "courier" ? (
           <CourierPage />
         ) : (
-          <UserPage />
+          <RestaurantProvider>
+            <UserPage />
+          </RestaurantProvider>
         )
       ) : (
-        <UserPage />
+        <RestaurantProvider>
+          <UserPage />
+        </RestaurantProvider>
       )}
       <AllChats />
     </div>

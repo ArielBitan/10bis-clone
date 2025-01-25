@@ -1,15 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { fetchAllRestaurants } from "@/services/restaurantService";
+import { useState, useEffect } from "react";
 import Loading from "../Loading";
 import RestaurantCard from "./RestaurantCard";
-// import RestaurantCarousel from "./CategoriesSection/RestaurantCarousel";
-
-interface AllRestaurantsProps {
-  selectedFilters: string[];
-  setSelectedFilters: React.Dispatch<React.SetStateAction<string[]>>;
-  onFilterChange: (filters: string[]) => void;
-}
+import { useRestaurantContext } from "../context/restaurantContext";
 
 const shuffleArray = (array: any[]) => {
   for (let i = array.length - 1; i > 0; i--) {
@@ -18,29 +10,22 @@ const shuffleArray = (array: any[]) => {
   }
 };
 
-const AllRestaurants: React.FC<AllRestaurantsProps> = ({
-  selectedFilters,
-  onFilterChange,
-}) => {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["restaurants"],
-    queryFn: fetchAllRestaurants,
-  });
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+const AllRestaurants = () => {
+  const {
+    filteredRestaurants,
+    isLoading,
+    isError,
+    filterRestaurants,
+    selectedCategory,
+  } = useRestaurantContext();
 
-  const [filteredRestaurants, setFilteredRestaurants] = useState<any[]>([]);
-  const [groupedRestaurants, setGroupedRestaurants] = useState<
-    Record<string, any[]>
-  >({});
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [randomCategories, setRandomCategories] = useState<[string, any[]][]>(
     []
   );
 
   useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-
+    const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
 
     return () => {
@@ -49,84 +34,52 @@ const AllRestaurants: React.FC<AllRestaurantsProps> = ({
   }, []);
 
   useEffect(() => {
-    if (data) {
-      if (selectedFilters.length > 0) {
-        const filtered = data.filter((restaurant: any) =>
-          selectedFilters.every((filter) =>
-            restaurant.cuisine_types.includes(filter)
-          )
-        );
-        setFilteredRestaurants(filtered);
-      } else {
-        const grouped = data.reduce(
-          (acc: Record<string, any[]>, restaurant: any) => {
-            restaurant.cuisine_types.forEach((type: string) => {
-              if (!acc[type]) acc[type] = [];
-              acc[type].push(restaurant);
-            });
-            return acc;
-          },
-          {}
-        );
-        setGroupedRestaurants(grouped);
+    if (filteredRestaurants.length > 0) {
+      const grouped = filteredRestaurants.reduce(
+        (acc: Record<string, any[]>, restaurant: any) => {
+          restaurant.cuisine_types.forEach((type: string) => {
+            if (!acc[type]) acc[type] = [];
+            acc[type].push(restaurant);
+          });
+          return acc;
+        },
+        {}
+      );
 
-        const categoriesWithMoreThan12 = Object.entries(grouped).filter(
-          ([, restaurants]) => restaurants.length > 12
-        );
-        shuffleArray(categoriesWithMoreThan12);
-        setRandomCategories(categoriesWithMoreThan12.slice(0, 5));
-      }
+      // Select random categories with more than 12 restaurants
+      const categoriesWithMoreThan12 = Object.entries(grouped).filter(
+        ([category, restaurants]) =>
+          restaurants.length > 12 && category !== selectedCategory
+      );
+
+      shuffleArray(categoriesWithMoreThan12);
+      setRandomCategories(categoriesWithMoreThan12.slice(0, 5));
     }
-  }, [data, selectedFilters]);
+  }, [filteredRestaurants, selectedCategory]);
 
   if (isLoading) return <Loading />;
-  if (isError)
-    return (
-      <div>
-        Error loading
-        <Loading />
-      </div>
-    );
-  if (!data) return <div>No data available</div>;
-
-  const handleCategoryFilter = (category: string) => {
-    // Apply the filter when the "View All" button is clicked for a specific category
-    onFilterChange([category]);
-  };
+  if (isError) return <div>Error loading data.</div>;
 
   const getCardsPerCategory = () => {
-    if (windowWidth >= 1024) {
-      return 3; // Large screens (lg)
-    } else if (windowWidth >= 768) {
-      return 2; // Medium screens (md)
-    } else {
-      return 1; // Mobile screens
-    }
+    if (windowWidth >= 1024) return 3; // Large screens (lg)
+    if (windowWidth >= 768) return 2; // Medium screens (md)
+    return 1; // Mobile screens
+  };
+
+  const handleCategoryFilter = (category: string) => {
+    filterRestaurants(category);
   };
 
   return (
     <div>
-      {selectedFilters.length > 0 ? (
-        // Render filtered restaurants
-        <div>
-          <h2 className="text-2xl font-bold mb-4 mx-4">
-            {selectedFilters.join(", ")}
-          </h2>
-          <div className="grid justify-start grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-2 gap-x-4">
-            {filteredRestaurants.map((restaurant) => (
-              <RestaurantCard key={restaurant._id} item={restaurant} />
-            ))}
-          </div>
-        </div>
-      ) : (
-        // Render grouped categories (first 5 as carousels, the rest as regular grids)
+      {filteredRestaurants.length > 0 && (
         <>
           {randomCategories.map(([category, restaurants]) => (
             <div key={category} className="mb-8 relative">
               <h2 className="text-2xl font-bold mb-4">{category}</h2>
               <button
                 onClick={() => handleCategoryFilter(category)}
-                className=" absolute top-0 left-0 p-2 bg-white rounded-full shadow-md h-10 w-16 border border-slate-400"
+                className="absolute top-0 left-0 p-2 bg-white rounded-full shadow-md h-10 w-16 border border-slate-400"
               >
                 עוד
               </button>
@@ -139,31 +92,17 @@ const AllRestaurants: React.FC<AllRestaurantsProps> = ({
               </div>
             </div>
           ))}
-          {Object.entries(groupedRestaurants)
-            .filter(
-              ([category]) =>
-                !randomCategories.some(
-                  ([randomCategory]) => randomCategory === category
-                )
-            )
-            .map(([category, restaurants]) => {
-              // Apply filtering to the remaining categories
-              const filteredRestaurants = restaurants.filter((restaurant) =>
-                selectedFilters.every((filter) =>
-                  restaurant.cuisine_types.includes(filter)
-                )
-              );
-              return (
-                <div key={category} className="mb-8">
-                  <h2 className="text-2xl font-bold mb-4">{category}</h2>
-                  <div className="grid justify-start grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-2 gap-x-4">
-                    {filteredRestaurants.map((restaurant) => (
-                      <RestaurantCard key={restaurant._id} item={restaurant} />
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
+
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold mb-4">
+              {selectedCategory || "כל המסעדות"}
+            </h2>
+            <div className="grid justify-start grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-2 gap-x-4">
+              {filteredRestaurants.map((restaurant) => (
+                <RestaurantCard key={restaurant._id} item={restaurant} />
+              ))}
+            </div>
+          </div>
         </>
       )}
     </div>

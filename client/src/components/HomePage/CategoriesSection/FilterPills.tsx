@@ -1,11 +1,4 @@
-interface FilterPillsProps {
-  selectedCategory: string | undefined;
-  onFilterClick: (filter: string) => void;
-}
-const FilterPills: React.FC<FilterPillsProps> = ({
-  selectedCategory,
-  onFilterClick,
-}) => {
+const FilterPills = () => {
   const filters = [
     "משלוח חינם",
     "משלוח תן ביס",
@@ -24,13 +17,8 @@ const FilterPills: React.FC<FilterPillsProps> = ({
       <div className="flex flex-wrap gap-2">
         {filters.map((filter, index) => (
           <div
-            onClick={() => onFilterClick(filter)}
             key={index}
-            className={`px-2 py-1 rounded-full text-sm border cursor-pointer ${
-              selectedCategory?.includes(filter)
-                ? "bg-backgroundOrange text-white"
-                : "bg-gray-100 text-gray-800"
-            }`}
+            className={`px-2 py-1 rounded-full text-sm border cursor-pointer bg-gray-100 text-gray-800`}
           >
             {filter}
           </div>
