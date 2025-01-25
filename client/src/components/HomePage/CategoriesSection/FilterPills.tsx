@@ -1,9 +1,9 @@
 interface FilterPillsProps {
-  selectedFilters: string[];
+  selectedCategory: string | undefined;
   onFilterClick: (filter: string) => void;
 }
 const FilterPills: React.FC<FilterPillsProps> = ({
-  selectedFilters,
+  selectedCategory,
   onFilterClick,
 }) => {
   const filters = [
@@ -27,7 +27,7 @@ const FilterPills: React.FC<FilterPillsProps> = ({
             onClick={() => onFilterClick(filter)}
             key={index}
             className={`px-2 py-1 rounded-full text-sm border cursor-pointer ${
-              selectedFilters.includes(filter)
+              selectedCategory?.includes(filter)
                 ? "bg-backgroundOrange text-white"
                 : "bg-gray-100 text-gray-800"
             }`}

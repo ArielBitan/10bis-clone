@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { IoIosArrowDown } from "react-icons/io";
 import UserMenu from "./UserMenu";
 import { useUser } from "../context/userContext";
 import Search from "./Search";
@@ -12,9 +11,9 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 px-6 border-b shadow-sm bg-backgroundOrange text-foreground border-border sm:px-6 md:px-6 lg:px-32">
-        <div>
-          <div className="flex items-center justify-between py-3">
+      <nav className="sticky top-0 z-50 px-6 border-b shadow-sm bg-backgroundOrange text-foreground border-border sm:px-6 md:px-6">
+        <div className="lg:max-w-[1250px] mx-auto">
+          <div className="flex items-center justify-between py-4">
             <Link
               to="/home"
               className="flex items-center justify-center space-x-1 transition-transform duration-300 hover:scale-110"
@@ -57,8 +56,8 @@ const Navbar = () => {
                   >
                     ניהול הזמנות
                   </Link>
-                </div>{" "}
-              </div>{" "}
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -66,17 +65,10 @@ const Navbar = () => {
       {role === "restaurant_owner" ? (
         <div></div>
       ) : (
-        <div className="px-6 bg-white shadow-lg sm:px-6 md:px-6 lg:px-24">
-          <div className="flex flex-wrap items-center justify-between gap-2 sm:px-6 md:px-6 lg:px-10">
+        <div className="px-6 bg-white shadow-sm sm:px-6 md:px-6">
+          <div className="max-w-[1330px] mx-auto flex flex-wrap items-center gap-6 sm:px-6 md:px-6 lg:px-10">
             <AddressDropdown />
             <Search />
-
-            <div className="w-full my-4 sm:w-full md:w-full lg:w-auto">
-              <button className="flex items-center w-full h-8 px-2 border border-gray-300 hover:border-gray-500 sm:w-full md:w-full lg:w-auto">
-                <div className="p-2 "> הזמנה חוזרת</div>
-                <IoIosArrowDown />
-              </button>
-            </div>
           </div>
         </div>
       )}

@@ -27,7 +27,7 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <div className=" relative flex flex-col w-full max-w-[955px] h-64 col-span-4 row-start-1 mb-8 overflow-hidden">
+    <div className=" relative flex flex-col w-full max-w-[955px] h-[21rem] col-span-4 row-start-1 mb-8 overflow-hidden rounded-2xl">
       <AnimatePresence>
         {slides.map((slide, index) =>
           index === currentSlide ? (
@@ -39,22 +39,15 @@ const HeroSection = () => {
               exit={{ opacity: 0 }}
               transition={{ duration: 1 }}
             >
-              <div className="relative flex flex-col-reverse lg:flex-row">
-                <div
-                  className={`flex-1`}
-                  style={{
-                    backgroundImage: `url(${slide.image})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                  }}
-                >
+              <div className="relative flex flex-col-reverse lg:flex-row shadow-sm rounded-2xl">
+                <div className="flex-2 lg:w-3/5">
                   <img
                     src={slide.image}
                     alt={slide.title}
-                    className="object-cover w-full h-full md:w-full lg:w-full xl:w-full"
+                    className="object-cover w-full h-full rounded-br-2xl"
                   />
                 </div>
-                <div className="flex flex-col justify-center flex-1 p-8 bg-white bg-opacity-75">
+                <div className="flex-1 lg:w-1/3 flex flex-col justify-center p-8 bg-white bg-opacity-75 h-72 rounded-2xl">
                   <h2 className="mb-4 text-3xl font-bold text-right">
                     {slide.title}
                   </h2>
@@ -80,12 +73,12 @@ const HeroSection = () => {
         )}
       </AnimatePresence>
 
-      <div className="absolute flex justify-center gap-2 transform -translate-x-1/2 bottom-2 left-1/2">
+      <div className="absolute flex justify-center gap-2 transform -translate-x-1/2 bottom-4 left-1/2">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+            className={`w-2 h-2 rounded-full transition-all duration-300 ${
               currentSlide === index ? "bg-black" : "bg-gray-400"
             }`}
           />

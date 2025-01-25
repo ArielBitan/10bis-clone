@@ -55,8 +55,8 @@ const Search = () => {
   };
 
   return (
-    <div className="relative flex flex-col w-full sm:w-full md:w-full lg:w-auto">
-      <div className="flex items-center w-full h-8 gap-2 px-2 border border-gray-300 rounded-md hover:border-gray-500">
+    <div className="relative flex flex-col w-full sm:w-full md:w-full lg:w-[300px]">
+      <div className="flex items-center w-full h-8 gap-2 px-2 border border-gray-300 hover:border-gray-500">
         <FiSearch className="hover:cursor-pointer" />
         <input
           type="text"

@@ -10,7 +10,7 @@ const UserPage = () => {
   const navigate = useNavigate();
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const activeOrderId = localStorage.getItem("orderRoom");
-  console.log(activeOrderId);
+
   useEffect(() => {
     const userAddress = localStorage.getItem("userAddress");
     if (!userAddress) {
@@ -23,13 +23,13 @@ const UserPage = () => {
   };
 
   return (
-    <div className="bg-gray-100">
+    <div className="bg-white">
       <Navbar />
-      <div className="flex lg:justify-center items-center lg:items-start lg:flex-row gap-4 pt-4 flex-col">
+      <div className="flex lg:justify-center items-center lg:items-start lg:flex-row gap-4 pt-4 flex-col lg:max-w-[1250px] mx-auto">
         <div className="lg:sticky lg:top-20 ">
           <CategoriesSection onFilterChange={handleFilterChange} />
         </div>
-        <div className="flex flex-col  gap-4 lg:max-w-[955px] ">
+        <div className="flex flex-col  gap-4 lg:max-w-[955px]">
           <HeroSection />
           <AllRestaurants
             selectedFilters={selectedFilters}

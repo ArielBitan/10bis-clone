@@ -14,7 +14,7 @@ interface AllRestaurantsProps {
 const shuffleArray = (array: any[]) => {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+    [array[i], array[j]] = [array[j], array[i]];
   }
 };
 
@@ -35,6 +35,7 @@ const AllRestaurants: React.FC<AllRestaurantsProps> = ({
   const [randomCategories, setRandomCategories] = useState<[string, any[]][]>(
     []
   );
+
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -104,7 +105,7 @@ const AllRestaurants: React.FC<AllRestaurantsProps> = ({
   };
 
   return (
-    <div className="w-max col-span-4 row-start-2">
+    <div>
       {selectedFilters.length > 0 ? (
         // Render filtered restaurants
         <div>
