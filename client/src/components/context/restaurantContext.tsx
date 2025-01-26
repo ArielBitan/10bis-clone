@@ -13,10 +13,12 @@ interface RestaurantContextType {
   restaurants: IRestaurant[];
   filteredRestaurants: IRestaurant[];
   isLoading: boolean;
+  isSuccess: boolean;
   isError: boolean;
   setFilteredRestaurants: (restaurants: IRestaurant[]) => void;
   setSelectedCategory: (category: string | undefined) => void;
   filterRestaurants: (filter: string) => void;
+  refetchRestaurants: () => void;
   availableCategories: string[];
   selectedCategory: string | undefined;
 }
@@ -31,6 +33,7 @@ export const RestaurantProvider = ({ children }: { children: ReactNode }) => {
     isLoading,
     isError,
     isSuccess,
+    refetch,
   } = useQuery({
     queryKey: ["restaurants"],
     queryFn: fetchAllRestaurants,
@@ -41,14 +44,16 @@ export const RestaurantProvider = ({ children }: { children: ReactNode }) => {
     []
   );
   const [selectedCategory, setSelectedCategory] = useState<string>();
-
   useEffect(() => {
-    if (!isSuccess) {
-      return;
+    if (isSuccess && restaurants.length > 0) {
+      setFilteredRestaurants(restaurants);
+      getAvailableCategories();
     }
-    setFilteredRestaurants(restaurants);
-    getAvailableCategories();
-  }, [isSuccess]);
+  }, [isSuccess, restaurants]);
+
+  const refetchRestaurants = () => {
+    refetch();
+  };
 
   const filterRestaurants = (filter: string) => {
     const filtered = restaurants.filter((r) =>
@@ -75,7 +80,9 @@ export const RestaurantProvider = ({ children }: { children: ReactNode }) => {
         availableCategories,
         setSelectedCategory,
         selectedCategory,
+        isSuccess,
         filterRestaurants,
+        refetchRestaurants,
         filteredRestaurants,
         isLoading,
         isError,

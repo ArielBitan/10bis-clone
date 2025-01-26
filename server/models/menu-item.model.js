@@ -15,6 +15,18 @@ const menuItemSchema = new mongoose.Schema(
       required: true,
       min: [0, "Price must be a positive number"],
     },
+    options: [
+      {
+        name: { type: String },
+        type: { type: String, enum: ["single", "multiple"] },
+        values: [
+          {
+            value: { type: String },
+            additionalPrice: { type: Number, default: 0 },
+          },
+        ],
+      },
+    ],
     available: { type: Boolean, default: true },
     category: { type: String },
   },

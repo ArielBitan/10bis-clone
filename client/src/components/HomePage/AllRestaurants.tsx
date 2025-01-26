@@ -13,6 +13,7 @@ const shuffleArray = (array: any[]) => {
 const AllRestaurants = () => {
   const {
     filteredRestaurants,
+    isSuccess,
     isLoading,
     isError,
     filterRestaurants,
@@ -55,7 +56,7 @@ const AllRestaurants = () => {
       shuffleArray(categoriesWithMoreThan12);
       setRandomCategories(categoriesWithMoreThan12.slice(0, 5));
     }
-  }, [filteredRestaurants, selectedCategory]);
+  }, [isSuccess, selectedCategory, isLoading]);
 
   if (isLoading) return <Loading />;
   if (isError) return <div>Error loading data.</div>;

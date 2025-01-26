@@ -9,18 +9,18 @@ import { MdPlace } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
 import { Button } from "../ui/button";
 import PlacesAutocomplete from "../LandingPage/PlacesAutocomplete";
-import { useQueryClient } from "@tanstack/react-query";
+import { useRestaurantContext } from "../context/restaurantContext";
 
 export default function AddressDropdown() {
   const [isOpen, setIsOpen] = useState(false);
-  const queryClient = useQueryClient();
   const [selected, setSelected] = useState("delivery");
   const [isEditingAddress, setIsEditingAddress] = useState(false); // Track if editing a new address
   const userAddress = localStorage.getItem("userAddress");
+  const { refetchRestaurants } = useRestaurantContext();
 
   const onSelect = () => {
     setIsEditingAddress(false);
-    queryClient.refetchQueries({ queryKey: ["restaurants"] }); // Close the editing mode
+    refetchRestaurants();
   };
 
   const handleEditClick = (e: React.MouseEvent) => {
