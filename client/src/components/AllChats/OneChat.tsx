@@ -34,7 +34,7 @@ const OneChat: React.FC<OneChatProps> = ({ order }) => {
           </h3>
         ) : (
           <h3 className="text-lg font-medium text-orange-500">
-            {order.user_id.full_name}
+            {order?.user_id?.full_name || " "}
           </h3>
         )}
 

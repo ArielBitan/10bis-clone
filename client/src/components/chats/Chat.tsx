@@ -29,9 +29,9 @@ const Chat: React.FC<ChatProps> = ({ order }) => {
             />
           </div>
           <h2 className="mr-20 text-base text-right text-textBlackSecondary">
-            {user?._id === order.user_id._id
+            {user?._id === order?.user_id?._id
               ? " שוחח עם נציג המסעדה"
-              : `אתה משוחח עם ${order.user_id.full_name}`}
+              : `אתה משוחח עם ${order?.user_id?.full_name || " "}`}
           </h2>
         </div>
         <Messages order={order} />
