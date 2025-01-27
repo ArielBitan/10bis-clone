@@ -43,6 +43,17 @@ export const updateUserProfile = async (
   }
 };
 
+export const searchUserByEmail = async (email: string): Promise<IUser[]> => {
+  try {
+    console.log(email);
+    const { data } = await api.post<IUser[]>("/users/search/email", { email });
+    return data;
+  } catch (error) {
+    console.error("Error finding users:", error);
+    throw error;
+  }
+};
+
 // Function to create a new restaurant owner user
 export const createRestaurantOwner = async (
   restaurantOwnerData: IRestaurantOwnerForm

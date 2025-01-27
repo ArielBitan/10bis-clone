@@ -41,6 +41,17 @@ const userService = {
     return { token, user: userWithoutPassword };
   },
 
+  searchUserByEmail: async (email) => {
+    try {
+      const users = await User.find({
+        email: { $regex: `^${email}`, $options: "i" },
+      });
+      return users;
+    } catch (error) {
+      throw new Error("Error searching for users");
+    }
+  },
+
   getAllUsers: async () => {
     const users = await User.find().select("-password");
     return users;

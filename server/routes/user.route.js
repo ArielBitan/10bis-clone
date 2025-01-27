@@ -22,6 +22,9 @@ router.put("/profile", authenticateUser, userController.updateProfile);
 // Route for creating a new courier user
 router.post("/register/courier", userController.createCourier);
 
+// Route for searching a user by email
+router.post("/search/email", userController.searchUserByEmail);
+
 // Route for creating a new restaurant owner user
 router.post("/register/restaurant-owner", userController.createRestaurantOwner);
 

@@ -15,6 +15,7 @@ import Charges from "./pages/Charges/Charges";
 import Review from "./pages/Review/Review";
 import AllChats from "./components/AllChats/AllChats";
 import CourierSalary from "./pages/CourierSalary/CourierSalary";
+import CompanyPage from "./pages/CompanyPage/CompanyPage";
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -32,6 +33,7 @@ const App: React.FC = () => {
         <Route path="/menu-edit" element={<MenuEdit />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/charges-report" element={<Charges />} />
+        <Route path="/company/:id" element={<CompanyPage />} />
         <Route path="/courier-salary" element={<CourierSalary />} />
         <Route
           path="/restaurant-order-management"

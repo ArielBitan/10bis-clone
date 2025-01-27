@@ -61,9 +61,11 @@ const restaurantOwnerSchema = new mongoose.Schema({
   ],
 });
 
-const businessOwnerSchema = new mongoose.Schema({
-  owned_companies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Company" }],
+const employeeSchema = new mongoose.Schema({
+  amount: { type: Number, default: 0 },
 });
+
+const businessOwnerSchema = new mongoose.Schema();
 
 baseUserSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
@@ -72,6 +74,7 @@ baseUserSchema.pre("save", async function (next) {
   next();
 });
 
+const Employee = User.discriminator("employee", employeeSchema);
 const Courier = User.discriminator("courier", courierSchema);
 const RestaurantOwner = User.discriminator(
   "restaurant_owner",
@@ -79,4 +82,4 @@ const RestaurantOwner = User.discriminator(
 );
 const BusinessOwner = User.discriminator("business_owner", businessOwnerSchema);
 
-module.exports = { User, Courier, RestaurantOwner, BusinessOwner };
+module.exports = { User, Courier, RestaurantOwner, BusinessOwner, Employee };

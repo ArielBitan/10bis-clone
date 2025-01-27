@@ -134,18 +134,30 @@ exports.createRestaurantOwner = async (req, res) => {
   }
 };
 
+exports.searchUserByEmail = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const users = await userService.searchUserByEmail(email);
+    if (users.length === 0) {
+      res.status(401).json({ message: "לא נמצאו משתמשים" });
+      return;
+    }
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
 // Create Business Owner user
 exports.createBusinessOwner = async (req, res) => {
   try {
-    const { email, password, first_name, last_name, phone, owned_companies } =
-      req.body;
+    const { email, password, first_name, last_name, phone } = req.body;
     const newBusinessOwner = await userService.createBusinessOwner({
       email,
       password,
       first_name,
       last_name,
       phone,
-      owned_companies,
     });
     res.status(201).json(newBusinessOwner);
   } catch (error) {
