@@ -32,3 +32,5 @@ cloudinary.config({
 });
 
 initializeServer();
+
+// scrapeData();

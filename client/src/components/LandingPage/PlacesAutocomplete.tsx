@@ -26,14 +26,14 @@ const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
   };
 
   return (
-    <div className="w-full bg-white flex items-center p-2 rounded-lg shadow-md">
+    <div className="w-full bg-white flex items-center rounded-lg shadow-md">
       <FaSearch className="text-xl mr-4 text-gray-500" />
       <div className="w-full">
         <GooglePlacesAutocomplete
           apiKey={import.meta.env.VITE_MAPS_API_KEY}
           selectProps={{
-            placeholder: "Enter an address...",
             onChange: handleSelect,
+            placeholder: "לאן לשלוח את האוכל ?",
             styles: {
               input: (provided) => ({
                 ...provided,
@@ -48,13 +48,32 @@ const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
                 ...provided,
                 color: "blue",
               }),
+              control: (provided) => ({
+                ...provided,
+                border: "none", // Remove border
+                boxShadow: "none", // Remove focus border
+                backgroundColor: "transparent", // Optional: make it transparent
+              }),
+              dropdownIndicator: (provided) => ({
+                ...provided,
+                display: "none", // Remove the dropdown arrow
+              }),
+              indicatorSeparator: () => ({
+                display: "none", // Remove the separator line
+              }),
             },
+            options: [
+              {
+                label: "Pick my address",
+                value: { description: "Pick my address" },
+              },
+            ],
           }}
           apiOptions={{ language: "he", region: "il" }}
         />
       </div>
       <Button
-        className="bg-gray-300 p-3 ml-2"
+        className="bg-blue-500 p-6"
         onClick={() => console.log("Confirm address")}
       >
         <img
