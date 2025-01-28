@@ -5,14 +5,6 @@ import { IMenuItem, IRestaurant } from "@/types/restaurantTypes";
 import { Link } from "react-router-dom";
 import { useRestaurantContext } from "../context/restaurantContext";
 
-export interface IMenuItemWithRestaurant
-  extends Omit<IMenuItem, "restaurant_id"> {
-  restaurant_id: {
-    _id: string;
-    name: string;
-    image: string;
-  };
-}
 interface SearchMenuItem extends Omit<IMenuItem, "restaurant_id"> {
   restaurant: IRestaurant;
 }

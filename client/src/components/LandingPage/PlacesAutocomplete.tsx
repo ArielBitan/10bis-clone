@@ -35,7 +35,19 @@ const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
             placeholder: "Enter an address...",
             onChange: handleSelect,
             styles: {
-              input: (provided) => ({ ...provided, width: "100%" }),
+              input: (provided) => ({
+                ...provided,
+                color: "blue",
+                width: "100%",
+              }),
+              option: (provided) => ({
+                ...provided,
+                color: "blue",
+              }),
+              singleValue: (provided) => ({
+                ...provided,
+                color: "blue",
+              }),
             },
           }}
           apiOptions={{ language: "he", region: "il" }}

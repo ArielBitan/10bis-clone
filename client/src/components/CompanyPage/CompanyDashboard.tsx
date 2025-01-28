@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Search, UserPlus } from "lucide-react";
 import { searchUserByEmail } from "@/services/userService";
 import { IUser } from "@/types/userType";
-import debounce from "lodash.debounce"; // Import debounce
+import debounce from "lodash.debounce";
 
 const CompanyDashboard = () => {
   const [searchEmail, setSearchEmail] = useState<string>("");
