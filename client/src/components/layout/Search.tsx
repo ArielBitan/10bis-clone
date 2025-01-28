@@ -1,10 +1,9 @@
 import { FiSearch } from "react-icons/fi";
 import { useState } from "react";
 import { categories } from "../../../data/categories.json";
-import { searchRestaurantsByName } from "@/services/restaurantService";
 import { IMenuItem, IRestaurant } from "@/types/restaurantTypes";
-import { searchMenuItemsByName } from "@/services/menuItem";
 import { Link } from "react-router-dom";
+import { useRestaurantContext } from "../context/restaurantContext";
 
 export interface IMenuItemWithRestaurant
   extends Omit<IMenuItem, "restaurant_id"> {
@@ -14,6 +13,9 @@ export interface IMenuItemWithRestaurant
     image: string;
   };
 }
+interface SearchMenuItem extends Omit<IMenuItem, "restaurant_id"> {
+  restaurant: IRestaurant;
+}
 
 interface ICategory {
   id: number;
@@ -22,36 +24,48 @@ interface ICategory {
 }
 
 const Search = () => {
+  const { restaurants } = useRestaurantContext();
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [restaurants, setRestaurants] = useState<IRestaurant[]>([]);
-  const [filteredCategories, setFilteredCategories] = useState<ICategory[]>([]);
-  const [items, setItems] = useState<IMenuItemWithRestaurant[]>([]);
-
+  const [filteredCategories, setFilteredCategories] = useState<ICategory[]>(
+    categories.slice(0, 2)
+  );
+  const [items, setItems] = useState<(SearchMenuItem | undefined)[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+  const [filteredRestaurants, setFilteredRestaurants] = useState<IRestaurant[]>(
+    restaurants.slice(0, 3)
+  );
 
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
     if (query.trim() === "") {
-      setRestaurants([]);
+      setFilteredCategories(categories.slice(0, 2));
+      setFilteredRestaurants(restaurants.slice(0, 2));
       setItems([]);
-      setFilteredCategories([]);
-      setIsDropdownOpen(false);
       return;
     }
     setFilteredCategories(
       categories.filter((category) => category.name.includes(query))
     );
-    try {
-      const [restaurantResults, itemResults] = await Promise.all([
-        searchRestaurantsByName(query),
-        searchMenuItemsByName(query),
-      ]);
-      setRestaurants(restaurantResults);
-      setItems(itemResults);
-      setIsDropdownOpen(true);
-    } catch (error) {
-      console.error("Error searching:", error);
-    }
+    setFilteredRestaurants(
+      restaurants.filter((restaurant) =>
+        restaurant.name.toLowerCase().includes(query.toLowerCase())
+      )
+    );
+    setItems(
+      restaurants
+        .flatMap((restaurant) =>
+          restaurant.menuItems?.map((item) => ({
+            ...item,
+            restaurant: restaurant,
+          }))
+        )
+        .filter(
+          (item) =>
+            item &&
+            item.name &&
+            item.name.toLowerCase().includes(query.toLowerCase())
+        )
+    );
   };
 
   return (
@@ -109,13 +123,13 @@ const Search = () => {
             </>
           )}
 
-          {restaurants.length > 0 && (
+          {filteredRestaurants.length > 0 && (
             <>
               <div className="px-4 py-4 text-base font-bold text-gray-700">
                 מסעדות
               </div>
               <div className="border-t border-gray-200"></div>
-              {restaurants.map((restaurant) => (
+              {filteredRestaurants.map((restaurant) => (
                 <Link to={`/restaurant/${restaurant._id}`}>
                   <div
                     key={restaurant._id}
@@ -151,23 +165,23 @@ const Search = () => {
               </div>
               <div className="border-t border-gray-200"></div>
               {items.map((item) => (
-                <Link to={`/restaurant/${item.restaurant_id._id}`}>
-                  <div
-                    key={item._id}
-                    className="px-4 py-2 text-sm text-gray-800 cursor-pointer hover:bg-gray-100"
-                  >
+                <Link
+                  key={item?._id}
+                  to={`/restaurant/${item?.restaurant?._id}`}
+                >
+                  <div className="px-4 py-2 text-sm text-gray-800 cursor-pointer hover:bg-gray-100">
                     <div className="flex gap-2">
                       <div>
                         <img
-                          src={item.restaurant_id.image}
-                          alt={item.name}
+                          src={item?.restaurant.image as string}
+                          alt={item?.name}
                           className="w-10 h-10 p-1 transition-colors duration-500 rounded-full group-hover:bg-gray-200/95"
                         />
                       </div>
                       <div>
-                        <h1 className="font-normal text-black">{item.name}</h1>
+                        <h1 className="font-normal text-black">{item?.name}</h1>
                         <p className="text-xs text-gray-600">
-                          {item.restaurant_id.name}
+                          {item?.restaurant?.name}
                         </p>
                       </div>
                     </div>
@@ -177,7 +191,7 @@ const Search = () => {
             </>
           )}
 
-          {restaurants.length === 0 &&
+          {filteredRestaurants.length === 0 &&
             filteredCategories.length === 0 &&
             items.length === 0 && (
               <div className="px-4 py-2 text-sm text-center text-gray-500">

@@ -21,16 +21,29 @@ exports.getNearbyRestaurants = async (
   maxDistanceInMeters = 5000
 ) => {
   try {
-    // Perform a geo query to find restaurants near the user's coordinates
-    const restaurants = await Restaurant.find({
-      "location.coordinates": {
-        $near: {
-          $geometry: { type: "Point", coordinates },
-
-          $maxDistance: maxDistanceInMeters,
+    // First perform the geo query to find nearby restaurants
+    const restaurants = await Restaurant.aggregate([
+      {
+        $geoNear: {
+          near: {
+            type: "Point",
+            coordinates: coordinates,
+          },
+          distanceField: "distance",
+          maxDistance: maxDistanceInMeters,
+          spherical: true,
         },
       },
-    });
+      {
+        // Then lookup the menu items for each restaurant
+        $lookup: {
+          from: "menuitems",
+          localField: "_id",
+          foreignField: "restaurant_id",
+          as: "menuItems",
+        },
+      },
+    ]);
 
     return restaurants;
   } catch (error) {
