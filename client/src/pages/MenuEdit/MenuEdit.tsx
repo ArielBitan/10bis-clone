@@ -13,6 +13,7 @@ import { useUser } from "@/components/context/userContext";
 import { IRestaurantOwner } from "@/types/userType";
 import Loading from "@/components/Loading";
 import AddItem from "@/components/restaurantowner/AddItem";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 const MenuEdit = () => {
   const { user } = useUser();
@@ -118,6 +119,7 @@ const MenuEdit = () => {
           <DialogTrigger asChild>
             <Button>הוסף פריט</Button>
           </DialogTrigger>
+          <DialogTitle></DialogTitle>
           <DialogContent className="sm:max-w-[425px] bg-orangePrimary">
             <AddItem resId={data?._id || ""} onItemAdded={renderFunc} />
           </DialogContent>

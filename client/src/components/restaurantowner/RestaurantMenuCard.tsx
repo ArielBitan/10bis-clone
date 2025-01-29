@@ -4,6 +4,7 @@ import { Button } from "../ui/button";
 import { useDeleteMenuItem } from "@/services/tan-stack/menuItem-TenStack";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import EditItem from "./EditItem";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 interface MenuItemCardProps {
   item: IMenuItem;
@@ -76,6 +77,7 @@ const RestaurantMenuCard: React.FC<MenuItemCardProps> = ({
               <DialogTrigger asChild>
                 <Button>ערוך פריט</Button>
               </DialogTrigger>
+              <DialogTitle></DialogTitle>
               <DialogContent className="sm:max-w-[425px] bg-orangePrimary">
                 <EditItem item={item} renderFunc={renderFunc} />
               </DialogContent>

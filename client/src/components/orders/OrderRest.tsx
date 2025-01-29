@@ -10,6 +10,7 @@ import { Button } from "../ui/button";
 import { TableDemo } from "@/pages/OrderPage/ItemTable";
 import { updateOrderStatus } from "@/services/orderService";
 import { IOrder } from "@/types/orderTypes";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 interface OrderRestProps {
   order: IOrder;
@@ -49,6 +50,7 @@ const OrderRest: React.FC<OrderRestProps> = ({ order, refetchOrders }) => {
                 )}
               </div>
             </DialogTrigger>
+            <DialogTitle></DialogTitle>
             <DialogContent className="sm:max-w-[70%]">
               <div className="mt-[50px]">
                 <TableDemo items={order.order_items} />

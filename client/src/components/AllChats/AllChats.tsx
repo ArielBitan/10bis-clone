@@ -9,6 +9,7 @@ import {
 import Loading from "../Loading";
 import OneChat from "./OneChat";
 import { IRestaurantOwner } from "@/types/userType";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 const AllChats = () => {
   const { user } = useUser();
@@ -70,6 +71,7 @@ const AllChats = () => {
           />
         </div>
       </DialogTrigger>
+      <DialogTitle></DialogTitle>
       <DialogContent className="border-none sm:max-w-[400px] dialog-slide w-full max-h-[80vh] overflow-y-auto">
         <div className="sticky top-0 z-10 bg-backgroundOrange">
           <div className="flex items-center justify-end gap-4 p-3 pb-0 text-white">

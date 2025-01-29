@@ -19,6 +19,7 @@ export const ItemDialog: React.FC<TableDemoProps> = ({ items }) => {
       <DialogTrigger asChild>
         <Button variant="outline">{items.length}</Button>
       </DialogTrigger>
+      <DialogTitle></DialogTitle>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>מוצרים</DialogTitle>

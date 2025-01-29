@@ -100,6 +100,7 @@ const Cart: React.FC<InfoCartProps> = ({
       <DialogTrigger className="font-bold bg-transparent">
         <DialogTitle>מעבר לעגלה</DialogTitle>
       </DialogTrigger>
+      <DialogTitle></DialogTitle>
       <DialogContent className="border-none sm:max-w-[700px] dialog-slide w-full max-h-[80vh] overflow-y-auto text-3xl text-center">
         <div className="flex items-center justify-end gap-4 p-3 text-white bg-backgroundOrange">
           <h1 className="text-base font-bold text-end">{item.name}</h1>

@@ -1,5 +1,6 @@
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { IRestaurant } from "@/types/restaurantTypes";
+import { DialogTitle } from "@radix-ui/react-dialog";
 // import { useState } from "react";
 interface InfoRestaurantProps {
   item: IRestaurant;
@@ -11,6 +12,7 @@ const InfoRestaurant: React.FC<InfoRestaurantProps> = ({ item }) => {
       <DialogTrigger className="text-blue-700 cursor-pointer">
         אודות המסעדה
       </DialogTrigger>
+      <DialogTitle></DialogTitle>
       <DialogContent className="sm:max-w-[700px] dialog-slide w-full p-10 text-3xl text-center ">
         <div className="flex justify-end gap-4 ">
           <div>
