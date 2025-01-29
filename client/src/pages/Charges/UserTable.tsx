@@ -28,7 +28,7 @@ export const columns: ColumnDef<IOrder>[] = [
     cell: ({ row }) => (
       <Link
         to={`/order/${row.getValue("_id")}`}
-        className="text-blue-500 hover:underline"
+        className="text-blue-500 hover:text-blue-700 font-semibold"
       >
         {row.getValue("_id")}
       </Link>
@@ -50,7 +50,7 @@ export const columns: ColumnDef<IOrder>[] = [
       return (
         <Link
           to={`/restaurant/${restaurant._id}`}
-          className="text-blue-500 hover:underline"
+          className="text-blue-500 hover:text-blue-700 font-semibold"
         >
           {restaurant.name}
         </Link>
@@ -62,7 +62,7 @@ export const columns: ColumnDef<IOrder>[] = [
     header: "מוצרים",
     cell: ({ row }) => {
       const items = row.getValue("order_items") as string[];
-      return <div className="">{items.length}</div>;
+      return <div className="text-center">{items.length}</div>;
     },
   },
   {
@@ -92,7 +92,9 @@ export const columns: ColumnDef<IOrder>[] = [
         "Picked Up": "נלקח",
         Delivered: "נמסר",
       };
-      return <div className="text-orangePrimary">{statusMapping[status]}</div>;
+      return (
+        <div className="text-sm text-gray-700">{statusMapping[status]}</div>
+      );
     },
   },
   {
@@ -143,14 +145,17 @@ export function UserTable({ orders }: UserTableProps) {
   });
 
   return (
-    <div className="w-full">
-      <div className="overflow-hidden border rounded-md">
-        <Table className="w-full table-auto">
+    <div className="w-full p-4">
+      <div className="overflow-hidden border border-gray-300 rounded-lg shadow-lg">
+        <Table className="w-full table-auto text-sm">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="bg-gray-100">
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="px-4 py-2 text-right">
+                  <TableHead
+                    key={header.id}
+                    className="px-4 py-3 text-gray-600"
+                  >
                     {header.isPlaceholder ? null : (
                       <div
                         className="flex items-center cursor-pointer select-none"
@@ -175,9 +180,9 @@ export function UserTable({ orders }: UserTableProps) {
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} className="hover:bg-gray-100">
+                <TableRow key={row.id} className="hover:bg-gray-50">
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="px-4 py-2">
+                    <TableCell key={cell.id} className="px-4 py-2 text-sm">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -192,19 +197,19 @@ export function UserTable({ orders }: UserTableProps) {
                   colSpan={columns.length}
                   className="h-24 text-center text-gray-500"
                 >
-                  No results.
+                  אין תוצאות
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
-
-      <div className="flex items-center justify-center py-4 space-x-2">
+      <div className="flex items-center justify-center gap-10 py-4 ">
         <Button
           size="sm"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
+          className="bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-lg px-4 py-2 shadow-md disabled:bg-gray-400"
         >
           הקודם
         </Button>
@@ -212,6 +217,7 @@ export function UserTable({ orders }: UserTableProps) {
           size="sm"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
+          className="bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-lg px-4 py-2 shadow-md disabled:bg-gray-400"
         >
           הבא
         </Button>

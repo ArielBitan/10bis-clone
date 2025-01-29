@@ -122,11 +122,8 @@ const Search = () => {
               </div>
               <div className="border-t border-gray-200"></div>
               {filteredRestaurants.map((restaurant) => (
-                <Link to={`/restaurant/${restaurant._id}`}>
-                  <div
-                    key={restaurant._id}
-                    className="px-4 py-2 text-sm text-gray-800 cursor-pointer hover:bg-gray-100"
-                  >
+                <Link key={restaurant._id} to={`/restaurant/${restaurant._id}`}>
+                  <div className="px-4 py-2 text-sm text-gray-800 cursor-pointer hover:bg-gray-100">
                     <div className="flex gap-2">
                       <div>
                         <img

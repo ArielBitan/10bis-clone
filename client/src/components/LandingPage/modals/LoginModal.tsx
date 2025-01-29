@@ -3,6 +3,7 @@ import { useState } from "react";
 import UserLogin from "./roles/UserLogin";
 import UserRegister from "./roles/UserRegister";
 import { Button } from "@/components/ui/button";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 interface LogInModalProps {
   rolee: "login" | "signup";
@@ -40,6 +41,7 @@ const LogInModal = ({ rolee, isHomePage }: LogInModalProps) => {
           </div>
         )}
       </DialogTrigger>
+      <DialogTitle></DialogTitle>
       <DialogContent className="sm:max-w-[700px] dialog-slide w-full p-10 text-3xl text-center text-white bg-orangePrimary">
         {role === "login" ? (
           <UserLogin toggleRole={toggleRole} setDialogOpen={setDialogOpen} />
