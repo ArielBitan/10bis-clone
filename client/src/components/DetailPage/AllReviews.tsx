@@ -13,7 +13,7 @@ import {
 import OneReview from "./OneReview";
 import { AxiosError } from "axios";
 import { useReviewsByRestaurantId } from "@/services/tan-stack/review-Tanstack";
-import { IReview } from "@/types/reviewTypes";
+import { IFetchedReview } from "@/types/reviewTypes";
 
 interface AllReviewsProps {
   id: string;
@@ -35,8 +35,9 @@ const AllReviews = ({ id }: AllReviewsProps) => {
       refetch();
     }
   }, [isDrawerOpen, refetch]);
+
   if (isLoading) {
-    return <div>Loading reviews...</div>;
+    return <div>טוען ביקורות...</div>;
   }
 
   if (isError) {
@@ -66,7 +67,7 @@ const AllReviews = ({ id }: AllReviewsProps) => {
         </div>
       );
     } else {
-      return <div>Error loading reviews. Please try again later.</div>;
+      return <div>שגיאה בטעינת ביקורות, אנא נסה שנית מאוחר יותר</div>;
     }
   }
 
@@ -96,7 +97,7 @@ const AllReviews = ({ id }: AllReviewsProps) => {
             <DrawerFooter>
               <div className="p-4 max-h-[53vh] overflow-y-auto">
                 {reviews && reviews.length > 0 ? (
-                  reviews.map((review: IReview) => (
+                  reviews.map((review: IFetchedReview) => (
                     <OneReview review={review} key={review._id} />
                   ))
                 ) : (

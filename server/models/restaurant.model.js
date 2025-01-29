@@ -98,12 +98,15 @@ restaurantSchema.pre("findOneAndUpdate", async function (next) {
   next();
 });
 
-restaurantSchema.virtual("avgRating").get(async function () {
+restaurantSchema.methods.calculateAvgRating = async function () {
   const Review = mongoose.model("Review");
-  const reviews = await Review.find({ restaurant_id: this._id });
-  const total = reviews.reduce((sum, review) => sum + review.rating, 0);
-  return total / reviews.length;
-});
+  const reviews = await Review.aggregate([
+    { $match: { restaurant_id: this._id } },
+    { $group: { _id: "$restaurant_id", avgRating: { $avg: "$rating" } } },
+  ]);
+
+  return reviews.length > 0 ? reviews[0].avgRating : 0; // Return the average or 0 if no reviews
+};
 
 restaurantSchema.index({ name: 1 });
 

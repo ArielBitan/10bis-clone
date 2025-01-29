@@ -4,10 +4,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { useNavigate, useParams } from "react-router-dom";
 import { createReview } from "@/services/reviewService";
 import { useUser } from "@/components/context/userContext";
+import { useToast } from "@/hooks/use-toast";
 
 const Review = () => {
   const { id } = useParams<{ id: string }>();
-
+  const { toast } = useToast();
   const { user } = useUser();
   const userId = user?._id;
   const navigate = useNavigate();
@@ -39,6 +40,10 @@ const Review = () => {
         await createReview(form);
         window.location.reload();
         navigate(-1);
+        toast({
+          title: "תגובה נוספה",
+          description: "תגובה נוספה בהצלחה, תודה !",
+        });
       } catch (error) {
         console.error("Error creating review:", error);
         setErrorMessage("שגיאה בשליחת הביקורת. אנא נסה שנית.");

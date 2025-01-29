@@ -4,12 +4,12 @@ import {
   createReview,
   deleteReview,
 } from "@/services/reviewService";
-import { IReview } from "@/types/reviewTypes";
+import { IFetchedReview } from "@/types/reviewTypes";
 import { useState } from "react";
 
 // Fetch reviews by restaurant ID
 export const useReviewsByRestaurantId = (restaurantId: string) => {
-  return useQuery<IReview[], Error>({
+  return useQuery<IFetchedReview[], Error>({
     queryKey: ["reviews", restaurantId],
     queryFn: () => fetchRestaurantReviews(restaurantId),
     enabled: !!restaurantId,

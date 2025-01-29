@@ -23,7 +23,7 @@ export interface IRestaurant {
   phone?: string;
   is_kosher: boolean;
   weekly_hours?: WeeklyHour[];
-  avgRating?: number;
+  avgRatings?: number;
   createdAt?: string;
   updatedAt?: string;
   menuItems?: IMenuItem[];

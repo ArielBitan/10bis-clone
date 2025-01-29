@@ -1,5 +1,5 @@
 import api from "@/lib/api";
-import { IReview } from "@/types/reviewTypes";
+import { IFetchedReview, IReview } from "@/types/reviewTypes";
 
 // Function to create a review
 export const createReview = async (reviewData: IReview): Promise<IReview> => {
@@ -15,9 +15,9 @@ export const createReview = async (reviewData: IReview): Promise<IReview> => {
 // Function to fetch reviews for a restaurant
 export const fetchRestaurantReviews = async (
   restaurantId: string
-): Promise<IReview[]> => {
+): Promise<IFetchedReview[]> => {
   try {
-    const { data } = await api.get<IReview[]>(
+    const { data } = await api.get<IFetchedReview[]>(
       `/reviews/restaurant/${restaurantId}`
     );
     return data;
@@ -26,8 +26,6 @@ export const fetchRestaurantReviews = async (
     throw error;
   }
 };
-
-
 
 // Function to fetch reviews by user
 export const fetchReviewsByUser = async (

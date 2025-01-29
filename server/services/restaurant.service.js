@@ -13,7 +13,9 @@ exports.getAllRestaurants = async (address) => {
 };
 
 exports.getRestaurantById = async (id) => {
-  return await Restaurant.findById(id);
+  // Find the restaurant by ID
+  const restaurant = await Restaurant.findById(id);
+  return restaurant;
 };
 
 exports.getNearbyRestaurants = async (
@@ -21,26 +23,39 @@ exports.getNearbyRestaurants = async (
   maxDistanceInMeters = 5000
 ) => {
   try {
-    // First perform the geo query to find nearby restaurants
     const restaurants = await Restaurant.aggregate([
       {
         $geoNear: {
-          near: {
-            type: "Point",
-            coordinates: coordinates,
-          },
+          near: { type: "Point", coordinates },
           distanceField: "distance",
           maxDistance: maxDistanceInMeters,
           spherical: true,
         },
       },
       {
-        // Then lookup the menu items for each restaurant
         $lookup: {
           from: "menuitems",
           localField: "_id",
           foreignField: "restaurant_id",
           as: "menuItems",
+        },
+      },
+      {
+        $lookup: {
+          from: "reviews",
+          localField: "_id",
+          foreignField: "restaurant_id",
+          as: "reviews",
+        },
+      },
+      {
+        $addFields: {
+          avgRatings: { $avg: "$reviews.rating" }, // Calculate average rating
+        },
+      },
+      {
+        $project: {
+          reviews: 0, // Remove full reviews array (optional)
         },
       },
     ]);

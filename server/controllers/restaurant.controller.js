@@ -64,13 +64,15 @@ exports.getRestaurantById = async (req, res) => {
       return res.status(404).json({ message: "Restaurant not found" });
     }
 
-    // Get the menu items for the restaurant
+    const avgRatings = await restaurant.calculateAvgRating();
+
     const menuItems = await MenuItem.find({ restaurant_id: req.params.id });
 
     // Combine the restaurant details with the menu items
     const restaurantDetails = {
-      ...restaurant.toObject(), // Convert restaurant document to plain object
-      menuItems: menuItems, // Add menuItems to the response
+      ...restaurant.toObject(),
+      menuItems: menuItems,
+      avgRatings,
     };
 
     // Send the combined response

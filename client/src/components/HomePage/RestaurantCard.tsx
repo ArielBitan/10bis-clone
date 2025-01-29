@@ -1,7 +1,6 @@
 import { IRestaurant } from "@/types/restaurantTypes";
 import StarIcon from "./StarIcon";
 import { useNavigate } from "react-router-dom";
-import AvgRating from "../DetailPage/AvgRating";
 
 interface RestaurantCardProps {
   item: IRestaurant;
@@ -12,7 +11,6 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({ item }) => {
   const navigateToDetails = (id: string) => {
     navigate(`/restaurant/${id}`);
   };
-
   return (
     <div
       onClick={() => navigateToDetails(item._id as string)}
@@ -29,13 +27,7 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({ item }) => {
         <h3 className="text-xl lg:text-[1rem] font-bold ">{item.name}</h3>
         <div className="flex gap-1 text-sm items-center ">
           <StarIcon />
-          <span>
-            {item._id && (
-              <span>
-                <AvgRating id={item._id} />
-              </span>
-            )}
-          </span>
+          <span>{item._id && <span>{item.avgRatings?.toFixed(1)}</span>}</span>
           <span className="text-gray-400">•</span>
           <p>{item.cuisine_types.join(", ")}</p>
         </div>

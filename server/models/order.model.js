@@ -55,7 +55,6 @@ orderSchema.pre("save", async function (next) {
     const populatedItems = await MenuItem.find({
       _id: { $in: this.order_items.map((item) => item._id) },
     });
-    console.log(populatedItems);
     // Calculate total amount
     this.total_amount = this.order_items.reduce((sum, orderItem) => {
       const menuItem = populatedItems.find((item) =>

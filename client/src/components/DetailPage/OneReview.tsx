@@ -1,10 +1,10 @@
-import { IReview } from "@/types/reviewTypes";
+import { IFetchedReview } from "@/types/reviewTypes";
 import { Star } from "lucide-react";
 import { format } from "date-fns";
 import DeleteReview from "./DeleteReview";
 import { useUser } from "../context/userContext";
 
-const OneReview = ({ review }: { review: IReview }) => {
+const OneReview = ({ review }: { review: IFetchedReview }) => {
   const { user } = useUser();
   console.log(review);
   // Check if the user is the owner of the review
