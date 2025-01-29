@@ -1,12 +1,15 @@
+import { useRestaurantContext } from "@/components/context/restaurantContext";
 import ActiveOrderLink from "@/components/HomePage/ActiveOrderLink";
 import AllRestaurants from "@/components/HomePage/AllRestaurants";
 import CategoriesSection from "@/components/HomePage/CategoriesSection/CategoriesSection";
 import HeroSection from "@/components/HomePage/HeroSection";
 import Navbar from "@/components/layout/Navbar";
+import Loading from "@/components/Loading";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const UserPage = () => {
+  const { isLoading } = useRestaurantContext();
   const navigate = useNavigate();
   const activeOrderId = localStorage.getItem("orderRoom");
 
@@ -17,6 +20,9 @@ const UserPage = () => {
     }
   }, []);
 
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <div className="bg-white">
       <Navbar />
