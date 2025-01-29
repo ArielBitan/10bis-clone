@@ -1,12 +1,15 @@
-import { AlertCircle, CheckCircle, MapPin, Package, User } from "lucide-react";
+import { MapPin, User } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
 import { IOrder } from "@/types/orderTypes";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getActiveOrder, updateOrderStatus } from "@/services/orderService";
+import { useQuery } from "@tanstack/react-query";
+import { getActiveOrder } from "@/services/orderService";
 import NextLocationCard from "./NextLocationCard";
 import Loading from "../Loading";
 import { useSocket } from "../context/socketContext";
 import { useEffect, useState } from "react";
+import OrderStatus from "./OrderStatus";
+import OrderItems from "./OrderItems";
+import ActiveButtons from "./ActiveButtons";
 
 interface ActiveOrderProps {
   setIsDelivering: React.Dispatch<React.SetStateAction<Boolean>>;
@@ -14,7 +17,7 @@ interface ActiveOrderProps {
 
 const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
   const { socket, connected, joinRoom, leaveRoom } = useSocket();
-  const queryClient = useQueryClient();
+
   const {
     data: activeOrder,
     isLoading,
@@ -24,47 +27,10 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
     queryFn: () => getActiveOrder(),
   });
 
-  const mutation = useMutation({
-    mutationFn: async ({
-      orderId,
-      status,
-    }: {
-      orderId: string;
-      status: string;
-    }) => {
-      return await updateOrderStatus(orderId, status);
-    },
-  });
-
   const [courierPosition, setCourierPosition] = useState<{
     latitude: number;
     longitude: number;
   } | null>(null);
-
-  const handleOrderStatusChange = (newStatus: string) => {
-    if (!activeOrder) return;
-
-    mutation.mutate(
-      {
-        orderId: activeOrder._id,
-        status: newStatus,
-      },
-      {
-        onSuccess: () => {
-          if (newStatus === "Delivered") {
-            setIsDelivering(false);
-            return;
-          }
-        },
-        onSettled: () => {
-          queryClient.refetchQueries({ queryKey: ["activeOrder"] });
-        },
-        onError: (error) => {
-          console.error("Failed to update order status:", error);
-        },
-      }
-    );
-  };
 
   useEffect(() => {
     const watchId = navigator.geolocation.watchPosition(
@@ -115,26 +81,11 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
         <CardContent className="pt-6">
           <div className="space-y-6">
             {/* Order Status */}
-            <div className="flex items-center justify-between">
-              <div className="flex flex-col">
-                <h2 className="text-lg font-bold">
-                  הזמנה נוכחית #{activeOrder._id}
-                </h2>
-                <h3 className="text-textBlackSecondary">
-                  {new Date(activeOrder.createdAt).toLocaleString("he-IL", {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                    hour: "numeric",
-                    minute: "numeric",
-                  })}
-                </h3>
-              </div>
-              <span className="px-3 py-1 text-sm text-blue-700 bg-blue-100 rounded-full">
-                {activeOrder.status === "Accepted" ? "איסוף" : "משלוח"}
-              </span>
-            </div>
+            <OrderStatus
+              activeOrderId={activeOrder._id}
+              createdAt={activeOrder.createdAt}
+              status={activeOrder.status}
+            />
 
             {/* Next Location */}
             {activeOrder.status === "Accepted" ? (
@@ -153,58 +104,13 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
               />
             )}
 
-            {/* Order Items */}
-            <div className="space-y-2">
-              <h3 className="font-medium">פריטי הזמנה:</h3>
-              <ul className="text-sm text-gray-600">
-                {activeOrder.order_items.map((item, index) => (
-                  <li
-                    key={index}
-                    className="flex items-center justify-between p-2 transition-colors rounded-lg bg-gray-50 hover:bg-gray-100"
-                  >
-                    <div className="flex items-center gap-3">
-                      <Package className="w-5 h-5 text-gray-600" />
-                      <div>
-                        <span className="font-medium">{item._id.name}</span>
-                        <span className="mr-2 text-gray-600">
-                          {item.quantity}x
-                        </span>
-                      </div>
-                    </div>
-                    <div className="font-medium text-right">
-                      {(item._id.price * item.quantity).toFixed(2)} ₪
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <OrderItems order_items={activeOrder.order_items} />
 
             {/* Action Buttons */}
-            <div className="space-y-2">
-              {activeOrder.status === "Accepted" ? (
-                <button
-                  onClick={() => handleOrderStatusChange("Picked Up")}
-                  disabled={mutation.isPending}
-                  className="flex items-center justify-center w-full gap-2 py-3 text-white bg-green-500 rounded-lg hover:bg-green-600 disabled:bg-gray-400"
-                >
-                  <CheckCircle className="w-5 h-5" />
-                  {mutation.isPending ? "מעדכן..." : "אשר איסוף"}
-                </button>
-              ) : (
-                <button
-                  onClick={() => handleOrderStatusChange("Delivered")}
-                  disabled={mutation.isPending}
-                  className="flex items-center justify-center w-full gap-2 py-3 text-white bg-green-500 rounded-lg hover:bg-green-600 disabled:bg-gray-400"
-                >
-                  <CheckCircle className="w-5 h-5" />
-                  {mutation.isPending ? "מעדכן..." : "אשר משלוח"}
-                </button>
-              )}
-              <button className="flex items-center justify-center w-full gap-2 py-3 text-red-500 border border-red-500 rounded-lg hover:bg-gray-100">
-                <AlertCircle className="w-5 h-5" />
-                דיווח על תקלה
-              </button>
-            </div>
+            <ActiveButtons
+              activeOrder={activeOrder}
+              setIsDelivering={setIsDelivering}
+            />
           </div>
         </CardContent>
       </Card>
