@@ -1,6 +1,7 @@
 const http = require("http");
 const app = require("./app");
 const { scrapeData } = require("./config/scrapeData");
+const generateReviews = require("./config/dummyReviews");
 const { v2: cloudinary } = require("cloudinary");
 const connectToDatabase = require("./config/database");
 const { initializeSocket } = require("./socketManager");
@@ -32,5 +33,5 @@ cloudinary.config({
 });
 
 initializeServer();
-
 // scrapeData();
+// generateReviews();

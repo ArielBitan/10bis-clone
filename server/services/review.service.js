@@ -5,10 +5,7 @@ exports.createReview = async (reviewData) => {
 };
 
 exports.getRestaurantReviews = async (restaurantId) => {
-  return await Review.find({ restaurant_id: restaurantId }).populate(
-    "user_id",
-    "name"
-  );
+  return await Review.find({ restaurant_id: restaurantId }).populate("user_id");
 };
 
 exports.getReviewsByUser = async (userId) => {

@@ -6,43 +6,54 @@ import { useUser } from "../context/userContext";
 
 const OneReview = ({ review }: { review: IReview }) => {
   const { user } = useUser();
-
-  // owner?
-  const isOwner = user?._id === review?.user_id;
-
+  console.log(review);
+  // Check if the user is the owner of the review
+  const isOwner = user?._id === review?.user_id._id;
   return (
-    <div className="relative p-4 border border-gray-300 rtl">
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center space-x-2">
-          <div className="text-sm text-gray-500">
-            <div>
-              {format(new Date(review?.createdAt as Date), "dd MMM yyyy")}
-            </div>
-            <div>{format(new Date(review?.createdAt as Date), "hh:mm")}</div>
-          </div>
+    <div
+      dir="rtl"
+      className="relative p-4 border border-gray-300 bg-white dark:bg-gray-900 rounded-lg shadow-md"
+    >
+      {/* Rating + Date */}
+      <div className="flex justify-between items-center mb-1">
+        {/* Rating stars */}
+        <div className="flex flex-row-reverse gap-1">
+          {[...Array(5)].map((_, index) => (
+            <Star
+              key={index}
+              className={`w-5 h-5 ${
+                index < review.rating ? "text-yellow-500" : "text-gray-300"
+              }`}
+            />
+          ))}
         </div>
 
-        <div className="flex items-center space-x-1">
-          {isOwner && (
-            <div className="absolute bottom-2 right-2">
-              <DeleteReview reviewId={review._id as string} />
-            </div>
-          )}
-
-          <div className="flex items-center">
-            {[...Array(5)].map((_, index) => (
-              <Star
-                key={index}
-                className={`w-4 h-4 ${
-                  index < review.rating ? "text-yellow-500" : "text-gray-300"
-                }`}
-              />
-            ))}
+        {/* Date & Time */}
+        <div className="text-sm text-gray-500 text-left">
+          <div>
+            {format(new Date(review?.createdAt as Date), "dd MMM yyyy")}
           </div>
+          {/* 24-hour format */}
+          <div>{format(new Date(review?.createdAt as Date), "HH:mm")}</div>{" "}
         </div>
       </div>
 
-      <div className="mt-2 text-gray-700 dark:text-white">{review.comment}</div>
+      {/*Review creator name*/}
+      <div className="text-gray-900 mb-1 font-semibold">
+        {review.user_id.full_name}
+      </div>
+
+      {/* Review Text */}
+      <div className="text-gray-800 dark:text-white text-right leading-relaxed">
+        {review.comment}
+      </div>
+
+      {/* Delete Button (if owner) */}
+      {isOwner && (
+        <div className="absolute bottom-2 left-2">
+          <DeleteReview reviewId={review._id as string} />
+        </div>
+      )}
     </div>
   );
 };
