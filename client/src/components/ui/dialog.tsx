@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { cn } from "@/lib/utils";
+import CloseIcon from "./CloseIcon";
 
 const Dialog = DialogPrimitive.Root;
 const DialogTrigger = DialogPrimitive.Trigger;
@@ -40,8 +41,8 @@ const DialogContent = React.forwardRef<
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="absolute rounded-sm left-4 top-4 opacity-70 hover:opacity-100 focus:outline-none">
-        ✖
+      <DialogPrimitive.Close className="absolute rounded-full left-4 top-4 opacity-70 hover:opacity-100 focus:outline-none p-2 bg-gray-100">
+        <CloseIcon />
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>
   </DialogPortal>

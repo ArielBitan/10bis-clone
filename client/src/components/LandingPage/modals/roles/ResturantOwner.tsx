@@ -149,7 +149,7 @@ const RestaurantRegister = ({ toggleRole }: RestaurantRegisterProps) => {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="w-full text-3xl text-center text-orange-500">
+      <div className="w-full text-2xl text-center text-orange-500">
         פרטי המשתמש
       </div>
 
@@ -239,7 +239,7 @@ const RestaurantRegister = ({ toggleRole }: RestaurantRegisterProps) => {
           </div>
         </div>
 
-        <div className="text-3xl text-center text-orange-500">פרטי מסעדה</div>
+        <div className="text-2xl text-center text-orange-500">פרטי מסעדה</div>
 
         <div className="grid gap-4">
           <div className="w-full max-w-[400px] mx-auto rtl">

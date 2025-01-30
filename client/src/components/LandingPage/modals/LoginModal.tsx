@@ -17,6 +17,7 @@ const LogInModal = ({ rolee, isHomePage }: LogInModalProps) => {
   const toggleRole = () => {
     setRole((prevRole) => (prevRole === "login" ? "signup" : "login"));
   };
+
   return (
     <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger
@@ -26,23 +27,36 @@ const LogInModal = ({ rolee, isHomePage }: LogInModalProps) => {
       >
         {isHomePage ? (
           <div className="text-white">כניסה</div>
-        ) : rolee === "signup" ? (
-          <Button className="w-[100%] max-w-[700px] text-3xl my-10 p-7 md:text-3xl lg:text-4xl">
-            לפרטים נוספים
-          </Button>
         ) : (
-          <div className="flex items-center gap-3">
-            <img
-              src="https://www.10bis.co.il/Areas/G12/Content/Images/HomePage/UserIcon.png"
-              alt="User Icon"
-              className="w-10 h-10"
-            />
-            <div className="text-xl text-white">משתמש רשום?</div>
-          </div>
+          <Button className="w-[100%] max-w-[700px] text-3xl my-10 p-7 md:text-3xl lg:text-4xl">
+            {role === "signup" ? "להרשמה" : "התחברות"}
+          </Button>
         )}
       </DialogTrigger>
       <DialogTitle></DialogTitle>
-      <DialogContent className="sm:max-w-[700px] dialog-slide w-full p-10 text-3xl text-center text-white bg-orangePrimary">
+      <DialogContent className="sm:max-w-[500px] dialog-slide w-full py-3 text-3xl text-center text-black shadow-md">
+        <div className="flex justify-around px-10">
+          <Button
+            onClick={() => setRole("login")}
+            className={`relative  text-black text-xl bg-white hover:bg-white ${
+              role === "login"
+                ? "font-bold after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-white"
+                : "text-black-500"
+            }`}
+          >
+            כבר יש לי חשבון
+          </Button>
+          <Button
+            onClick={() => setRole("signup")}
+            className={`relative  text-black text-xl bg-white hover:bg-white ${
+              role === "signup"
+                ? "font-bold after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2px] after:bg-white"
+                : "text-black-500"
+            }`}
+          >
+            זו ההזמנה הראשונה שלי
+          </Button>
+        </div>
         {role === "login" ? (
           <UserLogin toggleRole={toggleRole} setDialogOpen={setDialogOpen} />
         ) : (

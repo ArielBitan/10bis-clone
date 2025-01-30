@@ -24,6 +24,34 @@ const Navbar = () => {
                 alt="website-img"
               />
             </Link>
+            {role !== "restaurant_owner" ? (
+              <div></div>
+            ) : (
+              <div>
+                <div className="px-6 sm:px-6 md:px-6 lg:px-24">
+                  <div className="flex justify-between gap-4 sm:px-6 md:px-6 lg:px-10 items-center text-white">
+                    <Link
+                      to="/home"
+                      className="px-4 py-2 text-lg font-semibold cursor-pointer transition-transform duration-300 hover:scale-110"
+                    >
+                      מידע כללי
+                    </Link>
+                    <Link
+                      to="/menu-edit"
+                      className="px-4 py-2 text-lg font-semibold cursor-pointer transition-transform duration-300 hover:scale-110"
+                    >
+                      עריכת התפריט
+                    </Link>
+                    <Link
+                      to="/restaurant-order-management"
+                      className="px-4 py-2 text-lg font-semibold  cursor-pointer transition-transform duration-300 hover:scale-110"
+                    >
+                      ניהול הזמנות
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            )}
             <div className="flex items-center gap-4">
               <UserMenu />
               <img
@@ -32,34 +60,6 @@ const Navbar = () => {
               />
             </div>
           </div>
-          {role !== "restaurant_owner" ? (
-            <div></div>
-          ) : (
-            <div>
-              <div className="px-6 sm:px-6 md:px-6 lg:px-24">
-                <div className="flex justify-between gap-4 sm:px-6 md:px-6 lg:px-10 items-center">
-                  <Link
-                    to="/home"
-                    className="px-4 py-2 text-lg font-semibold text-gray-700 hover:text-backgroundOrange transition-all duration-300 rounded-lg cursor-pointer hover:bg-gray-100 hover:shadow-lg"
-                  >
-                    עמוד הבית
-                  </Link>
-                  <Link
-                    to="/menu-edit"
-                    className="px-4 py-2 text-lg font-semibold text-gray-700 hover:text-backgroundOrange transition-all duration-300 rounded-lg cursor-pointer hover:bg-gray-100 hover:shadow-lg"
-                  >
-                    עריכת התפריט
-                  </Link>
-                  <Link
-                    to="/restaurant-order-management"
-                    className="px-4 py-2 text-lg font-semibold text-gray-700 hover:text-backgroundOrange transition-all duration-300 rounded-lg cursor-pointer hover:bg-gray-100 hover:shadow-lg"
-                  >
-                    ניהול הזמנות
-                  </Link>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </nav>
       {role === "restaurant_owner" ? (

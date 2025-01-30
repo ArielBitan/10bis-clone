@@ -98,12 +98,18 @@ const UserRegister = ({ toggleRole }: UserRegisterProps) => {
   };
 
   return (
-    <div className="flex flex-col gap-4 overflow-y-auto max-h-[80vh]">
-      <div className="w-full p-2 text-3xl text-center text-white">
-        {formType === "user" ? "הרשמה למשתמש חדש" : "הרשמה לבעל עסק "}
+    <div className="flex flex-col gap-4 overflow-y-auto max-h-[80vh] bg-gray-100">
+      <div
+        className={`w-full p-4 pt-10 text-center text-black ${
+          formType === "user" ? "text-lg" : "text-3xl"
+        }`}
+      >
+        {formType === "user"
+          ? "כדי שנוכל לשלוח לך את האוכל, אנחנו צריכים כמה פרטים"
+          : "הרשמה לבעל עסק "}
       </div>
 
-      <div className="grid gap-4 bg-white w-full p-[50px] text-black">
+      <div className="grid gap-4 bg-gray-100 w-full text-black ">
         {formType === "user" ? (
           <>
             <div className="grid gap-4">
@@ -213,12 +219,7 @@ const UserRegister = ({ toggleRole }: UserRegisterProps) => {
             <div className="px-2 text-sm text-center text-black">או</div>
             <div className="flex-grow border-t border-black" />
           </div>
-          <div className="mt-4 text-sm text-center hover:cursor-pointer">
-            <span className="text-textBlackSecondary">משתמש רשום? </span>
-            <span className="text-blueButton" onClick={toggleRole}>
-              התחבר
-            </span>
-          </div>
+          <div className="mt-4 text-sm text-center hover:cursor-pointer"></div>
           <div className="mt-4 text-sm text-center hover:cursor-pointer">
             <span
               className="text-blueButton"
