@@ -54,9 +54,9 @@ const AllRestaurants = () => {
       );
 
       shuffleArray(categoriesWithMoreThan12);
-      setRandomCategories(categoriesWithMoreThan12.slice(0, 5));
+      setRandomCategories(categoriesWithMoreThan12.slice(0, 2));
     }
-  }, [isSuccess, selectedCategory, isLoading]);
+  }, [isSuccess, selectedCategory, isLoading, filteredRestaurants]);
 
   if (isLoading) return <Loading />;
   if (isError) return <div>Error loading data.</div>;
@@ -75,24 +75,25 @@ const AllRestaurants = () => {
     <div>
       {filteredRestaurants.length > 0 && (
         <>
-          {randomCategories.map(([category, restaurants]) => (
-            <div key={category} className="mb-8 relative">
-              <h2 className="text-2xl font-bold mb-4">{category}</h2>
-              <button
-                onClick={() => handleCategoryFilter(category)}
-                className="absolute top-0 left-0 p-2 bg-white rounded-full shadow-md h-10 w-16 border border-slate-400"
-              >
-                עוד
-              </button>
-              <div className="grid justify-start grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-2 gap-x-4">
-                {restaurants
-                  .slice(0, getCardsPerCategory())
-                  .map((restaurant) => (
-                    <RestaurantCard key={restaurant._id} item={restaurant} />
-                  ))}
+          {!selectedCategory &&
+            randomCategories.map(([category, restaurants]) => (
+              <div key={category} className="mb-8 relative">
+                <h2 className="text-2xl font-bold mb-4">{category}</h2>
+                <button
+                  onClick={() => handleCategoryFilter(category)}
+                  className="absolute top-0 left-0 p-2 bg-white rounded-full shadow-md h-10 w-16 border border-slate-400"
+                >
+                  עוד
+                </button>
+                <div className="grid justify-start grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-2 gap-x-4">
+                  {restaurants
+                    .slice(0, getCardsPerCategory())
+                    .map((restaurant) => (
+                      <RestaurantCard key={restaurant._id} item={restaurant} />
+                    ))}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
 
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-4">
