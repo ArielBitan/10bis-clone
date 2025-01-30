@@ -40,13 +40,7 @@ const AvailableOrders: React.FC<AvailableOrdersProps> = ({
   };
 
   if (isLoading) return <Loading />;
-  if (isError)
-    return (
-      <div>
-        שגיאה בטעינה
-        <Loading />
-      </div>
-    );
+  if (isError) return <div>שגיאה בטעינה</div>;
 
   return (
     <div>
