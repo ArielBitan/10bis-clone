@@ -37,22 +37,22 @@ const Navbar = () => {
           ) : (
             <div>
               <div className="px-6 sm:px-6 md:px-6 lg:px-24">
-                <div className="flex justify-between gap-4 sm:px-6 md:px-6 lg:px-10">
+                <div className="flex justify-between gap-4 sm:px-6 md:px-6 lg:px-10 items-center">
                   <Link
                     to="/home"
-                    className="px-4 py-2 text-lg font-semibold text-gray-700 transition-all duration-300 rounded-lg cursor-pointer hover:bg-gray-100"
+                    className="px-4 py-2 text-lg font-semibold text-gray-700 hover:text-backgroundOrange transition-all duration-300 rounded-lg cursor-pointer hover:bg-gray-100 hover:shadow-lg"
                   >
                     עמוד הבית
                   </Link>
                   <Link
                     to="/menu-edit"
-                    className="px-4 py-2 text-lg font-semibold text-gray-700 transition-all duration-300 rounded-lg cursor-pointer hover:bg-gray-100"
+                    className="px-4 py-2 text-lg font-semibold text-gray-700 hover:text-backgroundOrange transition-all duration-300 rounded-lg cursor-pointer hover:bg-gray-100 hover:shadow-lg"
                   >
                     עריכת התפריט
                   </Link>
                   <Link
                     to="/restaurant-order-management"
-                    className="px-4 py-2 text-lg font-semibold text-gray-700 transition-all duration-300 rounded-lg cursor-pointer hover:bg-gray-100"
+                    className="px-4 py-2 text-lg font-semibold text-gray-700 hover:text-backgroundOrange transition-all duration-300 rounded-lg cursor-pointer hover:bg-gray-100 hover:shadow-lg"
                   >
                     ניהול הזמנות
                   </Link>

@@ -62,7 +62,7 @@ export const columns: ColumnDef<IOrder>[] = [
     header: "מוצרים",
     cell: ({ row }) => {
       const items = row.getValue("order_items") as string[];
-      return <div className="text-center">{items.length}</div>;
+      return <div className="text-center lg:text-right">{items.length}</div>;
     },
   },
   {

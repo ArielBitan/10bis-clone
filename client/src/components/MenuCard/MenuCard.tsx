@@ -66,7 +66,7 @@ const MenuCard: React.FC<MenuItemCardProps> = ({
   };
 
   return (
-    <div className="bg-white border shadow-lg flex sm:flex-row my-4 mx-2  hover:shadow-xl hover:border-gray-300 transition duration-300 overflow-hidden">
+    <div className="bg-white border shadow-lg flex sm:flex-row my-4 mx-2  hover:shadow-xl hover:border-gray-300 transition duration-300 overflow-hidden motion-preset-fade motion-duration-2000">
       <div className="px-4 pt-4 flex flex-col flex-grow justify-between">
         <h3 className="font-bold text-lg mb-2">{item.name}</h3>
         {item.description && (

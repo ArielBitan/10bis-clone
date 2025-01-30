@@ -203,12 +203,12 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({ restId }) => {
           </TableBody>
         </Table>
       </div>
-
-      <div className="flex items-center justify-center py-4 space-x-2">
+      <div className="flex items-center justify-center gap-10 py-4 ">
         <Button
           size="sm"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
+          className="bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-lg px-4 py-2 shadow-md disabled:bg-gray-400"
         >
           הקודם
         </Button>
@@ -216,6 +216,7 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({ restId }) => {
           size="sm"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
+          className="bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-lg px-4 py-2 shadow-md disabled:bg-gray-400"
         >
           הבא
         </Button>

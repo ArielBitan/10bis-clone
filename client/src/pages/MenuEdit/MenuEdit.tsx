@@ -4,7 +4,6 @@ import Navbar from "@/components/layout/Navbar";
 import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import { FiSearch } from "react-icons/fi";
-// import { IMenuItem } from "@/types/restaurantTypes";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { fetchRestaurantById } from "@/services/restaurantService";
@@ -18,8 +17,8 @@ import { DialogTitle } from "@radix-ui/react-dialog";
 const MenuEdit = () => {
   const { user } = useUser();
   const ownedRestId = (user as IRestaurantOwner)?.owned_restaurants?.[0];
-
   const queryClient = useQueryClient();
+
   const renderFunc = () => {
     queryClient.invalidateQueries({ queryKey: ["restaurant"] });
   };
@@ -40,9 +39,6 @@ const MenuEdit = () => {
         setSelectedCategory(defaultCategory);
       }
     }
-    // if (data?.menuItems) {
-    // setMenu(data.menuItems ?? []);
-    // }
   }, [data]);
 
   if (isLoading) return <Loading />;
@@ -55,19 +51,25 @@ const MenuEdit = () => {
     );
   if (!data) return <div>No data available</div>;
 
-  const uniqueCategories = data?.menuItems?.reduce<string[]>(
-    (categories, item) => {
-      if (item.category && !categories.includes(item?.category)) {
-        categories.push(item?.category);
+  // Group items by category
+  const groupedMenuItems = data.menuItems?.reduce<{ [key: string]: any[] }>(
+    (acc, item) => {
+      if (item.category) {
+        if (!acc[item.category]) acc[item.category] = [];
+        acc[item.category].push(item);
       }
-      return categories;
+      return acc;
     },
-    []
+    {}
   );
 
-  const searchedMenuItems = data?.menuItems?.filter((item) =>
-    item.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const uniqueCategories = Object.keys(groupedMenuItems as object);
+
+  // const searchedMenuItems = Object.values(groupedMenuItems as object)
+  //   .flat()
+  //   .filter((item) =>
+  //     item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  //   );
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
@@ -77,18 +79,13 @@ const MenuEdit = () => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative bg-gray-50">
       <Navbar />
       <div className="relative">
         <img
           src={data.background_image as string}
           alt="background_image"
-          className="object-fill w-full max-h-[400px]"
-          onLoad={(e) => {
-            if (data.background_image instanceof File) {
-              URL.revokeObjectURL((e.target as HTMLImageElement).src);
-            }
-          }}
+          className="object-cover w-full max-h-[400px]"
         />
         <div
           className="absolute top-0 left-0 w-full h-full bg-white"
@@ -98,26 +95,17 @@ const MenuEdit = () => {
         ></div>
         <div className="absolute inset-0 items-center justify-center hidden top-2/3 md:flex">
           <img
-            src={
-              data.image instanceof File
-                ? URL.createObjectURL(data.image)
-                : data.image
-            }
+            src={data.image as string}
             alt="logo"
             className="object-cover border-4 rounded-full w-36 h-36 border-slate-100"
-            onLoad={(e) => {
-              if (data.image instanceof File) {
-                URL.revokeObjectURL((e.target as HTMLImageElement).src);
-              }
-            }}
           />
         </div>
       </div>
-      <div className="flex flex-col items-center gap-4 px-4 mt-4">
-        <h1 className="text-3xl ">עריכת תפריט המסעדה </h1>
+      <div className="text-center mt-8 px-4">
+        <h1 className="text-3xl font-semibold">עריכת תפריט המסעדה</h1>
         <Dialog>
           <DialogTrigger asChild>
-            <Button>הוסף פריט</Button>
+            <Button className="mt-4">הוסף פריט</Button>
           </DialogTrigger>
           <DialogTitle></DialogTitle>
           <DialogContent className="sm:max-w-[425px] bg-orangePrimary">
@@ -125,54 +113,57 @@ const MenuEdit = () => {
           </DialogContent>
         </Dialog>
       </div>
-      <div className="px-4">
-        <div className="flex items-center mt-4">
-          <div className="border bg-gray-100 flex items-center gap-2 px-2 w-[95%] h-12 border-gray-300 hover:border-gray-500 rounded-3xl">
-            <FiSearch className="hover:cursor-pointer text-backgroundOrange " />
-            <Input
-              type="text"
-              placeholder={`חיפוש ב${data.name}`}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-4 text-sm bg-gray-100 border-none"
-            />
-          </div>
-        </div>
-      </div>
 
-      <div className="flex gap-4 mt-4 overflow-x-auto categories-scroll">
-        {uniqueCategories?.map((category) => (
+      <div className="flex gap-6 mt-6 overflow-x-auto px-4">
+        {uniqueCategories.map((category) => (
           <div
             key={category}
             onClick={() => handleCategoryClick(category)}
-            className={`text-sm px-3 py-1 whitespace-nowrap cursor-pointer ${
+            className={`text-sm px-3 py-2 cursor-pointer rounded-xl whitespace-nowrap ${
               selectedCategory === category
-                ? "border-b-2 border-backgroundOrange font-bold"
-                : ""
+                ? "border-b-2 border-backgroundOrange font-semibold"
+                : "hover:bg-gray-200"
             }`}
           >
             {category}
           </div>
         ))}
+        <div className="border bg-gray-100 flex items-center gap-2 px-4 py-2 w-full md:w-3/4 rounded-3xl">
+          <FiSearch className="text-backgroundOrange" />
+          <Input
+            type="text"
+            placeholder={`חיפוש ב${data.name}`}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="h-8 text-sm bg-gray-100 border-none"
+          />
+        </div>
       </div>
 
-      <div>
-        {searchedMenuItems && searchedMenuItems.length > 0 ? (
-          searchedMenuItems.map((item) => (
-            <div
-              key={item._id}
-              ref={(el) => (categoryRefs.current[item.category] = el)}
-            >
-              <RestaurantMenuCard item={item} renderFunc={renderFunc} />
+      <div className="mt-8 px-4">
+        {uniqueCategories.map((category) => (
+          <div
+            key={category}
+            ref={(el) => (categoryRefs.current[category] = el)}
+          >
+            {searchQuery !== "" || (
+              <h2 className="text-xl font-semibold my-6">{category}</h2>
+            )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {groupedMenuItems &&
+                groupedMenuItems[category]
+                  .filter((item) =>
+                    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+                  )
+                  .map((item) => (
+                    <div key={item._id}>
+                      <RestaurantMenuCard item={item} renderFunc={renderFunc} />
+                    </div>
+                  ))}
             </div>
-          ))
-        ) : (
-          <div className="font-bold">
-            {searchQuery
-              ? `לא נמצאו תוצאות עבור "${searchQuery}"`
-              : "לא נמצאו תוצאות עבור"}
           </div>
-        )}
+        ))}
       </div>
     </div>
   );
