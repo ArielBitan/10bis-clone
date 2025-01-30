@@ -1,7 +1,7 @@
 import { acceptOrder, fetchOrdersByStatus } from "@/services/orderService";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Package } from "lucide-react";
-import OrderCard from "./OrderCard";
+import OrderCard from "./OrderCard/OrderCard";
 import { IOrder } from "@/types/orderTypes";
 import { useUser } from "../context/userContext";
 import Loading from "../Loading";

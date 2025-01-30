@@ -80,14 +80,11 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
       <Card>
         <CardContent className="pt-6">
           <div className="space-y-6">
-            {/* Order Status */}
             <OrderStatus
               activeOrderId={activeOrder._id}
               createdAt={activeOrder.createdAt}
               status={activeOrder.status}
             />
-
-            {/* Next Location */}
             {activeOrder.status === "Accepted" ? (
               <NextLocationCard
                 name={activeOrder.restaurant_id.name}
@@ -103,10 +100,7 @@ const ActiveOrder: React.FC<ActiveOrderProps> = ({ setIsDelivering }) => {
                 icon={User}
               />
             )}
-
             <OrderItems order_items={activeOrder.order_items} />
-
-            {/* Action Buttons */}
             <ActiveButtons
               activeOrder={activeOrder}
               setIsDelivering={setIsDelivering}
