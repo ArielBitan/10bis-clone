@@ -79,10 +79,6 @@ const RestaurantMenuCard: React.FC<MenuItemCardProps> = ({
           <span>{` ₪${item.price || 0}`}</span>
         </div>
         <div className="flex items-center gap-2 mb-2">
-          <Button variant={"delete"} onClick={handleDelete}>
-            מחק פריט
-          </Button>
-
           <Dialog>
             <DialogTrigger asChild>
               <Button>ערוך פריט</Button>
@@ -92,6 +88,10 @@ const RestaurantMenuCard: React.FC<MenuItemCardProps> = ({
               <EditItem item={item} renderFunc={renderFunc} />
             </DialogContent>
           </Dialog>
+
+          <Button variant={"delete"} onClick={handleDelete}>
+            מחק פריט
+          </Button>
         </div>
       </div>
 

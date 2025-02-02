@@ -5,11 +5,12 @@ export interface IUser {
   last_name: string;
   phone: string;
   password?: string;
-  role?: "courier" | "restaurant_owner";
+  role?: "courier" | "restaurant_owner" | "employee" | "company_owner";
   createdAt?: string;
   full_name: string;
   updatedAt?: string;
   isDelivering?: boolean;
+  company_role?: string;
 }
 
 export interface IRestaurantOwnerForm {

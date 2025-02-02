@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, UserPlus } from "lucide-react";
-import { searchUserByEmail } from "@/services/userService";
+import { searchUserByEmail, updateUserProfile } from "@/services/userService";
 import { IUser } from "@/types/userType";
 import debounce from "lodash.debounce";
 
@@ -40,6 +40,15 @@ const CompanyDashboard = () => {
 
   const handleAddEmployee = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!selectedUser?._id) {
+      return;
+    }
+    updateUserProfile({
+      _id: selectedUser?._id,
+      company_role: userRole,
+      role: "employee",
+    });
+
     if (selectedUser && userRole) {
       setSearchEmail("");
       setSearchResults(null);

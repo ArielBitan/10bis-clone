@@ -6,6 +6,7 @@ import { useUser } from "@/components/context/userContext";
 import { useEffect } from "react";
 import UserPage from "../UserPage/UserPage";
 import AllChats from "@/components/AllChats/AllChats";
+import CompanyPage from "../CompanyPage/CompanyPage";
 
 const HomePage = () => {
   const { user, fetchUser } = useUser();
@@ -25,6 +26,8 @@ const HomePage = () => {
           </div>
         ) : role === "courier" ? (
           <CourierPage />
+        ) : role === "company_owner" ? (
+          <CompanyPage />
         ) : (
           <UserPage />
         )

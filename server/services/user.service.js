@@ -2,7 +2,7 @@ const {
   User,
   Courier,
   RestaurantOwner,
-  BusinessOwner,
+  CompanyOwner,
 } = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 
@@ -81,6 +81,13 @@ const userService = {
     return updatedUser;
   },
 
+  getUserById: async (userId) => {
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    return user;
+  },
   // Create Courier user
   createCourier: async (userData) => {
     const newCourier = await Courier.create(userData);
@@ -94,8 +101,8 @@ const userService = {
   },
 
   // Create Business Owner user
-  createBusinessOwner: async (userData) => {
-    const newBusinessOwner = await BusinessOwner.create(userData);
+  createCompanyOwner: async (userData) => {
+    const newBusinessOwner = await CompanyOwner.create(userData);
     return newBusinessOwner;
   },
 };

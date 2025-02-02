@@ -25,7 +25,6 @@ const RestaurantOwnerDashboard = () => {
   if (isRestaurantError)
     return (
       <div>
-        Error loading
         <Loading />
       </div>
     );

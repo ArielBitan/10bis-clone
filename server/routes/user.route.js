@@ -19,6 +19,9 @@ router.get("/profile", authenticateUser, userController.getProfile);
 // Route for updating user profile (authenticated)
 router.put("/profile", authenticateUser, userController.updateProfile);
 
+// Route for updating user profile (authenticated)
+router.put("/add-employee", userController.makeUserEmployee);
+
 // Route for creating a new courier user
 router.post("/register/courier", userController.createCourier);
 
@@ -29,6 +32,6 @@ router.post("/search/email", userController.searchUserByEmail);
 router.post("/register/restaurant-owner", userController.createRestaurantOwner);
 
 // Route for creating a new business owner user
-router.post("/register/business-owner", userController.createBusinessOwner);
+router.post("/register/company-owner", userController.createCompanyOwner);
 
 module.exports = router;

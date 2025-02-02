@@ -63,6 +63,7 @@ const restaurantOwnerSchema = new mongoose.Schema({
 
 const employeeSchema = new mongoose.Schema({
   amount: { type: Number, default: 0 },
+  company_role: { type: String, default: "" },
 });
 
 const businessOwnerSchema = new mongoose.Schema();
@@ -80,6 +81,6 @@ const RestaurantOwner = User.discriminator(
   "restaurant_owner",
   restaurantOwnerSchema
 );
-const BusinessOwner = User.discriminator("business_owner", businessOwnerSchema);
+const CompanyOwner = User.discriminator("company_owner", businessOwnerSchema);
 
-module.exports = { User, Courier, RestaurantOwner, BusinessOwner, Employee };
+module.exports = { User, Courier, RestaurantOwner, CompanyOwner, Employee };

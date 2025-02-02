@@ -41,7 +41,7 @@ const RestaurantRegister = ({ toggleRole }: RestaurantRegisterProps) => {
 
   const [showPassword, setShowPassword] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [sucsessMessage, setSucsessMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const clearFields = () => {
     setUserFields({
@@ -116,12 +116,12 @@ const RestaurantRegister = ({ toggleRole }: RestaurantRegisterProps) => {
           ...userFields,
           owned_restaurants: [createdRestaurant._id],
         };
-        setSucsessMessage(null);
+        setSuccessMessage(null);
 
         await createRestaurantOwner(userWithRestaurantId);
 
         clearFields();
-        setSucsessMessage("המשתמש והמסעדה נוצרו בהצלחה");
+        setSuccessMessage("המשתמש והמסעדה נוצרו בהצלחה");
         setErrorMessage(null);
         setTimeout(() => {
           toggleRole();
@@ -302,7 +302,7 @@ const RestaurantRegister = ({ toggleRole }: RestaurantRegisterProps) => {
           </div>
         </div>
         <div className="text-lg text-center text-orangePrimary">
-          {sucsessMessage}
+          {successMessage}
         </div>
       </div>
 

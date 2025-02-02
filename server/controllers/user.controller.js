@@ -60,6 +60,32 @@ exports.updateProfile = async (req, res) => {
   }
 };
 
+exports.makeUserEmployee = async (req, res) => {
+  try {
+    const { _id: userId } = req.body;
+
+    // Fetch the user by ID
+    const user = await userService.getUserById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found!" });
+    }
+
+    // Update the role and employee-specific fields
+    user.role = "employee"; // Set role to 'employee'
+    user.amount = 0; // Initialize employee amount
+    user.company_role = req.body.company_role; // Initialize company role (or set a specific value if needed)
+
+    // You can add any other employee-specific fields here
+
+    // Save the updated user
+    const updatedUser = await user.save();
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
 // Create Courier user
 // exports.createCourier = async (req, res) => {
 //   try {
@@ -149,10 +175,10 @@ exports.searchUserByEmail = async (req, res) => {
 };
 
 // Create Business Owner user
-exports.createBusinessOwner = async (req, res) => {
+exports.createCompanyOwner = async (req, res) => {
   try {
     const { email, password, first_name, last_name, phone } = req.body;
-    const newBusinessOwner = await userService.createBusinessOwner({
+    const newBusinessOwner = await userService.createCompanyOwner({
       email,
       password,
       first_name,
