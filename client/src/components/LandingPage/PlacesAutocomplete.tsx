@@ -19,7 +19,9 @@ const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
       if (onSelect) {
         onSelect();
       }
-      navigate("/home");
+      if (localStorage.getItem("userAddress")) {
+        navigate("/home");
+      }
     } else {
       console.error("No address selected.");
     }
