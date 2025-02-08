@@ -14,7 +14,7 @@ import { useRestaurantContext } from "../context/restaurantContext";
 export default function AddressDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState("delivery");
-  const [isEditingAddress, setIsEditingAddress] = useState(false); // Track if editing a new address
+  const [isEditingAddress, setIsEditingAddress] = useState(false);
   const userAddress = localStorage.getItem("userAddress");
   const { refetchRestaurants } = useRestaurantContext();
 

@@ -8,6 +8,7 @@ import {
 import { IRestaurant } from "@/types/restaurantTypes";
 import { fetchAllRestaurants } from "@/services/restaurantService";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 interface RestaurantContextType {
   restaurants: IRestaurant[];
@@ -28,6 +29,25 @@ const RestaurantContext = createContext<RestaurantContextType | undefined>(
 );
 
 export const RestaurantProvider = ({ children }: { children: ReactNode }) => {
+  const address = localStorage.getItem("userAddress");
+  const [localAddress, setLocalAddress] = useState(address);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAddress = () => {
+      const currentAddress = localStorage.getItem("userAddress");
+      if (currentAddress !== localAddress) {
+        setLocalAddress(currentAddress);
+        if (!currentAddress) {
+          navigate("/");
+        }
+      }
+    };
+    checkAddress();
+    const interval = setInterval(checkAddress, 1000);
+    return () => clearInterval(interval);
+  }, [localAddress, navigate]);
+
   const {
     data: restaurants = [],
     isLoading,
@@ -35,8 +55,9 @@ export const RestaurantProvider = ({ children }: { children: ReactNode }) => {
     isSuccess,
     refetch,
   } = useQuery({
-    queryKey: ["restaurants"],
+    queryKey: ["restaurants", localAddress],
     queryFn: fetchAllRestaurants,
+    enabled: !!localAddress,
   });
 
   const [availableCategories, setAvailableCategories] = useState<string[]>([]);

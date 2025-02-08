@@ -5,6 +5,7 @@ import { IRestaurant, IRestaurantForm } from "@/types/restaurantTypes";
 export const fetchAllRestaurants = async (): Promise<IRestaurant[]> => {
   try {
     const address = localStorage.getItem("userAddress");
+
     const { data } = await api.post<IRestaurant[]>(`/restaurants/nearby`, {
       address,
     });
