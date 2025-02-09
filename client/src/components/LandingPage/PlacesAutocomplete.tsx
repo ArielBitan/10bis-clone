@@ -2,9 +2,17 @@ import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { FaSearch } from "react-icons/fa";
+import { SingleValue } from "react-select";
 
 interface PlacesAutocompleteProps {
   onSelect?: () => void;
+}
+
+interface Option {
+  value: {
+    description: string;
+  };
+  label: string;
 }
 
 const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
@@ -12,16 +20,35 @@ const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
 }) => {
   const navigate = useNavigate();
 
-  const handleSelect = (place: any) => {
-    if (place && place.value) {
-      const address = place.value.description;
+  const handleSelect = (newValue: SingleValue<Option>) => {
+    try {
+      // Check if we have a valid selection
+      if (!newValue?.value?.description) {
+        throw new Error("Invalid address selection");
+      }
+
+      const address = newValue.value.description;
+
+      // Store address
       localStorage.setItem("userAddress", address);
+
+      // Verify storage was successful
+      const storedAddress = localStorage.getItem("userAddress");
+      if (!storedAddress) {
+        throw new Error("Failed to store address");
+      }
+
+      // Call optional callback
       if (onSelect) {
         onSelect();
       }
+
+      // Only navigate if we have a valid address stored
       navigate("/home");
-    } else {
-      console.error("No address selected.");
+    } catch (error) {
+      console.error("Address selection error:", error);
+      // Here you could add user feedback like toast/alert
+      // toast.error('Please select a valid address');
     }
   };
 
@@ -50,16 +77,16 @@ const PlacesAutocomplete: React.FC<PlacesAutocompleteProps> = ({
               }),
               control: (provided) => ({
                 ...provided,
-                border: "none", // Remove border
-                boxShadow: "none", // Remove focus border
-                backgroundColor: "transparent", // Optional: make it transparent
+                border: "none",
+                boxShadow: "none",
+                backgroundColor: "transparent",
               }),
               dropdownIndicator: (provided) => ({
                 ...provided,
-                display: "none", // Remove the dropdown arrow
+                display: "none",
               }),
               indicatorSeparator: () => ({
-                display: "none", // Remove the separator line
+                display: "none",
               }),
             },
             options: [

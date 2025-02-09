@@ -7,8 +7,6 @@ import { useUser } from "@/components/context/userContext";
 import { useEffect } from "react";
 import { UserIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-// import { log } from "console";
-// import AnimatedCard from "./LogInAnim";
 
 const LandingPage = () => {
   const navigate = useNavigate();
