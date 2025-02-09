@@ -70,14 +70,9 @@ exports.makeUserEmployee = async (req, res) => {
       return res.status(404).json({ message: "User not found!" });
     }
 
-    // Update the role and employee-specific fields
-    user.role = "employee"; // Set role to 'employee'
-    user.amount = 0; // Initialize employee amount
-    user.company_role = req.body.company_role; // Initialize company role (or set a specific value if needed)
-
-    // You can add any other employee-specific fields here
-
-    // Save the updated user
+    user.role = "employee";
+    user.amount = 0;
+    user.company_role = req.body.company_role;
     const updatedUser = await user.save();
 
     res.status(200).json(updatedUser);

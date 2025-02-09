@@ -1,5 +1,5 @@
 const { Server } = require("socket.io");
-const setupChatSocket = require("./chatSocket"); // Import chatSocket
+const setupChatSocket = require("./chatSocket");
 
 let io;
 
@@ -16,14 +16,11 @@ const initializeSocket = (server) => {
     pingInterval: 25000,
   });
 
-  // Pass io as argument to setupChatSocket
-  setupChatSocket(io); // Pass the io instance directly to chatSocket
+  setupChatSocket(io);
 
-  // Socket connection handler with room management
   const handleSocket = (socket) => {
     console.log(`New client connected: ${socket.id}`);
 
-    // Handle room joining with error handling
     socket.on("join-room", async ({ roomId }) => {
       try {
         await socket.join(roomId);
@@ -43,7 +40,6 @@ const initializeSocket = (server) => {
           location
         );
 
-        // Broadcast to everyone in the room except the sender
         socket.to(orderId.toString()).emit("courierLocation", {
           orderId,
           location,
@@ -53,25 +49,20 @@ const initializeSocket = (server) => {
       }
     });
 
-    // Handle room leaving with cleanup
     socket.on("leave-room", async ({ roomId }) => {
       try {
         await socket.leave(roomId);
         console.log(`Socket ${socket.id} left room: ${roomId}`);
-
-        // Notify other room members
         socket.to(roomId).emit("user-left", { socketId: socket.id });
       } catch (error) {
         console.error(`Error leaving room ${roomId}:`, error);
       }
     });
 
-    // Handle disconnection with cleanup
     socket.on("disconnect", (reason) => {
       console.log(`Client disconnected: ${socket.id}, reason: ${reason}`);
     });
 
-    // Handle errors
     socket.on("error", (error) => {
       console.error(`Socket error for ${socket.id}:`, error);
     });

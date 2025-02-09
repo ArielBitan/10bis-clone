@@ -200,7 +200,8 @@ const createLineItems = async (checkoutSessionRequest) => {
       if (!menuItem) {
         throw new Error("Menu item not found " + cartItem._id);
       }
-      const priceInAgorot = menuItem.price * 100;
+      console.log(menuItem.price);
+      const priceInAgorot = menuItem.price.toFixed(1) * 100;
 
       const line_item = {
         quantity: cartItem.quantity,
@@ -232,7 +233,7 @@ const createSession = async (
           display_name: "Delivery",
           type: "fixed_amount",
           fixed_amount: {
-            amount: deliveryPrice,
+            amount: deliveryPrice * 100,
             currency: "ils",
           },
         },
